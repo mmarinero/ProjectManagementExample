@@ -1,0 +1,225 @@
+/* CSS RESET */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
+	{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+:focus {
+	outline: 0;
+}
+
+body {
+	line-height: 1;
+}
+
+ol,ul {
+	list-style: none;
+}
+
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+caption,th,td {
+	text-align: left;
+	font-weight: normal;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+	content: "";
+}
+
+blockquote,q {
+	quotes: "" "";
+}
+
+/* GENERAL */
+html {
+	background: #63bad8 url(../images/backimage.jpg) 50% 0px repeat-x;
+	text-align: center;
+}
+
+body {
+	text-align: center;
+	font: 12px 'Lucida Grande', lucida, helvetica, arial, sans-serif;
+	color: #333333;
+	padding: 0px;
+	margin: 0 auto;
+	width: 840px;
+}
+
+#top_margin {
+	width: 800px;
+	height: 20px;
+	padding: 0 20px 0 20px;
+	margin-top: 20px;
+}
+
+#header {
+	width: 780px;
+	background: #ced6e1;
+	padding: 25px 0 5px 20px;
+	border-bottom: #b2ccd0 solid 1px;
+}
+
+fieldset {
+	background-color: #eaf6f7;
+	border-top: 2px solid #acdbe1;
+	border-bottom: 2px solid #acdbe1;
+	margin: 20px;
+	padding: 20px;
+	display: block;
+	*position: relative;
+	*margin-top: 20px;
+	*padding-top: 40px;
+}
+
+label {
+	float: left;
+	text-align: right;
+	width: 150px;
+	font-weight: bold;
+	margin-right: 10px;
+	padding-top: 7px;
+}
+
+input {
+	height: 30px;
+	width: 300px;
+	margin-bottom: 15px;
+	padding: 3px;
+	font: 16px 'Lucida Grande', arial, sans-serif;
+}
+
+h2 {
+	font: bold 24px helvetica, arial, sans-serif;
+	color: #fff;
+	display: inline;
+	margin-left: 10px;
+}
+
+#content {
+	width: 800px;
+	background-color: #fff;
+	text-align: left;
+}
+
+#dark_title {
+	margin: 0px -18px 0 -18px;
+	padding: 8px 10px 10px 40px;
+	background: #324052;
+	position: relative;
+}
+
+#dark_title_shadow_left {
+	background: url(../images/aiwrap_left.png);
+	width: 18px;
+	height: 10px;
+	margin: 0 0 0 -18px;
+	position: relative;
+}
+
+#dark_title_shadow_right {
+	background: url(../images/aiwrap_right.png);
+	width: 18px;
+	height: 10px;
+	margin: -10px 0px 0px 370px;
+	position: relative;
+}
+
+/* FORM */
+.form button {
+	background-color: #8b9fb9;
+	border: 1px solid #6882a4;
+	font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: 100%;
+	line-height: 130%;
+	text-decoration: none;
+	font-weight: bold;
+	color: #ffffff;
+	cursor: pointer;
+	padding: 5px 10px 6px 7px; /* Links */
+	_margin-left: 82px;
+}
+
+.form button img,.buttons a img {
+	margin: 0 6px -3px 0 !important;
+	padding: 0;
+	border: none;
+	width: 16px;
+	height: 16px;
+	text-decoration: none;
+}
+
+button:hover {
+	background-color: #e7ebf0;
+	border: 1px solid #8b9fb9;
+	color: #4a5f7a;
+}
+
+/* LOGIN */
+body#login #header {
+	width: 350px;
+}
+
+body#login {
+	width: 410px;
+}
+
+body#login #top_margin {
+	height: 80px;
+	width: 370px;
+}
+
+body#login fieldset {
+	width: 330px;
+	border: 0;
+	margin: 0px;
+	display: block;
+	background-color: #fff;
+	padding-top: 10px;
+}
+
+body#login label {
+	float: left;
+	text-align: right;
+	width: 70px;
+	font-weight: bold;
+	margin-right: 10px;
+	padding-top: 7px;
+}
+
+body#login input {
+	height: 30px;
+	width: 238px;
+	_width: 237px;
+	margin-bottom: 15px;
+	font: 16px 'Lucida Grande', arial, sans-serif;
+}
+
+body#login #content {
+	width: 370px;
+}
+
+body#login #button_container {
+	text-align: center;
+}
+
+body#login fieldset p.error {
+	padding: 10px 10px 10px 10px;
+	color: #7b0c00;
+	display: block;
+	border: 2px solid #bc6f6b;
+	background: #eac5c5;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
