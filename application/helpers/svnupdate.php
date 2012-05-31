@@ -1,12 +1,19 @@
 <?php
 //svnupdate es un programa en c que debera tener los permisos adecuados (setuid) 
 //para ejecutar las acciones que no puede el usuario del servidor apache
+//ejemplos:
+//svn update
+//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>
+//checkout trunk 
+//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1
+//checkout specific branch
+//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1&branch=branches/codeIgniter
 
 $usuarioJair = 'marmari';
 $usuarioAssembla = 'mmarinero';
 //es posible poner aqui la primera parte de la clave, el resto se debera pasar con el parametro p en la url.
 $mediaPass = 'TlIunw0wbf';
-$repositorio = 'https://subversion.assembla.com/svn/setepros/';
+$repositorio = 'https://subversion.assembla.com/svn/seteprosci/';
 if (isset($_GET['branch'])) $repositorio .= $_GET['branch'];
 else $repositorio .= 'trunk';
 
