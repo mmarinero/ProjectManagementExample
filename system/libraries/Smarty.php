@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Smarty Class
@@ -12,18 +12,8 @@
 require_once( BASEPATH.'libraries/Smarty/libs/Smarty.class.php' );
 
 class CI_Smarty extends Smarty {
-
-	function CI_Smarty()
-	{
-		parent::Smarty();
-
-		$this->compile_dir = APPPATH . "views/templates_c";
-		$this->template_dir = APPPATH . "views/templates";
-		$this->assign( 'APPPATH', APPPATH );
-		$this->assign( 'BASEPATH', BASEPATH );
-
-		log_message('debug', "Smarty Class Initialized");
-	}
+    
+        private $extension = '.tpl';
 
 	function __construct()
 	{
@@ -35,14 +25,25 @@ class CI_Smarty extends Smarty {
 		$this->assign( 'BASEPATH', BASEPATH );
 
 		// Assign CodeIgniter object by reference to CI
-		if ( method_exists( $this, 'assignByRef') )
-		{
+		if ( method_exists( $this, 'assignByRef') ) {
 			$ci =& get_instance();
 			$this->assignByRef("ci", $ci);
 		}
 
 		log_message('debug', "Smarty Class Initialized");
 	}
+        
+        /**
+         * Set extension of the actual view filename, the dot is automatically
+         * inserted.
+         * If null is passed the full filename should be used in the view call.
+         * This extension only affects the view method for CI views emulation.
+         * @param string $extension 
+         */
+        public function setExtension($extension) {
+            if ($extension !== null) $this->extension = '.'.$extension;
+            else $this->extension = '';
+        }
 
 
 	/**
@@ -63,28 +64,21 @@ class CI_Smarty extends Smarty {
 	 * @param	bool
 	 * @return	string
 	 */
-	function view($template, $data = array(), $return = FALSE)
-	{
-		foreach ($data as $key => $val)
-		{
+	function view($templateNoExtension, $data = array(), $return = FALSE) {
+                $template = $templateNoExtension.$this->extension;
+		foreach ($data as $key => $val) {
 			$this->assign($key, $val);
 		}
 		
-		if ($return == FALSE)
-		{
+		if ($return == FALSE) {
 			$CI =& get_instance();
-			if (method_exists( $CI->output, 'set_output' ))
-			{
+			if (method_exists( $CI->output, 'set_output' )) {
 				$CI->output->set_output( $this->fetch($template) );
-			}
-			else
-			{
+			} else {
 				$CI->output->final_output = $this->fetch($template);
 			}
 			return;
-		}
-		else
-		{
+		} else {
 			return $this->fetch($template);
 		}
 	}

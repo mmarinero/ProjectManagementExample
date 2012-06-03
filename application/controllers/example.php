@@ -1,10 +1,11 @@
-<?php
-class Example extends Controller {
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-	function Example()
+class Example extends CI_Controller {
+
+	function __construct()
 	{
-		parent::Controller();
-
+		parent::__construct();
+                log_message('debug', 'Here i am');
 		// $this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<p class="error">', '</p>');
@@ -51,6 +52,6 @@ class Example extends Controller {
 		$data['ip_address'] = $this->input->server('REMOTE_ADDR');
 
 		// Calling the convenience function view() that allows passing data
-		$this->smarty->view( 'example.tpl', $data );
+                $this->smarty->view( 'sub/example', $data );
 	}
 }

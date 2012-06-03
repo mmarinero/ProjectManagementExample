@@ -65,9 +65,21 @@ int main(int argc, char **argv) {
             if (fwrite(buffer, sizeof(char), nbytes, fp) != nbytes)
                 fprintf(stderr, "Error escribiendo fichero\n");
         fclose(fp);
+    }else if (argc==3 && strcmp(argv[1],"chmod") == 0 && strlen(argv[2])<100) {
+        char *filename;
+        if (strcmp(argv[2], "logs") == 0) {
+            filename = "application/logs";
+	} else if (strcmp(argv[2], "templates_c") == 0) {
+            filename = "application/views/templates_c";
+        } else {
+            fprintf(stderr, "Fichero invalido\n");
+            return(EXIT_FAILURE);
+        }
+        execl("chmod","770",filename,(const char *) NULL);
+        fprintf(stderr, "Error al ejecutar chmod\n");
+        return(EXIT_FAILURE);
     } else {
         fprintf(stderr, "Parametros invalidos\n");
         return(EXIT_FAILURE);
     }
-  
 }

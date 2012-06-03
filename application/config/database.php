@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'mysql:host=localhost';
-$db['default']['username'] = 'grupo01';
-$db['default']['password'] = 'avMOyZe7';
-$db['default']['database'] = 'grupo01';
+$db['default']['username'] = 'grupo10';
+$db['default']['password'] = '1KsSQPGw';
+$db['default']['database'] = 'grupo10';
 $db['default']['dbdriver'] = 'pdo';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

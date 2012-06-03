@@ -1,13 +1,23 @@
 <?php
-//svnupdate es un programa en c que debera tener los permisos adecuados (setuid) 
-//para ejecutar las acciones que no puede el usuario del servidor apache
-//ejemplos:
-//svn update
-//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>
-//checkout trunk 
-//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1
-//checkout specific branch
-//http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1&branch=branches/codeIgniter
+/**
+ * Este script permite ejecutar comandos de svn para desplegar un proyecto a
+ * partir de un repositorio de subversion. Posteriormente adapta los ficheros config.php
+ * y .htaccess para reconocer el subdirectio donde se ejecuta dentro del servidor web
+ * y adaptar los permisos de la carpeta logs y templates_c para que puedan ser escritas
+ * por el servidor web.
+ * El funcionamiento de este script depende fuertemente del entorno de ejecucion y debera
+ * ser adaptado a cada servidor.
+ * 
+ * svnupdate es un programa en c que debera tener los permisos adecuados (setuid) 
+ * para ejecutar las acciones que no puede el usuario del servidor apache
+ * ejemplos:
+ * svn update
+ * http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>
+ * checkout trunk 
+ * http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1
+ * checkout specific branch
+ * http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1&branch=branches/codeIgniter
+ */
 
 $usuarioJair = 'marmari';
 $usuarioAssembla = 'mmarinero';
@@ -42,4 +52,9 @@ $replacedHTstring = str_replace("RewriteBase /\n","RewriteBase /~".$usuarioJair.
 $fp = popen('./svnupdate writefile htaccess', 'w');
 if (!fwrite($fp, $replacedHTstring)) echo 'no se pudo escribir '.$htaccess."<br /> \n";
 if(pclose($fp)) echo 'algo ha ido mal escribiendo el fichero '.$htaccess." con svnupdate<br /> \n";
+
+foreach (array('logs', 'templates_c') as $file) {
+    exec('./svnupdate chmod '.$file.' 2>&1',$output);
+    echo join("<br />\n",$output)."<br />\n";
+}
 ?>
