@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
             fprintf(stderr, "Fichero invalido\n");
             return(EXIT_FAILURE);
         }
-        execl("chmod","770",filename,(const char *) NULL);
+        execl("/bin/chmod","chmod","770",filename,(const char *) NULL);
         fprintf(stderr, "Error al ejecutar chmod\n");
         return(EXIT_FAILURE);
     } else {

@@ -18,7 +18,7 @@
  * checkout specific branch
  * http://jair.lab.fi.uva.es/~marmari/svnupdate.php?p=<otramediapass>&checkout=1&branch=branches/codeIgniter
  */
-
+echo "comienzo de la ejecucion<br />\n";
 $usuarioJair = 'marmari';
 $usuarioAssembla = 'mmarinero';
 //es posible poner aqui la primera parte de la clave, el resto se debera pasar con el parametro p en la url.
@@ -30,11 +30,14 @@ else $repositorio .= 'trunk';
 $configFile = 'application/config/config.php';
 $htaccess = '.htaccess';
 if (isset($_GET['checkout']) && $_GET['checkout']){
-    exec('./svnupdate checkout /home/grini/'.$usuarioJair.'/.subversion '.$usuarioAssembla.' '.$mediaPass.escapeshellarg($_GET['p']).' '.$repositorio.' 2>&1',$output);
+    exec('./svnupdate checkout /home/grini/'.$usuarioJair.'/.subversion '
+            .$usuarioAssembla.' '.$mediaPass.escapeshellarg($_GET['p']).' '.$repositorio.' 2>&1',$svnOutput, $svnReturn);
 } else {
-    exec('./svnupdate update /home/grini/'.$usuarioJair.'/.subversion '.$usuarioAssembla.' '.$mediaPass.escapeshellarg($_GET['p']).' 2>&1',$output);
+    exec('./svnupdate update /home/grini/'.$usuarioJair.'/.subversion '
+            .$usuarioAssembla.' '.$mediaPass.escapeshellarg($_GET['p']).' 2>&1',$svnOutput, $svnReturn);
 }
-echo join("<br />\n",$output)."<br />\n";
+if ($svnReturn) echo "El comando svn fallo, la salida se adjunta al final de la pagina<br />\n";
+else echo "comando svn ejecutado correctamente<br />\n";
 
 //Parece haber algun problema con file_get_contents aunque de momento funciona
 //$fh = fopen($configFile, 'r');
@@ -46,15 +49,20 @@ $fp = popen('./svnupdate writefile config', 'w');
 //pasamos por stdin el fichero a c
 if (!fwrite($fp, $replacedCFstring)) echo 'no se pudo escribir '.$configFile."<br /> \n";
 if(pclose($fp)) echo 'algo ha ido mal escribiendo el fichero '.$configFile." con svnupdate<br /> \n";
+else echo 'Se ha modificado en '.$configFile." \$config['base_url'] = ''; por \$config['base_url'] = '/~".$usuarioJair."/';<br /> \n";
 
 $HTstring = file_get_contents($htaccess);
 $replacedHTstring = str_replace("RewriteBase /\n","RewriteBase /~".$usuarioJair."/\n",$HTstring);
 $fp = popen('./svnupdate writefile htaccess', 'w');
 if (!fwrite($fp, $replacedHTstring)) echo 'no se pudo escribir '.$htaccess."<br /> \n";
 if(pclose($fp)) echo 'algo ha ido mal escribiendo el fichero '.$htaccess." con svnupdate<br /> \n";
+else echo 'Se ha modificado en '.$configFile." RewriteBase / por RewriteBase /~".$usuarioJair."/<br /> \n";
 
 foreach (array('logs', 'templates_c') as $file) {
-    exec('./svnupdate chmod '.$file.' 2>&1',$output);
-    echo join("<br />\n",$output)."<br />\n";
+    echo exec('./svnupdate chmod '.$file.' 2>&1',$chmodOutput, $chmodReturn);
+    if ($chmodReturn) echo join("<br />\n",$chmodOutput)."<br />\n";
+    else echo "$file chmoded correctamente <br />\n";
 }
-?>
+echo "<br />\nsalida svn:<br />\n&nbsp;&nbsp;&nbsp;&nbsp";
+echo join("<br />\n&nbsp;&nbsp;&nbsp;&nbsp;",$svnOutput)."<br />\n";
+echo "<br />\nfinal de ejecucion<br />\n";
