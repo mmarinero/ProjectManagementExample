@@ -358,5 +358,35 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
+/*
+|--------------------------------------------------------------------------
+| Native autoload
+|--------------------------------------------------------------------------
+|
+| This autoload function allows to require classes from arbitrary directories
+| within CI folders. This is useful to bypass the CI class loading process 
+| i.e: create objects with the new keyword
+|
+*/
+$config['application_autoload_directories'] = array('models/types');
+$config['system_autoload_directories'] = array();
+
+spl_autoload_register(function ($class){
+    global $config;
+    if(stripos($class, 'CI') === FALSE && stripos($class, 'PEAR') === FALSE) {
+        foreach ($config['application_autoload_directories'] as $folder){
+            if (is_file(APPPATH."{$folder}/{$class}.php")){
+                require_once APPPATH."{$folder}/{$class}.php";
+            }
+        }
+        foreach ($config['system_autoload_directories'] as $folder){
+            if (is_file(BASEPATH."{$folder}/{$class}.php")){
+                require_once BASEPATH."{$folder}/{$class}.php";
+            }
+        }
+    }
+});
+
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
