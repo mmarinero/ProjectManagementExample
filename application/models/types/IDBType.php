@@ -6,7 +6,11 @@
  * @author Mario Marinero <mario.marinero@alumnos.uva.es>
  */
 interface IDBType {
-    
-}
+    public function getCIDBcreateData();
+    public function getCreateSql();
+    public function getDBDefaultValue();
+    public function getDBValue();
+    public function validateValue();
+    public function sanitizeValue();
 
 ?>
