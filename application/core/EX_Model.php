@@ -5,16 +5,32 @@
  *
  * @author Mario Marinero <mario.marinero@alumnos.uva.es>
  */
-abstract class EX_Model extends CI_Model{
+class EX_Model extends CI_Model{
     /**
      * Campos del modelo
      * @var BaseType[]
      */
     protected $fields;
     
+    protected $properties = array('hashed'=>true, 'created'=>true, 'updated'=>true);
+    
+    protected $references;
+    
     protected $id;
     
     protected $tableName;
+    
+    public function getTableName(){
+        return $this->tableName;
+    }
+    
+    public function getFields(){
+        return $this->fields;
+    }
+    
+    public function getProperties(){
+        return $this->properties;
+    }
     
     public function __construct($fields = array()) {
         parent::__construct();

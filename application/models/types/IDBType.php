@@ -15,7 +15,7 @@ interface IDBType {
     
     public function getDBValue();
     
-    public function setDBValue();
+    public function setDBValue($value);
     
     public function validateValue();
     

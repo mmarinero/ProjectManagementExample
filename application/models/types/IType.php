@@ -21,11 +21,6 @@ interface IType {
      */
     public function getRaw();
     
-    /**
-     * @param Valor que se asignara al campo
-     */
-    public function setValue($value);
-    
      /**
      * @param Valor que se asignara al campo
      */

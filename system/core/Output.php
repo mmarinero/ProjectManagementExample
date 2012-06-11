@@ -83,7 +83,7 @@ class CI_Output {
 	 * @var bool
 	 * @access 	protected
 	 */
-	protected $parse_exec_vars	= TRUE;
+	protected $parse_exec_vars	= FALSE;
 
 	/**
 	 * Constructor

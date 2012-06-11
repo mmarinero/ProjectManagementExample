@@ -17,6 +17,16 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         return $this->name;
     }
     
+    public function __construct($config) {
+        if (isset($config['name'])) $this->name = $config['name'];
+        if (isset($config['value'])) $this->value = $config['value'];
+        if (isset($config['validator'])) $this->validator = $config['validator'];
+    }
+    
+    public function getCreateSql(){
+        throw new Exception('Unimplemented');
+    }
+    
     public function setName($name){
         $this->name = $name;
     }

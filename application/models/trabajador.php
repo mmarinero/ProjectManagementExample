@@ -1,18 +1,21 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 
-class Trabajador extends EX_Model // clase todavia no definida para poner los metodos genericos de insertar y recuperar valores
-{
-    private $tablename = 'trabajador';
+class Trabajador extends EX_Model {
+    protected $tableName = 'trabajador';
     
-    //definicion de los campos del modelo para crear la tabla en la base de datos e instanciar cada campo con su tipo
-    //deberia accederse del el metodo que se definira en SP_Model getFields()
-    private $fields = array(
-                    'nombre' => array('type'=>'string', 'DBtype'=>'varchar', 'DBconstraint'=>100, 'key'=> 'unique'),
-                    'id' => array('type'=>'int', 'DBtype'=>'int', 'DBconstraint'=>100, 'key'=> 'primary'),
-                    'password' => array('type'=>'string', 'DBtype'=>'varchar', 'DBtypeConstraint'=>100)
-                );
+    protected $fields = array();
     
+    
+    
+    public function __construct() {
+        parent::__construct();
+        $nombre = new TypeString(array('name'=>'nombre'));
+        $descripcion = new TypeString(array('name'=>'descripcion'));
+        $this->fields = array($nombre, $descripcion);
+    }
+
+
     //Aqui van los metodos especificos para manejar los trabajadores respecto a la base de datos
         
 

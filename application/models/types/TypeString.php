@@ -4,12 +4,10 @@ class TypeString extends BaseType {
     
     //IDBType implementation
     
-    public function getCIDBcreateData(){
-        
-    }
+    private $sizeConstraint = 255;
     
-    public function getCreateSql(){
-        
+    public function getCIDBcreateData(){
+        return array($this->getName()=>array('type'=>'varchar','constraint'=>  $this->sizeConstraint));
     }
     
     //IHTMLType implementation
@@ -30,7 +28,7 @@ class TypeString extends BaseType {
         
     }
     
-    public function setAttr(){
+    public function setAttr($attributes){
         
     }
     
