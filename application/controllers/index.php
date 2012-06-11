@@ -10,7 +10,7 @@ class Index extends CI_Controller
 
 	function index()
 	{
-            redirect('/usuarios/main/');
+            redirect('/auth/index');
 
             //$this->load->view('welcome_message');
 	}

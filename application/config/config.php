@@ -371,8 +371,7 @@ $config['proxy_ips'] = '';
 $config['application_autoload_directories'] = array('models/types');
 $config['system_autoload_directories'] = array();
 
-spl_autoload_register(function ($class){
-    global $config;
+spl_autoload_register(function ($class) use ($config) {
     if(stripos($class, 'CI') === FALSE && stripos($class, 'PEAR') === FALSE) {
         foreach ($config['application_autoload_directories'] as $folder){
             if (is_file(APPPATH."{$folder}/{$class}.php")){
