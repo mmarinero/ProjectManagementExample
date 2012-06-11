@@ -5,19 +5,22 @@
 //el array
 //Para la el acceso a la base de datos se debe usar la clase DB_Forge
 class CrearDB extends CI_Controller
-{
-        private $models = array('Trabajador');
+{ 
+	//check table exists information_schema
+	//exec mysql < script
+	//ICustomType fuera de $fields  los elementos
+	//refs array clase ref
+        private $models = array('Trabajador','PlanFases','PlanIteraccion','TareaPersonal', 'Actividad');
 	function __construct()
 	{
-		parent::__construct();
-                $this->load->dbforge();
+	    parent::__construct();
+            $this->load->dbforge();
 	}
 
-	public function crear()
-	{
-
+	public function crear() {
+	    $this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')"); 
+	    if (!$table_exists) {
+		exec("mysql -u ".$user." -p ".$password." < ".$APPATH."/helpers/schema.sql");
+	    }
 	}
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */
