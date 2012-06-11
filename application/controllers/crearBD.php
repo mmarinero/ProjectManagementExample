@@ -10,28 +10,51 @@ class CrearBD extends CI_Controller
 	//exec mysql < script
 	//ICustomType fuera de $fields  los elementos
 	//refs array clase ref
-	
-    private $models = array('Trabajador','PlanFases','PlanIteraccion','TareaPersonal', 'Actividad');
-	
-	function __construct()
-	{
-	    parent::__construct();
-            $this->load->dbforge();
-	}
+
+    //private $models = array('Trabajador', 'PlanFases', 'PlanIteraccion', 'TareaPersonal', 'Actividad');
+    private $models = array('Trabajador');
+
+    function __construct() {
+        parent::__construct();
+        $this->load->dbforge();
+    }
 
     public function crear() {
-	//$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
-	echo exec("mysql grupo10 --user=".$this->db->username." --password=".$this->db->password." < ".APPPATH."helpers/schema.sql 2>&1");
-	foreach ($this->models as $model){
-	    $this->load->model($model);
-	    foreach($this->$model->getFields() $field) {
-		$ciFields[] = $field->getCIDBSql()
-	    }
-	    $ciFields[] = array('id'=>array('type'=>'int', 'constraint'=>'8'));
-	    $ciFields[] = array('hashId'=>array('type'=>'varchar', 'constraint'=>'32'));
-	    $ciFields[] = array('created'=>array('type'=>'timestamp', 'constraint'=>'8'));
-	    $ciFields[] = array('updated'=>array('type'=>'timestamp', 'constraint'=>'8'));
-	    $this->dbforge->addField($ciFields);
+        //$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
+        echo "creating database <br />\n";
+        $command = "mysql grupo10 --user=" . $this->db->username . " --password=" . 
+                $this->db->password . " < " . APPPATH . "helpers/schema.sql 2>&1";
+        echo $command."<br />\n";
+        exec($command, $mysqlOutput, $mysqlRet);
+        echo join("<br />\n", $mysqlOutput)."<br />\n".$mysqlRet."<br />\n";
+        echo 'scripts executed';
+        log_message('debug', 'scripts executed');
+        foreach ($this->models as $model) {
+            $this->load->model($model);
+            foreach ($this->$model->getFields() as $field) {
+                $this->dbforge->add_field($field->getCIDBcreateData());
+            }
+            $this->dbforge->add_field(array('id' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true)));
+            $model_props = $this->$model->getProperties();
+            //TODO implementar
+            if ($model_props['hashed']) {
+                $this->dbforge->add_field(array('hashId' => array('type' => 'varbinary', 'constraint' => '16')));
+            }
+            if ($model_props['created']) {
+                $this->dbforge->add_field('created timestamp NULL');
+            }
+            if ($model_props['updated']) {
+                $this->dbforge->add_field('updated timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP');
+            }
+            $this->dbforge->add_key('id', true);
+            $this->dbforge->create_table($this->$model->getTableName(), true);
+            if ($model_props['created']) {
+            $this->db->query('CREATE TRIGGER insertCreatedTimestampTrigger before INSERT ON '.
+                    $this->$model->getTableName().
+                    ' FOR EACH ROW SET NEW.created = CURRENT_TIMESTAMP');
+            }
+            log_message('debug', 'model table created :'.$model);
+        }
+    }
 
-	}
 }
