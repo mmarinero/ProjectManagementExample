@@ -129,6 +129,18 @@ class Users extends CI_Model
 	{
 		$data['created'] = date('Y-m-d H:i:s');
 		$data['activated'] = $activated ? 1 : 0;
+		
+		if (! array_key_exists('role_id', $data)) 
+		{
+			if($this->admin_not_present())
+			{
+				$data['role_id'] = 1;
+			}
+			else
+			{
+				$data['role_id'] = $this->default_role();
+			}
+		}
 
 		if ($this->db->insert($this->table_name, $data)) {
 			$user_id = $this->db->insert_id();
@@ -138,6 +150,51 @@ class Users extends CI_Model
 		return NULL;
 	}
 
+	/**
+	 * Check if a user with admin role exists
+	 *
+	 * @return	bool
+	 */
+	 
+	function admin_not_present()
+	{
+		$this->db->where('role_id', 1);
+		if($this->db->count_all_results($this->table_name) == 0)
+		{
+			return TRUE;
+		}
+	}
+
+	/**
+	 * Get the default role for users
+	 *
+	 * @return	int
+	 */
+	 
+	function default_role()
+	{
+		$this->db->where('default', 1);
+		$query = $this->db->get('roles');
+			
+		$row = $query->row_array();
+		return $row['id'];
+	}
+	
+	/**
+	 * Get role for role_id
+	 *
+	 * @return	string
+	 */
+	 
+	function get_role($role_id)
+	{
+		$this->db->where('id', $role_id);
+		$query = $this->db->get('roles');
+			
+		$row = $query->row_array();
+		return $row['role'];
+	}
+	
 	/**
 	 * Activate user if activation key is valid.
 	 * Can be called for not activated users only.

@@ -18,45 +18,60 @@ class CrearBD extends CI_Controller
         parent::__construct();
         $this->load->dbforge();
     }
+    
+    private function addFields($fieldsArray) {
+        foreach ($fieldsArray as $field) {
+            $this->dbforge->add_field($field->getCIDBcreateData());
+        }
+    }
 
-    public function crear() {
+    public function crear($drop = false) {
         //$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
         echo "creating database <br />\n";
         $command = "mysql grupo10 --user=" . $this->db->username . " --password=" . 
                 $this->db->password . " < " . APPPATH . "helpers/schema.sql 2>&1";
-        echo $command."<br />\n";
         exec($command, $mysqlOutput, $mysqlRet);
         echo join("<br />\n", $mysqlOutput)."<br />\n".$mysqlRet."<br />\n";
-        echo 'scripts executed';
+        echo "scripts executed<br />\n";
         log_message('debug', 'scripts executed');
+
         foreach ($this->models as $model) {
             $this->load->model($model);
-            foreach ($this->$model->getFields() as $field) {
-                $this->dbforge->add_field($field->getCIDBcreateData());
+            $this->addFields($this->$model->getFields());
+            $this->addFields($this->$model->getReferences());
+            if (isset($model_props['DBCustomFields']) && $model_props['DBCustomFields']) {
+                $this->addFields($this->$model->getCustomFields());
             }
-            $this->dbforge->add_field(array('id' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true)));
+            
+            $this->dbforge->add_field($this->config->item('idCISqlDefinition'));
             $model_props = $this->$model->getProperties();
             //TODO implementar
-            if ($model_props['hashed']) {
+            if (isset($model_props['hashed']) && $model_props['hashed']) {
                 $this->dbforge->add_field(array('hashId' => array('type' => 'varbinary', 'constraint' => '16')));
             }
-            if ($model_props['created']) {
+            if (isset($model_props['created']) && $model_props['created']) {
                 $this->dbforge->add_field('created timestamp NULL');
             }
-            if ($model_props['updated']) {
+            if (isset($model_props['updated']) && $model_props['updated']) {
                 $this->dbforge->add_field('updated timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP');
             }
-            if ($model_props['ordered']) {
+            if (isset($model_props['ordered']) && $model_props['ordered']) {
 		$this->dbforge->add_field(array('order' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true)));
 	    }
             $this->dbforge->add_key('id', true);
+            if ($drop){
+                $this->db->query("drop table if exists {$this->$model->getTableName()}");
+                log_message('debug', 'table dropped: '.$model);
+                echo 'table dropped: '.$model."<br />\n";;
+            }
             $this->dbforge->create_table($this->$model->getTableName(), true);
             if ($model_props['created']) {
             $this->db->query('CREATE TRIGGER insertCreatedTimestampTrigger before INSERT ON '.
                     $this->$model->getTableName().
                     ' FOR EACH ROW SET NEW.created = CURRENT_TIMESTAMP');
             }
-            log_message('debug', 'model table created :'.$model);
+            log_message('debug', 'model table created: '.$model);
+            echo 'model table created: '.$model."<br />\n";
         }
     }
 

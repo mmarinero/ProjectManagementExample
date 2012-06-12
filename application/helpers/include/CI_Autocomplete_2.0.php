@@ -24,7 +24,7 @@
 * @property CI_Language $language
 * @property CI_Loader $load
 * @property CI_Log $log
-* @property CI_Model $model
+* @property EX_Model $model
 * @property CI_Output $output
 * @property CI_Pagination $pagination
 * @property CI_Parser $parser
@@ -43,6 +43,7 @@
 * @property CI_Xmlrpc $xmlrpc
 * @property CI_Xmlrpcs $xmlrpcs
 * @property CI_Zip $zip
+* @property CI_Smarty $smarty
 */
 
 class CI_Controller {};

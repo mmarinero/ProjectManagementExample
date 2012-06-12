@@ -1,7 +1,7 @@
 <?php
 
-$lang['username']  = "User Name";
-$lang['password']  = "Password";
-$lang['passconf']  = "Confirm";
+$lang['username']  = "Usuario";
+$lang['password']  = "Contraseña";
+$lang['passconf']  = "Confimar";
 $lang['email']     = "Email";
-$lang['state']     = "State";
+$lang['state']     = "Estado";

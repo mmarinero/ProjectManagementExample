@@ -368,6 +368,9 @@ $config['proxy_ips'] = '';
 | i.e: create objects with the new keyword
 |
 */
+
+$config['idCISqlDefinition'] = array('id' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true));
+
 $config['application_autoload_directories'] = array('models/types','helpers/classes');
 $config['system_autoload_directories'] = array();
 
@@ -386,7 +389,7 @@ spl_autoload_register(function ($class) use ($config) {
     }
 });
 
-//force utf-8
+//todo do better
 header("Content-Type: text/html; charset=UTF-8");
 
 /* End of file config.php */

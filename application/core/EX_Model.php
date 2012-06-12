@@ -10,18 +10,24 @@ class EX_Model extends CI_Model{
      * Campos del modelo
      * @var BaseType[]
      */
-    protected $fields;
+    protected $fields = array();
     
-    protected $properties = array('hashed'=>false, 'created'=>false, 'updated'=>false);
+    protected $customFields = array();
     
-    protected $references;
+    protected $properties = array('hashed'=>false, 'created'=>false, 'updated'=>false, 'ordered'=>false, 'DBCustomFields'=>false);
     
-    protected $id;
+    protected $references = array();
     
-    protected $tableName;
+    protected $id = null;
+    
+    protected $tableName = null;
     
     public function getTableName(){
         return $this->tableName;
+    }
+    
+    public function getCustomFields(){
+        return $this->customFields;
     }
     
     public function getFields(){

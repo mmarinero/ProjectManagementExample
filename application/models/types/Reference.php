@@ -1,7 +1,7 @@
 <?php
 
-class Reference {
-    protected $model
+class Reference implements IDBType{
+    protected $model;
 
     protected $referencedModel;
 
@@ -25,21 +25,59 @@ class Reference {
     public function setId($id) {
 	$this->referencedId = $id;
     }
-
-    //TODO id description sql in config.php or something
+    
     //TODO model unique load multiple models
-    getFKConstraint(){
-	foreach ($options as $action =>$result){
-	    $optionsString.= "ON $action $result " 
+    public function getFKConstraint(){
+        $optionsString = '';
+	foreach ($this->options as $action => $result){
+	    $optionsString.= "ON $action $result ";
 	}
-	return "constraint FK FK_{$model->getTableName()}_{$referencedModel->getTableName()} $optionsString ";	
+	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedModel->getTableName()} ".
+               "FOREIGN KEY ({$this->referencedColumn}) REFERENCES ".
+               "{$this->referencedModel->getTableName()} (id) $optionsString";	
+               
     }
 
-    getAlterTableSql() {
-	return "alter table {$this->model->getName()} constraint ForeignKey";	
+    public function getAlterTableSql() {
+        $optionsString = '';
+	foreach ($this->options as $action => $result){
+	    $optionsString.= "ON $action $result ";
+	}
+	return "ALTER TABLE {$this->model->getTableName()} ADD CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedModel->getTableName()} ".
+                "FOREIGN KEY ({$this->referencedColumn}) REFERENCES ";
+                "{$this->referencedModel->getTableName()} (id) $optionsString;";	
     }
 
-    getReferencedModel(){
-	return new $referencedModel::__CLASS__($id);
+    public function getReferencedModel(){
+        $referencedModelClassName = get_class($referencedModel);
+	return new $referencedModelClassName($this->id);
+    }
+
+    public function getCIDBcreateData() {
+        return $this->config->item('idCISqlDefinition');
+    }
+
+    public function getCreateSql() {
+        throw new Exception('Unimplemented');
+    }
+
+    public function getDBDefaultValue() {
+        return null;
+    }
+
+    public function getDBValue() {
+        return $this->referencedId;
+    }
+
+    public function sanitizeValue() {
+        return true;
+    }
+
+    public function setDBValue($value) {
+        $this->referencedId;
+    }
+
+    public function validateValue() {
+        return true;
     }
 }

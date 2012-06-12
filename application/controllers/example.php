@@ -5,7 +5,6 @@ class Example extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-                log_message('debug', 'Here i am');
 		// $this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<p class="error">', '</p>');

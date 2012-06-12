@@ -8,7 +8,9 @@ class Auth extends CI_Controller
 
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
-		$this->load->library('security');
+		if(version_compare(CI_VERSION,'2.1.0','<')){
+			$this->load->library('security');
+		}
 		$this->load->library('tank_auth');
 		$this->lang->load('tank_auth');
 	}
@@ -553,7 +555,7 @@ class Auth extends CI_Controller
 		$options = "<script>var RecaptchaOptions = {theme: 'custom', custom_theme_widget: 'recaptcha_widget'};</script>\n";
 
 		// Get reCAPTCHA JS and non-JS HTML
-		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'));
+		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'),NULL,$this->config->item('enable_ssl_recaptcha', 'tank_auth'));
 
 		return $options.$html;
 	}
