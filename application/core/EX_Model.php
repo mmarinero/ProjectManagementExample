@@ -12,7 +12,7 @@ class EX_Model extends CI_Model{
      */
     protected $fields;
     
-    protected $properties = array('hashed'=>true, 'created'=>true, 'updated'=>true);
+    protected $properties = array('hashed'=>false, 'created'=>false, 'updated'=>false);
     
     protected $references;
     
@@ -26,6 +26,10 @@ class EX_Model extends CI_Model{
     
     public function getFields(){
         return $this->fields;
+    }
+    
+    public function getReferences(){
+        return $this->references;
     }
     
     public function getProperties(){

@@ -46,6 +46,9 @@ class CrearBD extends CI_Controller
             if ($model_props['updated']) {
                 $this->dbforge->add_field('updated timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP');
             }
+            if ($model_props['ordered']) {
+		$this->dbforge->add_field(array('order' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true)));
+	    }
             $this->dbforge->add_key('id', true);
             $this->dbforge->create_table($this->$model->getTableName(), true);
             if ($model_props['created']) {
