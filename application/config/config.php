@@ -376,14 +376,18 @@ $config['system_autoload_directories'] = array();
 
 spl_autoload_register(function ($class) use ($config) {
     if(stripos($class, 'CI') === FALSE && stripos($class, 'PEAR') === FALSE) {
-        foreach ($config['application_autoload_directories'] as $folder){
-            if (is_file(APPPATH."{$folder}/{$class}.php")){
-                require_once APPPATH."{$folder}/{$class}.php";
-            }
-        }
-        foreach ($config['system_autoload_directories'] as $folder){
-            if (is_file(BASEPATH."{$folder}/{$class}.php")){
-                require_once BASEPATH."{$folder}/{$class}.php";
+        $basePaths = array(APPPATH => $config['application_autoload_directories'], BASEPATH => $config['system_autoload_directories']);
+        foreach($basePaths as $basePath => $folders) {
+            foreach ($folders as $folder){
+                $fileUC = "$basePath$folder/$class.php";
+                $fileLC = "$basePath$folder/".strtolower($class).".php";
+                if (is_file($fileUC)){
+                    require_once $fileUC;
+                    break;
+                } else if (is_file($fileLC)){
+                    require_once $fileLC;
+                    break;
+                }
             }
         }
     }

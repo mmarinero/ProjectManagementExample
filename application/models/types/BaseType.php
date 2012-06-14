@@ -56,7 +56,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function isValid() {
-        return $this->validator();
+        return $this->validator($this);
     }
     
     public function validateValue() {
