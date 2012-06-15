@@ -394,7 +394,7 @@ spl_autoload_register(function ($class) use ($config) {
 });
 
 //todo do better
-header("Content-Type: text/html; charset=UTF-8");
+//header("Content-Type: text/html; charset=UTF-8");
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
