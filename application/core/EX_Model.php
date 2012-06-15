@@ -11,6 +11,8 @@ class EX_Model extends CI_Model{
      * @var BaseType[]
      */
     protected $fields = array();
+
+    protected $allFields = array();
     
     protected $customFields = array();
     
@@ -22,6 +24,10 @@ class EX_Model extends CI_Model{
     
     protected $tableName = null;
     
+    protected function change(){
+	$allFields = mergedNamedFields;
+    }
+
     public function getTableName(){
         return $this->tableName;
     }
@@ -30,8 +36,25 @@ class EX_Model extends CI_Model{
         return $this->customFields;
     }
     
+    private function mergedNamedFields(){
+	return EX_Utils::propIndexedArray(merge_array(
+	    $this->customFields, $this->references, $this->fields)
+	    ),"getName";
+    }
+    
+    propIndexedArray(array $objectsArray, $method){
+	objectsArray.current->hasProp $prop
+	foreach($objectArray as $object){
+	   $resultArray[$object->$method()] = $object;
+	}
+    }
+    
     public function getFields(){
-        return $this->fields;
+        return $allFields;
+    }
+    
+    public function getField($name){
+	return $allFields[$name];
     }
     
     public function getReferences(){

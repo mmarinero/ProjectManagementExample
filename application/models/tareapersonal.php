@@ -1,24 +1,14 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+class TareaPersonal extends EX_Model {
 
-class Trabajador extends EX_Model {
-    protected $tableName = 'trabajador';
+    protected $tableName = __CLASS__;
     
     protected $fields = array();
-    
-    
     
     public function __construct() {
         parent::__construct();
         $nombre = new TypeString(array('name'=>'nombre'));
-        $descripcion = new TypeString(array('name'=>'descripcion'));
-        $this->fields = array($nombre, $descripcion);
+        $this->fields = array($nombre);
     }
-
-
-    //Aqui van los metodos especificos para manejar los trabajadores respecto a la base de datos
-        
-
 }
-/* End of file trabajador.php */
-/* Location: ./application/models/trabajador.php */
