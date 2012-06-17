@@ -5,8 +5,7 @@
     </head>
     <body>
         <div id="maincontainer">
-            <div id="wrapparoundfooter">
-            <div id="header"><img src="{"images/header"|base_url}"></div>
+            <div id="header"><img src="{"images/header.png"|base_url}"></div>
             <div id="nav">
                 {block name=nav}{/block}
             </div>

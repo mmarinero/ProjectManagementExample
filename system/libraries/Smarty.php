@@ -65,6 +65,7 @@ class CI_Smarty extends Smarty {
 	 * @return	string
 	 */
 	function view($templateNoExtension, $data = array(), $return = FALSE) {
+                header('Content-Type: text/html; charset=UTF-8');
                 $template = $templateNoExtension.$this->extension;
 		foreach ($data as $key => $val) {
 			$this->assign($key, $val);
