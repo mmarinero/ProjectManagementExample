@@ -7,7 +7,7 @@ class TypeFloat extends BaseType {
     private $sizeConstraint = 10;
     
     public function getCIDBcreateData(){
-        return array($this->getName()=>array('type'=>'double'));
+        return array($this->getName()=>array('type'=>'double', 'null'=>true));
     }
     
 }

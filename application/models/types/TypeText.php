@@ -13,7 +13,7 @@ class TypeText extends BaseType {
     }
     
     public function getCIDBcreateData(){
-        return array($this->getName()=>array('type'=>'text'));
+        return array($this->getName()=>array('type'=>'text', 'null'=>true));
     }
     
 }

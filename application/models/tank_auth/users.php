@@ -173,7 +173,7 @@ class Users extends CI_Model
 	 
 	function default_role()
 	{
-		$this->db->where('default', 1);
+		$this->db->where('`default`', 1);
 		$query = $this->db->get('roles');
 			
 		$row = $query->row_array();

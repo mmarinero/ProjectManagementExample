@@ -7,7 +7,7 @@ class TypeNumber extends BaseType {
     private $sizeConstraint = 12;
     
     public function getCIDBcreateData(){
-        return array($this->getName()=>array('type'=>'bigint','constraint'=>  $this->sizeConstraint));
+        return array($this->getName()=>array('type'=>'bigint','constraint'=>  $this->sizeConstraint, 'null'=>true));
     }
     
 }

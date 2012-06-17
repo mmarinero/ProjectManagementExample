@@ -17,8 +17,8 @@ class Auth extends CI_Controller
 
 	function index()
 	{
-		if ($message = $this->session->flashdata('message')) {
-			$this->load->view('auth/general_message', array('message' => $message));
+		if ($this->tank_auth->is_logged_in()) {									// logged in
+			redirect('/dashboard');
 		} else {
 			redirect('/auth/login/');
 		}
@@ -33,7 +33,6 @@ class Auth extends CI_Controller
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
 			redirect('/dashboard');
-
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
 

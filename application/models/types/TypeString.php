@@ -13,7 +13,7 @@ class TypeString extends BaseType {
     }
     
     public function getCIDBcreateData(){
-        return array($this->getName()=>array('type'=>'varchar','constraint'=>  $this->sizeConstraint));
+        return array($this->getName()=>array('type'=>'varchar','constraint'=>  $this->sizeConstraint, 'null'=>true));
     }
     
 }

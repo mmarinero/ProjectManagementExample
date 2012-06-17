@@ -5,8 +5,6 @@ class Reference implements IDBType , IType{
 
     protected $name;
     
-    protected $value;
-    
     protected $referencedTableName;
 
     protected $referencedId;
@@ -21,14 +19,6 @@ class Reference implements IDBType , IType{
 	$this->referencedTableName = $referencedTableName;
         $this->name = $name;
 	$this->options = $options;
-    }
-    
-    public function getId() {
-	return $this->referencedId;
-    }
-
-    public function setId($id) {
-	$this->referencedId = $id;
     }
     
     private function genericGetFKConstraint(){
@@ -67,6 +57,7 @@ class Reference implements IDBType , IType{
     }
 
     public function getDBValue() {
+        echo $this->referencedId;
         return $this->referencedId;
     }
 
@@ -75,7 +66,7 @@ class Reference implements IDBType , IType{
     }
 
     public function setDBValue($value) {
-        $this->referencedId;
+        $this->referencedId = $value;
     }
 
     public function validateValue() {
@@ -91,7 +82,7 @@ class Reference implements IDBType , IType{
     }
     
     public function setValue($value) {
-        $this->value = $value;
+        $this->referencedId = $value;
     }
 
     public function getName() {

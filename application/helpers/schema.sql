@@ -68,14 +68,13 @@ CREATE TABLE IF NOT EXISTS `roles` (
 
 INSERT INTO `roles` (`id`, `role`, `default`) VALUES
 (1, 'admin', 0),
-(2, 'Jefe de proyecto', 0),
-(3, 'Desarrollador', 1),
-(4, 'Analista', 1),
-(5, 'Diseñador', 1),
-(6, 'Analista-programador', 1),
-(7, 'Responsable equipo de pruebas', 1),
-(8, 'Programador', 1),
-(9, 'Probador', 1);
+(2, 'Jefe de proyecto', 1),
+(4, 'Analista', 0),
+(5, 'Diseñador', 0),
+(6, 'Analista-programador', 0),
+(7, 'Responsable equipo de pruebas', 0),
+(8, 'Programador', 0),
+(9, 'Probador', 0);
 
 
 -- --------------------------------------------------------

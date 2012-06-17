@@ -8,10 +8,9 @@ class Actividad extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $this->fields[] = new TypeString('nombre');
-        $this->fields[] = new TypeText('descripcion');
-        $this->fields[] = new TypeString('rol');
-        $this->references[] = new Reference($this, 'PlanIteracion', 'PlanIteracion',array('delete'=>'cascade','update'=>'cascade'));
-        $this->change();
+        $this->fields['nombre'] = new TypeString('nombre');
+        $this->fields['descripcion'] = new TypeText('descripcion');
+        $this->fields['rol'] = new TypeString('rol');
+        $this->references['PlanIteracion'] = new Reference($this, 'PlanIteracion', 'PlanIteracion',array('delete'=>'cascade','update'=>'cascade'));
     }
 }

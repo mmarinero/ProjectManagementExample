@@ -11,8 +11,6 @@ class EX_Model extends CI_Model{
      * @var BaseType[]
      */
     protected $fields = array();
-
-    protected $allFields = array();
     
     protected $customFields = array();
     
@@ -25,7 +23,10 @@ class EX_Model extends CI_Model{
     protected $tableName = null;
     
     protected function change(){
-	$this->allFields = $this->mergedNamedFields();
+    }
+    
+    public function getId(){
+	return $this->id;
     }
 
     public function getTableName(){
@@ -36,22 +37,18 @@ class EX_Model extends CI_Model{
         return $this->customFields;
     }
     
-    private function mergedNamedFields(){
-	return propIndexedArray(array_merge(
-	    $this->customFields, $this->references, $this->fields)
-	    ,"getName");
-    }
-    
     public function getFields(){
         return $this->fields;
     }
     
     public function getAllFields(){
-        return $this->allFields;
+        return array_merge($this->customFields, $this->references, $this->fields);
     }
     
     public function getField($name){
-	return $this->allFields[$name];
+        if (isset($this->fields[$name])) return $this->fields[$name];
+        if (isset($this->references[$name])) return $this->references[$name];
+        if (isset($this->customFields[$name])) return $this->customFields[$name];
     }
     
     public function getReferences(){
@@ -73,9 +70,23 @@ class EX_Model extends CI_Model{
         }
         return true;
     }
+    public function setValues(array $values){
+        foreach($values as $name=>$value) {
+            $this->getField($name)->setDBValue($value);
+        }
+    }
     
-    public function DBInsert(){
-        $this->db->insert($this->tableName, $this->fields);
+    private function varsToDB(){
+        return array_map(
+                function($type){
+                    return $type->getDBValue();
+                },
+                array_merge($this->fields, $this->references));
+    }
+    
+    public function DBInsert(array $values=array()){
+        $this->setValues($values);
+        $this->db->insert($this->tableName, $this->varsToDB());
         $this->id = $this->db->insert_id();
     }
     
@@ -84,7 +95,7 @@ class EX_Model extends CI_Model{
     }
     
     public function DBUpdate(){
-        $this->db->update($this->tableName, $this->fields, array('id' => $this->id));
+        $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
     }
 }
 

@@ -74,10 +74,15 @@ body {
     margin: 0px 5px;
 }
 #nav a:hover, #nav a:active {
-    
-
-}
-#nav a:hover {
     background:#e7e7ec;
     color: black;
+}
+#usernameLogout{
+    float: right;
+    color: white;
+}
+#logout {
+    float: right;
+    padding: 2px !important;
+    margin-top: -10px !important;
 }

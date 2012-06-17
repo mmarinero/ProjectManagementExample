@@ -8,9 +8,8 @@ class PlanIteracion extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $this->fields[] = new TypeString('nombre');
-        $this->fields[] = new TypeText('descripcion');
-        $this->references[] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
-        $this->change();
+        $this->fields['nombre'] = new TypeString('nombre');
+        $this->fields['descripcion'] = new TypeText('descripcion');
+        $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
     }
 }

@@ -8,8 +8,8 @@ class TrabajadoresProyecto extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $this->references[] = new Reference($this, 'Proyecto', 'Proyecto');
-        $this->references[] = new Reference($this, 'Trabajador', 'Trabajador');
+        $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto');
+        $this->references['Trabajador'] = new Reference($this, 'Trabajador', 'Trabajador');
         $this->change();
     }
 }

@@ -9,7 +9,7 @@
 class EX_Loader extends CI_Loader{
     public function view($view, $vars = array(), $return = FALSE) {
         header('Content-Type: text/html; charset=UTF-8');
-        parent::view($view, $vars, $return);
+        return parent::view($view, $vars, $return);
     }
 }
 

@@ -17,6 +17,12 @@ class CrearBD extends CI_Controller
     function __construct() {
         parent::__construct();
         $this->load->dbforge();
+        $this->load->library('tank_auth');
+        if ($this->tank_auth->get_role_name()==='admin') {									// logged in
+            show_error('', 403);
+            exit();
+	}
+        $this->smarty->assign('this', $this);
     }
     
     private function addFields($fieldsArray) {
@@ -25,7 +31,7 @@ class CrearBD extends CI_Controller
         }
     }
 
-    public function crear($drop = false) {
+    public function crear($drop = true) {
         //$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
         $scriptOut =  "creating database <br />\n";
         $command = "mysql grupo10 --user=" . $this->db->username . " --password=" . 
@@ -81,9 +87,49 @@ class CrearBD extends CI_Controller
             }
             log_message('debug', 'model table created: '.$model);
             $scriptOut .= 'model table created: '.$model."<br />\n";
-            $this->smarty->assign("scriptOut", $scriptOut);
-            $this->smarty->view('crearBD');
         }
+        $this->smarty->assign("scriptOut", $scriptOut);
+        $this->smarty->view('crearBD');
+        $this->populateDB();
     }
-
+    
+    private function populateDB(){
+        $users = array("Administrador", 
+            "Jefep prueba", 
+            'Analista prueba',
+            'Diseñador prueba',
+            'Analista-programador prueba', 
+            'Responsable pruebas prueba',
+            'Programador prueba',
+            'Probador prueba');
+        
+        foreach($users as $user) {
+            $this->tank_auth->create_user(
+                $user,
+                "$user@setepros.es",
+                '1234',
+                $this->config->item('email_activation', 'tank_auth'));
+        }
+        
+        $proyecto = new Proyecto();
+        $proyecto->DBInsert(array(
+            'nombre'=>'Proyecto prueba',
+            'descripcion'=>'Proyecto de pruebas creado automaticamente',
+            'IteracionesInicio'=>1,
+            'IteracionesElaboración'=>2,
+            'IteracionesConstrución'=>2,
+            'IteracionesTransición'=>1));
+        $planIteracion = new PlanIteracion();
+        $planIteracion->DBInsert(array(
+            'nombre'=>'Iteración prueba',
+            'descripcion'=>'Iteración de pruebas creado automaticamente',
+            'Proyecto'=>$proyecto->getId()
+            ));
+        $Actividad = new Actividad();
+        $Actividad->DBInsert(array(
+            'nombre'=>'Actividad prueba',
+            'descripcion'=>'Actividad de pruebas creado automaticamente',
+            'PlanIteracion'=>$planIteracion->getId()
+            ));
+    }
 }

@@ -44,6 +44,7 @@
 * @property CI_Xmlrpcs $xmlrpcs
 * @property CI_Zip $zip
 * @property CI_Smarty $smarty
+* @property Tank_auth $tank_auth
 */
 
 class CI_Controller {};
@@ -54,6 +55,7 @@ class CI_Controller {};
 * @property CI_Config $config
 * @property CI_Loader $load
 * @property CI_Session $session
+* @property CI_Smarty $smarty
 */
 
 class CI_Model {};

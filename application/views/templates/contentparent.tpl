@@ -18,7 +18,24 @@
 <ul>
     <li><a class="navButton" href="{"dashboard"|site_url}">Inicio</a></li>
     <li><a class="navButton" href="{"informes"|site_url}">Informes</a></li>
+    <li>
+        <span id="usernameLogout">
+            {if isset($this->tank_auth)}
+                {if $this->tank_auth->get_username()}
+                    {$this->tank_auth->get_username()}
+                {else}
+                    No ha iniciado sesión
+                {/if}
+            {else}
+                No ha iniciado sesión
+            {/if}
+            <a id="logout" href="{"auth/logout"|site_url}">
+                <img width="32" height="32" src="{"images/icons/logout.png"|base_url}">
+            </a>
+        </span>
+    </li>
 </ul>
+    
 {/block}
 {block name=sidebar}
     lateral
