@@ -9,6 +9,12 @@ class Proyecto extends EX_Model {
     public function __construct() {
         parent::__construct();
         $nombre = new TypeString(array('name'=>'nombre'));
-        $this->fields = array($nombre);
+        $descripcion = new TypeText(array('name'=>'descripcion'));
+        $this->fields = array($nombre, $descripcion);
+        $fases = array('Inicio', 'Elaboración', 'Construción', 'Transición');
+        foreach ($fases as $fase){
+            $this->fields[] = new TypeInt("Iteraciones{$fase}");
+        }
+        $this->change();
     }
 }

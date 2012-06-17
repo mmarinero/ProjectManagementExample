@@ -1,20 +1,25 @@
 <?php
 
-class Reference implements IDBType{
+class Reference implements IDBType , IType{
     protected $model;
 
-    protected $referencedModel;
-
-    protected $referencedColumn;
+    protected $name;
+    
+    protected $value;
+    
+    protected $referencedTableName;
 
     protected $referencedId;
 
     protected $options;
+    
+    protected $ci;
 
-    public function __construct($model, $referencedModel, $referencedColumn, $options){
+    public function __construct($model, $referencedTableName, $name, $options = array()){
+        $this->ci = get_instance();
 	$this->model = $model;
-	$this->referencedModel = $referencedModel;
-	$this->referencedColumn = $referencedColumn;
+	$this->referencedTableName = $referencedTableName;
+        $this->name = $name;
 	$this->options = $options;
     }
     
@@ -26,26 +31,22 @@ class Reference implements IDBType{
 	$this->referencedId = $id;
     }
     
-    //TODO model unique load multiple models
-    public function getFKConstraint(){
+    private function genericGetFKConstraint(){
         $optionsString = '';
 	foreach ($this->options as $action => $result){
 	    $optionsString.= "ON $action $result ";
 	}
-	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedModel->getTableName()} ".
-               "FOREIGN KEY ({$this->referencedColumn}) REFERENCES ".
-               "{$this->referencedModel->getTableName()} (id) $optionsString";	
-               
+	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedTableName} ".
+               "FOREIGN KEY ({$this->name}) REFERENCES ".
+               "{$this->referencedTableName}(id) $optionsString";	
+    }
+    
+    public function getFKConstraint(){
+        return $this->genericGetFKConstraint();  
     }
 
-    public function getAlterTableSql() {
-        $optionsString = '';
-	foreach ($this->options as $action => $result){
-	    $optionsString.= "ON $action $result ";
-	}
-	return "ALTER TABLE {$this->model->getTableName()} ADD CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedModel->getTableName()} ".
-                "FOREIGN KEY ({$this->referencedColumn}) REFERENCES ";
-                "{$this->referencedModel->getTableName()} (id) $optionsString;";	
+    public function getAlterTableFKConstraint() {
+	return "ALTER TABLE {$this->model->getTableName()} ADD ".$this->genericGetFKConstraint();	
     }
 
     public function getReferencedModel(){
@@ -54,7 +55,7 @@ class Reference implements IDBType{
     }
 
     public function getCIDBcreateData() {
-        return $this->config->item('idCISqlDefinition');
+        return array($this->name => $this->ci->config->item('referenceCISqlDefinition'));
     }
 
     public function getCreateSql() {
@@ -80,4 +81,21 @@ class Reference implements IDBType{
     public function validateValue() {
         return true;
     }
+
+    public function setName($name){
+        $this->name = $name;
+    }
+    
+    public function getRaw(){
+        return $this->value;
+    }
+    
+    public function setValue($value) {
+        $this->value = $value;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+    
 }

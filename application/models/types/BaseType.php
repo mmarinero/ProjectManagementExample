@@ -13,14 +13,21 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     protected $validator;
     
+    protected $attributes = array();
+    
     function getName() {
         return $this->name;
     }
     
     public function __construct($config) {
-        if (isset($config['name'])) $this->name = $config['name'];
-        if (isset($config['value'])) $this->value = $config['value'];
-        if (isset($config['validator'])) $this->validator = $config['validator'];
+        if (gettype($config) === 'string') {
+            $this->name = $config;
+        } else {
+            if (isset($config['name'])) $this->name = $config['name'];
+            if (isset($config['value'])) $this->value = $config['value'];
+            if (isset($config['validator'])) $this->validator = $config['validator'];
+            if (isset($config['attributes'])) $this->attributes = $config['attributes'];
+        }
     }
     
     public function getCreateSql(){
@@ -65,6 +72,35 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     public function sanitizeValue(){
         return true;
+    }
+    
+    public function getInputHtml($newAttributes = null){
+        
+        if ($newAttributes !== null) $attributes = $newAttributes;
+        else $attributes = $this->attributes;
+        return '<input type="text" '.  HtmlAttributesFromArray($attributes).'.name="'.$this->getName().'" value="'.$this->value.'"></input>';
+    }
+    
+    public function getHtml($newAttributes = null){
+        $attributes = $this->selectAttributes($newAttributes);
+        return '<span '.HtmlAttributesFromArray($attributes).">$this->value</span>";
+    }
+    
+    protected function selectAttributes($newAttributes){
+        if ($newAttributes !== null) return $newAttributes;
+        else return $this->attributes;
+    }
+    
+    public function getAttrDescription(){
+        
+    }
+    
+    public function getDefaultAttr(){
+        
+    }
+    
+    public function setAttr($attributes){
+        $this->attributes = $attributes;
     }
 }
 

@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class PlanFases extends EX_Model {
+class TrabajadoresProyecto extends EX_Model {
 
     protected $tableName = __CLASS__;
     
@@ -8,7 +8,8 @@ class PlanFases extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $nombre = new TypeString(array('name'=>'nombre'));
-        $this->fields = array($nombre);
+        $this->references[] = new Reference($this, 'Proyecto', 'Proyecto');
+        $this->references[] = new Reference($this, 'Trabajador', 'Trabajador');
+        $this->change();
     }
 }

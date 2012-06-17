@@ -1,24 +1,41 @@
+html {
+    min-height: 100%;
+}
 
 #maincontainer {
     width:980px;
     margin:0 auto;
-    background:#ababd7;
+    margin-top: 10px;
+    background:#658db5;
 }
+
 body {
-    background:#e7e7ec
+    min-height: 100%;
+    background:#e7e7ec;
+    background-repeat: no-repeat;
+    /* fallback */
+    background-color: #e7e7ec;
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#3c3c41), to(#e7e7ec));
+    /* Safari 5.1, Chrome 10+ */
+    background: -webkit-linear-gradient(top, #e7e7ec, #3c3c41);
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, #e7e7ec, #3c3c41);
+    /* IE 10 */
+    background: -ms-linear-gradient(top, #e7e7ec, #3c3c41);
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #e7e7ec, #3c3c41);
+    background: linear-gradient(top, #e7e7ec, #3c3c41);
 }
 #header {
-    padding:5px 10px;
-    background:#e7e7ec;
-}
-#nav {
-    padding:5px 10px;
+    padding:10px;
     background:#3c3c41;
 }
-#main {
+#content {
     padding:10px;
     float:right;
     width:710px;
+    min-height: 300px;
     background:#9c9;
     background:white;
 }
@@ -27,20 +44,40 @@ body {
     padding:10px;
     width:230px;
     background:#c9c;
-    background:#ababd7;
+    background:#658db5;
 }
 #footer {
     padding:5px 10px;
+    color: white;
     clear:both;
     background:#3c3c41;
 }
+
+#nav {
+    padding:5px 10px 15px;
+    background:#3c3c41;
+}
 #nav ul {
-    margin:0;
-    padding:0;
     list-style:none;
+    padding: 0 0 0 240px;
+    margin: 0;
 }
 #nav li {
     display:inline;
-    margin:0;
-    padding:0;
+}
+#nav a, #nav a:visited {
+    border-radius: 5px;
+    background:#58585f;
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0px 5px;
+}
+#nav a:hover, #nav a:active {
+    
+
+}
+#nav a:hover {
+    background:#e7e7ec;
+    color: black;
 }

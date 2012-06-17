@@ -370,8 +370,9 @@ $config['proxy_ips'] = '';
 */
 
 $config['idCISqlDefinition'] = array('id' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true));
+$config['referenceCISqlDefinition'] = array('type' => 'int', 'constraint' => '8');
 
-$config['application_autoload_directories'] = array('models/types','helpers/classes');
+$config['application_autoload_directories'] = array('models','models/types','helpers/classes');
 $config['system_autoload_directories'] = array();
 
 spl_autoload_register(function ($class) use ($config) {

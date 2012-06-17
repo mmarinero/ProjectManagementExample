@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Planiteracion extends EX_Model {
+class PlanIteracion extends EX_Model {
 
     protected $tableName = __CLASS__;
     
@@ -8,7 +8,9 @@ class Planiteracion extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $nombre = new TypeString(array('name'=>'nombre'));
-        $this->fields = array($nombre);
+        $this->fields[] = new TypeString('nombre');
+        $this->fields[] = new TypeText('descripcion');
+        $this->references[] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
+        $this->change();
     }
 }

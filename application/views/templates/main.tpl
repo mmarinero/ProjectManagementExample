@@ -5,18 +5,19 @@
     </head>
     <body>
         <div id="maincontainer">
+            <div id="wrapparoundfooter">
             <div id="header"><img src="{"images/header"|base_url}"></div>
             <div id="nav">
                 {block name=nav}{/block}
             </div>
-            <div id="main">
+            <div id="content">
                 {block name=content}{/block}
             </div>
             <div id="sidebar">
                 {block name=sidebar}{/block}
             </div>
             <div id="footer">
-                foot
+                <span>Planificación y gestión de procesos 2012. Setepros</span><span style="float:right">Grupo 10: Mario Marinero Domingo</span>
             </div>
         </div>
     </body>

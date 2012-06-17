@@ -12,7 +12,7 @@ class CrearBD extends CI_Controller
 	//refs array clase ref
 
     //private $models = array('Trabajador', 'PlanFases', 'PlanIteraccion', 'TareaPersonal', 'Actividad');
-    private $models = array('Trabajador');
+    private $models = array('Proyecto', 'PlanIteracion','Actividad', 'Trabajador', 'TareaPersonal', 'TrabajadoresProyecto');
 
     function __construct() {
         parent::__construct();
@@ -27,23 +27,30 @@ class CrearBD extends CI_Controller
 
     public function crear($drop = false) {
         //$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
-        echo "creating database <br />\n";
+        $scriptOut =  "creating database <br />\n";
         $command = "mysql grupo10 --user=" . $this->db->username . " --password=" . 
                 $this->db->password . " < " . APPPATH . "helpers/schema.sql 2>&1";
         exec($command, $mysqlOutput, $mysqlRet);
-        echo join("<br />\n", $mysqlOutput)."<br />\n".$mysqlRet."<br />\n";
-        echo "scripts executed<br />\n";
+        $scriptOut .= join("<br />\n", $mysqlOutput)."<br />\n".$mysqlRet."<br />\n";
+        $scriptOut .= "scripts executed<br />\n";
         log_message('debug', 'scripts executed');
+        
+        if ($drop){
+            foreach (array_reverse($this->models) as $model){
+                $this->load->model($model);
+                $this->db->query("drop table if exists {$this->$model->getTableName()}");
+                log_message('debug', 'table dropped: '.$model);
+                $scriptOut .= 'table dropped: '.$model."<br />\n";;
+            }
+        }
 
         foreach ($this->models as $model) {
-            $this->load->model($model);
+            $this->dbforge->add_field($this->config->item('idCISqlDefinition'));
             $this->addFields($this->$model->getFields());
             $this->addFields($this->$model->getReferences());
             if (isset($model_props['DBCustomFields']) && $model_props['DBCustomFields']) {
                 $this->addFields($this->$model->getCustomFields());
             }
-            
-            $this->dbforge->add_field($this->config->item('idCISqlDefinition'));
             $model_props = $this->$model->getProperties();
             //TODO implementar
             if (isset($model_props['hashed']) && $model_props['hashed']) {
@@ -59,19 +66,23 @@ class CrearBD extends CI_Controller
 		$this->dbforge->add_field(array('order' => array('type' => 'int', 'constraint' => '8', 'auto_increment'=>true)));
 	    }
             $this->dbforge->add_key('id', true);
-            if ($drop){
-                $this->db->query("drop table if exists {$this->$model->getTableName()}");
-                log_message('debug', 'table dropped: '.$model);
-                echo 'table dropped: '.$model."<br />\n";;
-            }
+            
+            //crear tabla 
             $this->dbforge->create_table($this->$model->getTableName(), true);
+            //anadir constraints foreign keys
+            foreach ($this->$model->getReferences() as $reference){
+                $this->db->query($reference->getAlterTableFKConstraint());
+            }
+            //Crear trigger (no soportado en jair)
             if ($model_props['created']) {
             $this->db->query('CREATE TRIGGER insertCreatedTimestampTrigger before INSERT ON '.
                     $this->$model->getTableName().
                     ' FOR EACH ROW SET NEW.created = CURRENT_TIMESTAMP');
             }
             log_message('debug', 'model table created: '.$model);
-            echo 'model table created: '.$model."<br />\n";
+            $scriptOut .= 'model table created: '.$model."<br />\n";
+            $this->smarty->assign("scriptOut", $scriptOut);
+            $this->smarty->view('crearBD');
         }
     }
 

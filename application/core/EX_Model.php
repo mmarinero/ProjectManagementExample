@@ -25,7 +25,7 @@ class EX_Model extends CI_Model{
     protected $tableName = null;
     
     protected function change(){
-	$allFields = mergedNamedFields;
+	$this->allFields = $this->mergedNamedFields();
     }
 
     public function getTableName(){
@@ -37,24 +37,21 @@ class EX_Model extends CI_Model{
     }
     
     private function mergedNamedFields(){
-	return EX_Utils::propIndexedArray(merge_array(
+	return propIndexedArray(array_merge(
 	    $this->customFields, $this->references, $this->fields)
-	    ),"getName";
-    }
-    
-    propIndexedArray(array $objectsArray, $method){
-	objectsArray.current->hasProp $prop
-	foreach($objectArray as $object){
-	   $resultArray[$object->$method()] = $object;
-	}
+	    ,"getName");
     }
     
     public function getFields(){
-        return $allFields;
+        return $this->fields;
+    }
+    
+    public function getAllFields(){
+        return $this->allFields;
     }
     
     public function getField($name){
-	return $allFields[$name];
+	return $this->allFields[$name];
     }
     
     public function getReferences(){
