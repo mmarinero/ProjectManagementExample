@@ -1,27 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta
-	http-equiv="content-type"
-	content="text/html; charset=utf-8"
-/>
-<link
-	rel="shortcut icon"
-	type="image/ico"
-	href="<?php echo base_url('/images/favicon.ico');?>"
-/>
-<title>Setepros Login</title>
-<link
-	href="<?php echo base_url('css/styles.css');?>"
-	type="text/css"
-	media="screen"
-	rel="stylesheet"
-/>
-</head>
-<body id="login">
-	<div id="top_margin"></div>
-	<div id="wrapper">
-		<div id="content">
 			<div id="header">
 				<h1>
 					<a href=""><img
@@ -89,7 +65,3 @@
 				</fieldset>
 				</form>
 		
-		</div>
-	</div>
-</body>
-</html>

@@ -94,8 +94,23 @@ class EX_Model extends CI_Model{
         $this->db->delete('mytable', array('id' => $this->id));
     }
     
-    public function DBUpdate(){
+    public function DBUpdate($values){
+        $this->setValues($values);
         $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
+    }
+    public function loadThis($id) {
+        $values = $this->db->get($this->tableName, $id);
+        $this->setValues($values);
+    }
+
+    public function loadArray($where) {
+        $valuesArray = $this->db->get($this->tableName, $id);
+	foreach($valuesArray as $values){
+	    $newModel = new static(); 
+	    $newModel->setValues($values);
+	    $models[$newModel->id] = $newModel;
+	}
+	return $models;
     }
 }
 

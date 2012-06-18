@@ -16,8 +16,8 @@
 {/block}
 {block name=nav}
 <ul>
-    <li><a class="navButton" href="{"dashboard"|site_url}">Inicio</a></li>
-    <li><a class="navButton" href="{"informes"|site_url}">Informes</a></li>
+    <li><a class="navButton" href="{"dashboard"|site_url}{if isset($idProyecto)}{$idProyectoo}{/if}">Inicio</a></li>
+    <li><a class="navButton" href="{"informes"|site_url}{if isset($idProyecto)}{$idProyectoo}{/if}">Informes</a></li>
     <li>
         <span id="usernameLogout">
             {if isset($this->tank_auth)}
@@ -38,5 +38,11 @@
     
 {/block}
 {block name=sidebar}
-    lateral
+    <ul>
+	{foreach from=$proyectos item=proyecto}
+	    <li>
+		<a class=sidebarButton" href="{"dashboard"|site_url}/{$proyecto->getId()}">{$proyecto->getField('Nombre')}</a>
+	    </li>
+	{/foreach}
+    </ul>
 {/block}
