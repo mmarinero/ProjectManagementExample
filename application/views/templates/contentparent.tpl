@@ -18,22 +18,22 @@
 <ul>
     <li><a class="navButton" href="{"dashboard"|site_url}{if isset($idProyecto)}{$idProyectoo}{/if}">Inicio</a></li>
     <li><a class="navButton" href="{"informes"|site_url}{if isset($idProyecto)}{$idProyectoo}{/if}">Informes</a></li>
-    <li>
-        <span id="usernameLogout">
-            {if isset($this->tank_auth)}
-                {if $this->tank_auth->get_username()}
-                    {$this->tank_auth->get_username()}
-                {else}
-                    No ha iniciado sesión
-                {/if}
+    <div id="usernameLogout">
+        <span id="usernameWelcome">
+        {if isset($this->tank_auth)}
+            {if $this->tank_auth->get_username()}
+                {$this->tank_auth->get_username()}
             {else}
                 No ha iniciado sesión
             {/if}
-            <a id="logout" href="{"auth/logout"|site_url}">
-                <img width="32" height="32" src="{"images/icons/logout.png"|base_url}">
-            </a>
+        {else}
+            No ha iniciado sesión
+        {/if}
         </span>
-    </li>
+        <a class="navButton" id="logout" href="{"auth/logout"|site_url}">
+            <img id="imgLogout" width="32" height="32" src="{"images/icons/logout.png"|base_url}">
+        </a>
+    </div>
 </ul>
     
 {/block}

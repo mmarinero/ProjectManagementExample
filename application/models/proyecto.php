@@ -20,14 +20,15 @@ class Proyecto extends EX_Model {
 	parent::DBInsert($values);
 	if ($createPlanes) {
 	    foreach($this->fases as $fase) {
-	    for($i = 0;$i<$this->fields["Iteraciones$fase"];$i++) {
-	    $PlanIteracion = new PlanIteracion();	
-	    $PlanIteracion->DBInsert(array(
-		'nombre'=>"$fase ".$i + 1,
-		'descripcion'=>'Iteración fase '.$fase,
-		'Proyecto'=>$this->getId()
-            ));
-	}
+                for($i = 0;$i<$this->fields["Iteraciones$fase"];$i++) {
+                    $PlanIteracion = new PlanIteracion();	
+                    $PlanIteracion->DBInsert(array(
+                        'nombre'=>"$fase ".$i + 1,
+                        'descripcion'=>'Iteración fase '.$fase,
+                        'Proyecto'=>$this->getId()
+                    ));
+                }
+            }
 	}
     }
 }

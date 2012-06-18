@@ -93,7 +93,7 @@ class Auth extends CI_Controller
 					$data['captcha_html'] = $this->_create_captcha();
 				}
 			}
-			$smartyData = array('content' => $this->load->view('auth/login_form', $data,true);
+			$smartyData = array('content' => $this->load->view('auth/login_form', $data,true));
 			$this->smarty->view('tank_auth_container', $smartyData);
 		}
 	}
@@ -191,7 +191,7 @@ class Auth extends CI_Controller
 			$data['captcha_registration'] = $captcha_registration;
 			$data['use_recaptcha'] = $use_recaptcha;
 			$this->load->view('auth/register_form', $data);
-			$smartyData = array('content' => $this->load->view('auth/register_form', $data,true);
+			$smartyData = array('content' => $this->load->view('auth/register_form', $data,true));
 			$this->smarty->view('tank_auth_container', $smartyData);
 		}
 	}

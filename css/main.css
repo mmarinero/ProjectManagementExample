@@ -6,7 +6,7 @@ html {
     width:980px;
     margin:0 auto;
     margin-top: 10px;
-    background:#658db5;
+    background:white;
 }
 
 body {
@@ -28,10 +28,11 @@ body {
     background: linear-gradient(top, #e7e7ec, #3c3c41);
 }
 #header {
-    padding:10px;
+    padding:10px 10px 5px 10px;
     background:#3c3c41;
 }
 #content {
+    height: 100%;
     padding:10px;
     float:right;
     width:710px;
@@ -54,18 +55,18 @@ body {
 }
 
 #nav {
-    padding:5px 10px 15px;
+    padding:0px 10px;
     background:#3c3c41;
 }
 #nav ul {
     list-style:none;
-    padding: 0 0 0 240px;
+    padding: 10px 0 18px 240px;
     margin: 0;
 }
 #nav li {
     display:inline;
 }
-#nav a, #nav a:visited {
+#nav a.navButton, #nav a.navButton:visited {
     border-radius: 5px;
     background:#58585f;
     text-decoration: none;
@@ -73,16 +74,27 @@ body {
     padding: 10px 20px;
     margin: 0px 5px;
 }
-#nav a:hover, #nav a:active {
+#nav a.navButton:hover, #nav a.navButton:active {
     background:#e7e7ec;
     color: black;
 }
 #usernameLogout{
     float: right;
     color: white;
+    margin-top: -7px;
+    
 }
 #logout {
+    margin: -5px 5px 0;
     float: right;
     padding: 2px !important;
-    margin-top: -10px !important;
+}
+
+imgLogout {
+    float: right;
+}
+
+#usernameWelcome{
+    padding-top: 7px;
+    float: left;
 }
