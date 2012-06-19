@@ -10,7 +10,9 @@ class Trabajador extends EX_Model {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre'));
         $this->fields['rol'] = new TypeString(array('name'=>'rol'));
         $this->fields['descripcion'] = new TypeString(array('name'=>'descripcion'));
-        $this->change();
+	$this->references['users'] = new Reference($this, 'users', 'Users');
+	$usersReference = $this->references['users']; 
+	$usersReference->setCIcreateColumnArray();
     }
         
 }

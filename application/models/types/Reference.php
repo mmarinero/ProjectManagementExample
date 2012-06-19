@@ -13,11 +13,13 @@ class Reference implements IDBType , IType{
     
     protected $ci;
 
-    public function __construct($model, $referencedTableName, $name, $options = array()){
+    protected $CICreateColumnArray = ci->config->item('referenceCISqlDefinition');
+
+    public function __construct($model, $referencedTableName, $name=null, $options = array()){
         $this->ci = get_instance();
 	$this->model = $model;
 	$this->referencedTableName = $referencedTableName;
-        $this->name = $name;
+        $this->name = !is_null($name) ? $name : $referencedTableName;
 	$this->options = $options;
     }
     
@@ -46,6 +48,10 @@ class Reference implements IDBType , IType{
 
     public function getCIDBcreateData() {
         return array($this->name => $this->ci->config->item('referenceCISqlDefinition'));
+    }
+    
+    public function setExternalReferenceCIDB($CICreateColumnArray){
+	$this->CICreateColumnArray = $CICreateColumnArray;
     }
 
     public function getCreateSql() {
