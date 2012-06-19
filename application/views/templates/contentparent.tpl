@@ -31,7 +31,7 @@
         {/if}
         </span>
         <a class="navButton" id="logout" href="{"auth/logout"|site_url}">
-            <img id="imgLogout" width="32" height="32" src="{"images/icons/logout.png"|base_url}">
+         <img id="imgLogout" width="32" height="32" src="{"images/icons/logout.png"|base_url}">
         </a>
     </div>
 </ul>

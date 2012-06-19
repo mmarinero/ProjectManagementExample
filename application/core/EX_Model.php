@@ -103,7 +103,7 @@ class EX_Model extends CI_Model{
         $this->setValues($values);
     }
 
-    public function loadArray($where) {
+    public static function loadArray($where) {
         $valuesArray = $this->db->get($this->tableName, $id);
 	foreach($valuesArray as $values){
 	    $newModel = new static(); 
@@ -111,6 +111,22 @@ class EX_Model extends CI_Model{
 	    $models[$newModel->id] = $newModel;
 	}
 	return $models;
+    }
+
+    public function getForm($action,$options){
+	$class = isset($options['class']) ? 'class='.$options['class'] : '';
+	$id = isset($options['id']) ? 'id='.$options['id'] : '';
+	if (isset($options['custom']) && $options['custom'] === true){
+	    $fields = array_merge($this->fields, $this->customFields);
+	} else {
+	    $fields = $this->fields;
+	}
+	$form[] = "<form action=$action method="post" $class $id>";
+	foreach ($fields as $field){
+	    form[$field->getName()] = $field->getHtmlInput();
+	}
+	$form[] = "</form>";
+	return isset($options['implode']) ? join($options['implode'],$form) : $form;
     }
 }
 

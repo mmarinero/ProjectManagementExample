@@ -14,6 +14,7 @@ class dashboard extends CI_Controller{
         if (!$this->tank_auth->is_logged_in()) {									// logged in
             redirect('/auth/login');
 	} 
+	$this->smarty->assign('proyectos', Proyecto::loadArray());
         $this->smarty->assign('this', $this);
     }
 
