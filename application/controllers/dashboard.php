@@ -8,6 +8,7 @@
 class dashboard extends CI_Controller{
     
     private $trabajador;
+    
 
     function __construct() {
         parent::__construct();
@@ -21,7 +22,12 @@ class dashboard extends CI_Controller{
         $this->trabajador = $trabajador;
         $proyectoLoader = new Proyecto();
         $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        $this->smarty->assign('proyectos',$proyectoLoader->loadArray());
+        if ($trabajador->get('rol')->getDBValue() == 'admin') {
+            $proyectos = $proyectoLoader->loadArray();
+        } else {
+            $proyectos = $proyectoLoader->filterTrabajador($trabajador);
+        }
+        $this->smarty->assign('proyectos',$proyectos);
         $this->smarty->assign('this', $this);
     }
 
@@ -34,7 +40,11 @@ class dashboard extends CI_Controller{
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
-        $this->smarty->assign('proyecto', $proyecto->loadId($id));
+        $proyecto->loadId($id);
+        $trabajadoresLoader = new Trabajador();
+        $trabajadores = $trabajadoresLoader->filterProyecto($proyecto);
+        $this->smarty->assign('trabajadores', $trabajadores);
+        $this->smarty->assign('proyecto', $proyecto);
         $this->smarty->view('proyecto');
     }
     
@@ -43,7 +53,12 @@ class dashboard extends CI_Controller{
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
-        $crearProyecto = $proyecto->getForm(site_url('dashboard/crearProyectoPost'), array('id'=>'crearProyecto', 'class'=>'estandarForm'));
+        $trabajadoresLoader = new Trabajador();
+        $trabajadores = $trabajadoresLoader->loadArray();
+        $trabajadores = Trabajador::filterLevel($trabajadores, array(1,2,3,4));
+        $this->smarty->assign('trabajadores', $trabajadores);
+        $crearProyecto = $proyecto->getForm(site_url('dashboard/crearProyectoPost'), 
+                array('id'=>'crearProyecto', 'class'=>'estandarForm'));
         $this->smarty->assign('crearProyecto', $crearProyecto);
         $this->smarty->assign('buttonText', 'Crear proyecto');
         $this->smarty->view('crearProyecto');
@@ -55,10 +70,31 @@ class dashboard extends CI_Controller{
         }
         $proyecto = new Proyecto();
         $proyecto->DBInsert(assocRequest(array_keys($proyecto->getFields())),true);
+        
+        $trabajadoresLoader = new Trabajador();
+        $trabajadores = $trabajadoresLoader->loadArray();
+        foreach ($trabajadores as $trabajador) {
+            $input[] = $trabajador->getId();
+            $input[] = 'dedicacion'.$trabajador->getId();
+        }
+        $input = assocRequest($input);
+        log_message('debug', 'trabajadores '.print_r($input, true));
+        foreach ($trabajadores as $trabajador) {
+            if (!is_null($input[$trabajador->getId()])){
+                $trabajadorProyecto = new TrabajadoresProyecto();
+                $trabajadorProyecto->DBInsert(array(
+                    'Proyecto'=> $proyecto->getId(),
+                    'Trabajador' => $trabajador->getId(),
+                    'porcentaje' => $input['dedicacion'.$trabajador->getId()]));
+            }
+        }
         redirect('dashboard/proyecto/'.$proyecto->getId());
     }
     
     function editarProyecto($id=null){
+        $trabajadoresLoader = new Trabajador();
+        $trabajadores = $trabajadoresLoader->loadArray();
+        $this->smarty->assign('fixedTrabajadores', $trabajadores);
         if ($this->trabajador->get('rol') != 'admin' || $id == null) {
             redirect('dashboard');
         }

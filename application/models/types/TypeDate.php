@@ -14,13 +14,14 @@ class TypeDate extends BaseType {
         if ($newAttributes !== null) $attributes = $newAttributes;
         else $attributes = $this->attributes;
         $class = isset($attributes['class']) ? $attributes['class'] : '';
-        return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></input>';
+        $date = implode('/', array_reverse(explode('-',$this->value)));
+        return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$date.'"></input>';
     }
     
     public function getHtml($newAttributes = null){
         $attributes = $this->selectAttributes($newAttributes);
-        log_message('debug',$this->getName().' get '.$this->value);
-        return '<span '.HtmlAttributesFromArray($attributes).">".$this->value."</span>";
+        $date = implode('/', array_reverse(explode('-',$this->value)));
+        return '<span '.HtmlAttributesFromArray($attributes).">".$date."</span>";
     }
     
     public function setValue($value) {
@@ -28,19 +29,17 @@ class TypeDate extends BaseType {
     }
     
     public function setDBValue($value) {
-        log_message('debug',$this->getName().' set '.$value);
         $date = explode('/',$value);
         if (count($date)!=3){
             $date = explode(' ',$value);
             if (isset($date[0])) $date = $date[0];
             $date = explode('-',$date);
             if (count($date)!=3) $this->value = null;
-            else $this->value = implode('/',array_reverse($date));
+            else $this->value = implode('-',$date);
         }
         else {
             $this->value = implode('-',array_reverse($date));
         }
-        log_message('debug',$this->getName().' set '.$this->value);
     }
     
 }

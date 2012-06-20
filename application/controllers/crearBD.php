@@ -12,7 +12,7 @@ class CrearBD extends CI_Controller
 	//refs array clase ref
 
     //private $models = array('Trabajador', 'PlanFases', 'PlanIteraccion', 'TareaPersonal', 'Actividad');
-    private $models = array('Proyecto', 'PlanIteracion','Actividad', 'Trabajador', 'TareaPersonal', 'TrabajadoresProyecto');
+    private $models = array('Proyecto','PlanFases','PlanIteracion','Actividad', 'Trabajador', 'TareaPersonal', 'TrabajadoresProyecto');
 
     function __construct() {
         parent::__construct();
@@ -22,9 +22,9 @@ class CrearBD extends CI_Controller
             show_error('', 403);
             exit();
 	}
-        $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
-        if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
-        $proyectoLoader = new Proyecto();
+        //$trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+        //if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
+        //$proyectoLoader = new Proyecto();
         //$this->smarty->assign('proyectos', $proyectoLoader->loadArray());
         $this->smarty->assign('this', $this);
     }
@@ -99,13 +99,13 @@ class CrearBD extends CI_Controller
     
     private function populateDB(){
         $users = array("Administrador", 
-            "Jefep prueba", 
-            'Analista prueba',
-            'Diseñador prueba',
-            'Analista-programador prueba', 
-            'Responsable pruebas prueba',
-            'Programador prueba',
-            'Probador prueba');
+            "Jefep", 
+            'Analista',
+            'Diseñador',
+            'AnalistaProgramador', 
+            'ResponsablePruebas',
+            'Programador',
+            'Probador');
         $roles = array_keys(Trabajador::getRoles());
         foreach($users as $index => $user) {
             $this->tank_auth->create_user(
@@ -121,21 +121,25 @@ class CrearBD extends CI_Controller
         $proyecto->DBInsert(array(
             'nombre'=>'Proyecto prueba',
             'descripcion'=>'Proyecto de pruebas creado automaticamente',
+            'inicio'=>'1/6/1988'));
+        $planFases = new PlanFases();
+        $planFases->DBInsert(array(
+            'Proyecto'=>$proyecto->getId(),
             'iteracionesinicio'=>1,
             'iteracioneselaboracion'=>2,
             'iteracionesconstrucion'=>2,
-            'iteracionestransicion'=>1));
-        $planIteracion = new PlanIteracion();
-        $planIteracion->DBInsert(array(
-            'nombre'=>'Iteración prueba',
-            'descripcion'=>'Iteración de pruebas creado automaticamente',
-            'Proyecto'=>$proyecto->getId()
-            ));
-        $Actividad = new Actividad();
-        $Actividad->DBInsert(array(
-            'nombre'=>'Actividad prueba',
-            'descripcion'=>'Actividad de pruebas creado automaticamente',
-            'PlanIteracion'=>$planIteracion->getId()
-            ));
+            'iteracionestransicion'=>1),true);
+//        $planIteracion = new PlanIteracion();
+//        $planIteracion->DBInsert(array(
+//            'nombre'=>'Iteración prueba',
+//            'descripcion'=>'Iteración de pruebas creado automaticamente',
+//            'Proyecto'=>$proyecto->getId()
+//            ));
+//        $Actividad = new Actividad();
+//        $Actividad->DBInsert(array(
+//            'nombre'=>'Actividad prueba',
+//            'descripcion'=>'Actividad de pruebas creado automaticamente',
+//            'PlanIteracion'=>$planIteracion->getId()
+//            ));
     }
 }

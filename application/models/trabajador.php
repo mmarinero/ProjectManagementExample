@@ -38,8 +38,41 @@ class Trabajador extends EX_Model {
         'Probador'=>4);
     }
     
+    public $roles =array(
+        'admin' => 0,
+        'Jefe de proyecto' => 1,
+        'Analista'=>2,
+        'Diseñador'=>3,
+        'Analista-programador'=>3,
+        'Responsable equipo de pruebas'=>3,
+        'Programador'=>4,
+        'Probador'=>4);
+    
+    public static function filterRoles($trabajadores, $roles, $in = true){
+        return array_filter($trabajadores,function($trabajador) use ($roles, $in){
+            $result = in_array($trabajador->get('rol')->getDBValue(), $roles);
+            return $in ? $result: !$result;
+        });
+    }
+    
+    public static function filterLevel($trabajadores, $levels, $in = true){
+        $allRoles = static::getRoles();
+        return array_filter($trabajadores,function($trabajador) use ($levels, $in, $allRoles){
+            $result = in_array($allRoles[$trabajador->get('rol')->getDBValue()], $levels);
+            return $in ? $result: !$result;
+        });
+    }
+    
+    public function esTrabajadorNormal(){
+        return ($this->roles[$this->get('rol')] > 1) ? true : false;
+    }
+    
     public static function fromTankAuth($id) {
         $trabajador = new static();
         return array_shift($trabajador->loadArray(array('users'=>$id)));
+    }
+    
+    public function filterProyecto($proyecto){
+        return $this->loadSimpleJoin($proyecto, 'TrabajadoresProyecto', array('porcentaje'));
     }
 }

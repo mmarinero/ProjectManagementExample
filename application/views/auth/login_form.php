@@ -44,11 +44,18 @@ $captcha = array(
 		<td style="color: red;"><?php echo form_error($password['name']); ?><?php echo isset($errors[$password['name']])?$errors[$password['name']]:''; ?></td>
 	</tr>
 	<tr>
-		<td colspan="3">
-			<?php echo form_checkbox($remember); ?>
+		<td>
 			<?php echo form_label('Recuerdame', $remember['id']); ?>
+                <td colspan="2" style="text-align: left">
+                        <?php echo form_checkbox($remember); ?>
 		</td>
 	</tr>
+	<tr>
+            <td></td>
+		<td><br>
+			<?php echo form_submit('submit', 'Entrar'); ?>
+                </td>
+	</tr>
 </table>
-<?php echo form_submit('submit', 'Entrar'); ?>
+
 <?php echo form_close(); ?>

@@ -13,6 +13,8 @@ class EX_Model extends CI_Model{
     
     protected $properties = array('hashed'=>false, 'created'=>false, 'updated'=>false, 'ordered'=>false, 'DBCustomFields'=>false);
     
+    protected $tempData = array();
+    
     protected $references = array();
     
     protected $id = null;
@@ -36,6 +38,10 @@ class EX_Model extends CI_Model{
     
     public function getFields(){
         return $this->fields;
+    }
+    
+    public function getTempData(){
+        return $this->tempData;
     }
     
     public function getAllFields(){
@@ -76,7 +82,7 @@ class EX_Model extends CI_Model{
             if(is_object($field)){
                 $field->setDBValue($value);
             } else {
-                echo "existen problemas con el campo $name en ".$this->getTableName();
+                $this->tempData[$name] = $value;
             }
         }
     }
@@ -131,6 +137,19 @@ class EX_Model extends CI_Model{
 	}
 	return $models;
     }
+    
+    public function loadQueryArray($query) {
+        $models = array();
+        $result = $this->db->query($query)->result_array();
+	foreach($result as $values){
+	    $newModel = new static();
+            $newModel->id = $values['id'];
+            unset($values['id']);
+	    $newModel->setValues($values);
+	    $models[$newModel->id] = $newModel;
+	}
+	return $models;
+    }
 
     public function getForm($action,$options){
         $form = array();
@@ -149,5 +168,23 @@ class EX_Model extends CI_Model{
 	}
 	$form['end'] = "</form>";
 	return isset($options['implode']) ? join($options['implode'],$form) : $form;
+    }
+    
+    public function getFieldsAndId(){
+        $fields = $this->fields;
+        $fields['id'] = $this->getId();
+        return $fields;
+    }
+    
+    protected function loadSimpleJoin($model, $joinedTablename, $extraFields=array()){
+                $fields = array_keys($this->getFieldsAndId());
+                foreach ($fields as &$field) {
+                    $field = $this->tableName.'.'.$field;  
+                }
+                $fields = array_merge($fields,$extraFields);
+        return $this->loadQueryArray('select '.implode(', ', $fields).
+                ' from '.$this->tableName.' join '.$joinedTablename.' on '.
+                $this->tableName.".id = ".$this->tableName." where ".
+                $joinedTablename.".".$model->getTableName()." = '".$model->getId()."'");
     }
 }
