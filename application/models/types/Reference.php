@@ -13,10 +13,11 @@ class Reference implements IDBType , IType{
     
     protected $ci;
 
-    protected $CICreateColumnArray = ci->config->item('referenceCISqlDefinition');
+    protected $CICreateColumnArray;
 
     public function __construct($model, $referencedTableName, $name=null, $options = array()){
         $this->ci = get_instance();
+        $this->CICreateColumnArray = $this->ci->config->item('referenceCISqlDefinition');
 	$this->model = $model;
 	$this->referencedTableName = $referencedTableName;
         $this->name = !is_null($name) ? $name : $referencedTableName;
@@ -63,12 +64,11 @@ class Reference implements IDBType , IType{
     }
 
     public function getDBValue() {
-        echo $this->referencedId;
         return $this->referencedId;
     }
 
     public function sanitizeValue() {
-        return true;
+        throw new Exception('Unimplemented');
     }
 
     public function setDBValue($value) {
@@ -76,7 +76,7 @@ class Reference implements IDBType , IType{
     }
 
     public function validateValue() {
-        return true;
+        throw new Exception('Unimplemented');
     }
 
     public function setName($name){

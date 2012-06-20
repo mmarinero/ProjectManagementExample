@@ -22,6 +22,10 @@ class CrearBD extends CI_Controller
             show_error('', 403);
             exit();
 	}
+        $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+        if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
+        $proyectoLoader = new Proyecto();
+        //$this->smarty->assign('proyectos', $proyectoLoader->loadArray());
         $this->smarty->assign('this', $this);
     }
     
@@ -102,23 +106,25 @@ class CrearBD extends CI_Controller
             'Responsable pruebas prueba',
             'Programador prueba',
             'Probador prueba');
-        
-        foreach($users as $user) {
+        $roles = array_keys(Trabajador::getRoles());
+        foreach($users as $index => $user) {
             $this->tank_auth->create_user(
-                $user,
-                "$user@setepros.es",
-                '1234',
-                $this->config->item('email_activation', 'tank_auth'));
+            str_replace(' ','',$user),
+                    "$user@setepros.es",
+                    '1234',
+                    false,
+                    $user,
+                    $roles[$index]);
         }
         
         $proyecto = new Proyecto();
         $proyecto->DBInsert(array(
             'nombre'=>'Proyecto prueba',
             'descripcion'=>'Proyecto de pruebas creado automaticamente',
-            'IteracionesInicio'=>1,
-            'IteracionesElaboración'=>2,
-            'IteracionesConstrución'=>2,
-            'IteracionesTransición'=>1));
+            'iteracionesinicio'=>1,
+            'iteracioneselaboracion'=>2,
+            'iteracionesconstrucion'=>2,
+            'iteracionestransicion'=>1));
         $planIteracion = new PlanIteracion();
         $planIteracion->DBInsert(array(
             'nombre'=>'Iteración prueba',

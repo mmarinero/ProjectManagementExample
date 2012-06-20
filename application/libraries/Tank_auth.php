@@ -216,7 +216,7 @@ class Tank_auth
 	 * @param	bool
 	 * @return	array
 	 */
-	function create_user($username, $email, $password, $email_activation)
+	function create_user($username, $email, $password, $email_activation, $nombre, $rol)
 	{
 		if ((strlen($username) > 0) AND !$this->ci->users->is_username_available($username)) {
 			$this->error = array('username' => 'auth_username_in_use');
@@ -245,6 +245,8 @@ class Tank_auth
 				$data['user_id'] = $res['user_id'];
 				$data['password'] = $password;
 				unset($data['last_ip']);
+                                $trabajador = new Trabajador();
+                                $trabajador->DBInsert(array('nombre'=>$nombre, 'rol' =>$rol, 'users' =>$data['user_id']));
 				return $data;
 			}
 		}

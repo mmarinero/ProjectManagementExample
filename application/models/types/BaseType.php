@@ -9,6 +9,8 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     protected $name;
     
+    protected $outputName;
+    
     protected $value;
     
     protected $validator;
@@ -24,6 +26,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
             $this->name = $config;
         } else {
             if (isset($config['name'])) $this->name = $config['name'];
+            if (isset($config['outputName'])) $this->outputName = $config['outputName'];
             if (isset($config['value'])) $this->value = $config['value'];
             if (isset($config['validator'])) $this->validator = $config['validator'];
             if (isset($config['attributes'])) $this->attributes = $config['attributes'];
@@ -43,7 +46,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function setValue($value) {
-        $this->value = $value;
+        $this->setDBValue($value);
     }
     
     public function getDBDefaultValue() {
@@ -58,7 +61,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         $this->value = $value;
     }
     
-    public function setValidator(callable $validator){
+    public function setValidator($validator){
         $this->validator = $validator;
     }
     
@@ -67,18 +70,17 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function validateValue() {
-        return true;
+        throw new Exception('unimplemented');
     }
     
     public function sanitizeValue(){
-        return true;
+        throw new Exception('unimplemented');
     }
     
     public function getInputHtml($newAttributes = null){
-        
         if ($newAttributes !== null) $attributes = $newAttributes;
         else $attributes = $this->attributes;
-        return '<input type="text" '.  HtmlAttributesFromArray($attributes).'.name="'.$this->getName().'" value="'.$this->value.'"></input>';
+        return '<input type="text" '.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></input>';
     }
     
     public function getHtml($newAttributes = null){
@@ -101,6 +103,14 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     public function setAttr($attributes){
         $this->attributes = $attributes;
+    }
+    
+    public function setOutputName($name){
+        $this->outputName = $name;
+    }
+    
+    public function getOutputName(){
+        return $this->outputName ?:$this->name;
     }
 }
 

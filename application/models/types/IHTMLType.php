@@ -13,6 +13,17 @@ interface IHTMLType {
      */
     public function getHtml($attributes = null);
     
+     /**
+     * Nombre de los campo de cara a su salida por pantalla
+     * @param $name nombre a ser establecido 
+     */
+    public function setOutputName($name);
+    
+     /**
+     * Nombre de los campo de cara a su salida por pantalla
+     */
+    public function getOutputName();
+    
     /**
      * Html para que un tipo de datos pueda ser editado, alguna forma de input
      * destinado a formularios Html.
@@ -33,7 +44,7 @@ interface IHTMLType {
     
     public function setAttr($attributes);
     
-    public function setValidator(callable $validator);
+    public function setValidator($validator);
     
     /**
      * Valida el tipo de datos con el valor actual

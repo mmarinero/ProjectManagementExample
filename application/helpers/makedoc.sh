@@ -1,0 +1,1 @@
+phpdoc -t /home/vm/setedoc -o HTML:default:default -d /home/vm/NetBeansProjects/seteprosCI

@@ -6,23 +6,30 @@ class Proyecto extends EX_Model {
     
     protected $fields = array();
 
-    protected $fases = array('Inicio', 'Elaboración', 'Construción', 'Transición');
+    protected $fases = array(array('inicio','Inicio'), 
+        array('elaboracion','Elaboración'), 
+        array('construcion','Construción'),
+        array('transicion','Transición'));
     
     public function __construct() {
         parent::__construct();
-        $this->fields['nombre'] = new TypeString(array('name'=>'nombre'));
-        $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion'));
+        $this->fields['nombre'] = new TypeString(array('name'=>'nombre','outputName'=>'Nombre'));
+        $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion','outputName'=>'Descripción'));
+        $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Fecha de inicio'));
+        $this->fields['fin'] = new TypeDate(array('name'=>'fin','outputName'=>'Fecha de fin'));
         foreach ($this->fases as $fase){
-            $this->fields["Iteraciones{$fase}"] = new TypeInt("Iteraciones{$fase}");
+            $this->fields["iteraciones{$fase[0]}"] = new TypeInt(array('name'=>"iteraciones{$fase[0]}",'outputName'=>"Iteraciones fase de {$fase[1]}"));
         }
     }
     public function DBInsert($values, $createPlanes=false){
 	parent::DBInsert($values);
 	if ($createPlanes) {
 	    foreach($this->fases as $fase) {
-                for($i = 0;$i<$this->fields["Iteraciones$fase"];$i++) {
-                    $PlanIteracion = new PlanIteracion();	
-                    $PlanIteracion->DBInsert(array(
+                $nIteraciones = $this->fields["iteraciones".$fase[0]];
+                $nIteraciones = $nIteraciones->getDBValue();
+                for($i = 0; $i<$nIteraciones ;$i++) {
+                    $planIteracion = new PlanIteracion();	
+                    $planIteracion->DBInsert(array(
                         'nombre'=>"$fase ".$i + 1,
                         'descripcion'=>'Iteración fase '.$fase,
                         'Proyecto'=>$this->getId()

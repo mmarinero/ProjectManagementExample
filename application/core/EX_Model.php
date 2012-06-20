@@ -6,10 +6,7 @@
  * @author Mario Marinero <mario.marinero@alumnos.uva.es>
  */
 class EX_Model extends CI_Model{
-    /**
-     * Campos del modelo
-     * @var BaseType[]
-     */
+
     protected $fields = array();
     
     protected $customFields = array();
@@ -46,6 +43,10 @@ class EX_Model extends CI_Model{
     }
     
     public function getField($name){
+        return $this->get($name);
+    }
+    
+    public function get($name){
         if (isset($this->fields[$name])) return $this->fields[$name];
         if (isset($this->references[$name])) return $this->references[$name];
         if (isset($this->customFields[$name])) return $this->customFields[$name];
@@ -59,9 +60,13 @@ class EX_Model extends CI_Model{
         return $this->properties;
     }
     
-    public function __construct($fields = array()) {
+    public function __construct($idOrFields = array()) {
         parent::__construct();
-        $this->fields = $fields;
+        if (is_int($idOrFields)) {
+            $this->load($idOrFields);
+        } else {
+            $this->fields = $idOrFields;
+        }
     }
     
     public function validate(){
@@ -72,7 +77,12 @@ class EX_Model extends CI_Model{
     }
     public function setValues(array $values){
         foreach($values as $name=>$value) {
-            $this->getField($name)->setDBValue($value);
+            $field = $this->getField($name);
+            if(is_object($field)){
+                $field->setDBValue($value);
+            } else {
+                echo "existen problemas con el campo $name en ".$this->getTableName();
+            }
         }
     }
     
@@ -98,15 +108,27 @@ class EX_Model extends CI_Model{
         $this->setValues($values);
         $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
     }
-    public function loadThis($id) {
-        $values = $this->db->get($this->tableName, $id);
-        $this->setValues($values);
+    public function load($id) {
+        $result = $this->db->get_where($this->tableName,array('id' => $id))->result_array();
+        if(is_empty($result)) return null;
+        $this->id = $result['id'];
+        unset($result['id']);
+        $this->setValues($result->result_array());
     }
 
-    public static function loadArray($where) {
-        $valuesArray = $this->db->get($this->tableName, $id);
-	foreach($valuesArray as $values){
-	    $newModel = new static(); 
+    public function loadArray($where = null, $limit = null, $offset = null) {
+        
+        $models = array();
+        if (is_null($where)) {
+            $result = $this->db->get($this->tableName, $limit, $offset)->result_array();
+        } else {
+            $result = $this->db->get_where($this->tableName, $where, $limit, $offset)->result_array();
+        }
+	foreach($result as $values){
+
+	    $newModel = new static();
+            $newModel->id = $values['id'];
+            unset($values['id']);
 	    $newModel->setValues($values);
 	    $models[$newModel->id] = $newModel;
 	}
@@ -114,18 +136,21 @@ class EX_Model extends CI_Model{
     }
 
     public function getForm($action,$options){
-	$class = isset($options['class']) ? 'class='.$options['class'] : '';
-	$id = isset($options['id']) ? 'id='.$options['id'] : '';
+        $form = array();
+	$class = isset($options['class']) ? 'class="'.$options['class'].'" ' : '';
+	$id = isset($options['id']) ? 'id="'.$options['id'].'" ' : '';
 	if (isset($options['custom']) && $options['custom'] === true){
 	    $fields = array_merge($this->fields, $this->customFields);
 	} else {
 	    $fields = $this->fields;
 	}
-	$form[] = "<form action=$action method="post" $class $id>";
+	$form['start'] = '<form action="'.$action.'" method="post" '.$class.$id.'>';
+        /* @var $field BaseType*/
 	foreach ($fields as $field){
-	    form[$field->getName()] = $field->getHtmlInput();
+	    $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
+            $form['fields'][$field->getName()]['name'] = $field->getOutputName();
 	}
-	$form[] = "</form>";
+	$form['end'] = "</form>";
 	return isset($options['implode']) ? join($options['implode'],$form) : $form;
     }
 }

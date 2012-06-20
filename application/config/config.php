@@ -376,7 +376,7 @@ $config['application_autoload_directories'] = array('models','models/types','hel
 $config['system_autoload_directories'] = array();
 
 spl_autoload_register(function ($class) use ($config) {
-    if(stripos($class, 'CI') === FALSE && stripos($class, 'PEAR') === FALSE) {
+    if(strpos($class, 'CI') === FALSE && stripos($class, 'PEAR') === FALSE) {
         $basePaths = array(APPPATH => $config['application_autoload_directories'], BASEPATH => $config['system_autoload_directories']);
         foreach($basePaths as $basePath => $folders) {
             foreach ($folders as $folder){

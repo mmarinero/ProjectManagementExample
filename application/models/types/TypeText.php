@@ -16,4 +16,11 @@ class TypeText extends BaseType {
         return array($this->getName()=>array('type'=>'text', 'null'=>true));
     }
     
+    public function getInputHtml($newAttributes = null){
+        if ($newAttributes !== null) $attributes = $newAttributes;
+        else $attributes = $this->attributes;
+        $class = isset($attributes['class']) ? $attributes['class'] : '';
+        return '<textarea type="text" class="text '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></textarea>';
+    }
+    
 }
