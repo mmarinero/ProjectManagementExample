@@ -60,13 +60,8 @@ class EX_Model extends CI_Model{
         return $this->properties;
     }
     
-    public function __construct($idOrFields = array()) {
+    public function __construct() {
         parent::__construct();
-        if (is_int($idOrFields)) {
-            $this->load($idOrFields);
-        } else {
-            $this->fields = $idOrFields;
-        }
     }
     
     public function validate(){
@@ -100,20 +95,22 @@ class EX_Model extends CI_Model{
         $this->id = $this->db->insert_id();
     }
     
-    public function DBdelete(){
-        $this->db->delete('mytable', array('id' => $this->id));
+    public function DBdelete($id = null){
+        if (is_null($id))  $id = $this->id;
+        $this->db->delete($this->tableName, array('id' => $id));
     }
     
     public function DBUpdate($values){
         $this->setValues($values);
         $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
     }
-    public function load($id) {
-        $result = $this->db->get_where($this->tableName,array('id' => $id))->result_array();
-        if(is_empty($result)) return null;
+    public function loadId($id) {
+        $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
+        if(is_null($result)) return null;
         $this->id = $result['id'];
         unset($result['id']);
-        $this->setValues($result->result_array());
+        $this->setValues($result);
+        return $this;
     }
 
     public function loadArray($where = null, $limit = null, $offset = null) {
@@ -154,5 +151,3 @@ class EX_Model extends CI_Model{
 	return isset($options['implode']) ? join($options['implode'],$form) : $form;
     }
 }
-
-?>

@@ -21,6 +21,10 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         return $this->name;
     }
     
+    public function __toString() {
+        return $this->getDBValue();
+    }
+    
     public function __construct($config) {
         if (gettype($config) === 'string') {
             $this->name = $config;

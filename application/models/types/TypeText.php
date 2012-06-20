@@ -20,7 +20,11 @@ class TypeText extends BaseType {
         if ($newAttributes !== null) $attributes = $newAttributes;
         else $attributes = $this->attributes;
         $class = isset($attributes['class']) ? $attributes['class'] : '';
-        return '<textarea type="text" class="text '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></textarea>';
+        return '<textarea type="text" class="text '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'">'.$this->value.'</textarea>';
     }
     
+    public function getHtml($newAttributes = null){
+        $attributes = $this->selectAttributes($newAttributes);
+        return '<span '.HtmlAttributesFromArray($attributes).">".nl2br($this->value)."</span>";
+    }
 }

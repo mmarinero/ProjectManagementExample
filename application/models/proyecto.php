@@ -17,6 +17,8 @@ class Proyecto extends EX_Model {
         $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion','outputName'=>'Descripción'));
         $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Fecha de inicio'));
         $this->fields['fin'] = new TypeDate(array('name'=>'fin','outputName'=>'Fecha de fin'));
+        $this->fields['comenzado'] = new TypeBoolean(array('name'=>'comenzado','outputName'=>'Comenzado'));
+        $this->fields['cerrado'] = new TypeBoolean(array('name'=>'cerrado','outputName'=>'Cerrado'));
         foreach ($this->fases as $fase){
             $this->fields["iteraciones{$fase[0]}"] = new TypeInt(array('name'=>"iteraciones{$fase[0]}",'outputName'=>"Iteraciones fase de {$fase[1]}"));
         }

@@ -17,4 +17,30 @@ class TypeDate extends BaseType {
         return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></input>';
     }
     
+    public function getHtml($newAttributes = null){
+        $attributes = $this->selectAttributes($newAttributes);
+        log_message('debug',$this->getName().' get '.$this->value);
+        return '<span '.HtmlAttributesFromArray($attributes).">".$this->value."</span>";
+    }
+    
+    public function setValue($value) {
+        $this->setDBValue($value);
+    }
+    
+    public function setDBValue($value) {
+        log_message('debug',$this->getName().' set '.$value);
+        $date = explode('/',$value);
+        if (count($date)!=3){
+            $date = explode(' ',$value);
+            if (isset($date[0])) $date = $date[0];
+            $date = explode('-',$date);
+            if (count($date)!=3) $this->value = null;
+            else $this->value = implode('/',array_reverse($date));
+        }
+        else {
+            $this->value = implode('-',array_reverse($date));
+        }
+        log_message('debug',$this->getName().' set '.$this->value);
+    }
+    
 }

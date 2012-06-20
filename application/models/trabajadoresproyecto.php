@@ -7,9 +7,9 @@ class TrabajadoresProyecto extends EX_Model {
     protected $fields = array();
     
     public function __construct() {
-        parent::__construct();
+        parent::__construct();     
         $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto');
         $this->references['Trabajador'] = new Reference($this, 'Trabajador', 'Trabajador');
-        $this->change();
+        $this->fields['porcentaje'] = new TypeInt(array('name'=>'porcentaje','outputName'=>'Porcentaje'));
     }
 }

@@ -59,6 +59,7 @@ body {
 #nav {
     padding:0px 10px;
     background:#3c3c41;
+    font-size: 80%;
 }
 #nav ul {
     list-style:none;
@@ -73,7 +74,7 @@ body {
     background:#58585f;
     text-decoration: none;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 12px;
     margin: 0px 5px;
 }
 #nav a.navButton:hover, #nav a.navButton:active {
@@ -206,3 +207,34 @@ color:#09C;
 form.estandarForm textarea:focus, input:focus {
 border: 1px solid #09C;
 }
+
+table.listado {
+width:90%;
+border-top:1px solid #e5eff8;
+border-right:1px solid #e5eff8;
+margin:1em auto;
+border-collapse:collapse;
+}
+table.listado td {
+color:#678197;
+border-bottom:1px solid #e5eff8;
+border-left:1px solid #e5eff8;
+padding:.3em 1em;
+}
+
+table.listado tr.odd td {
+background:#f7fbff
+}
+table.listado tr.odd .listadoLabel {
+background:#f4f9fe;
+}
+table.listado .listadoLabel {
+background:#f9fcfe;
+}
+
+
+table.listado th {
+    background:#f4f9fe;
+    font:bold 1.2em/2em "Century Gothic","Trebuchet MS",Arial,Helvetica,sans-serif;
+    color:#66a3d3;
+ }

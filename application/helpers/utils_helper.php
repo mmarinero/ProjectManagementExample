@@ -1,10 +1,5 @@
 <?php
 
-/*
- * 
- * 
- */
-
 /**
  * Description of ArrayUtils
  *
@@ -53,19 +48,33 @@
         if ($func !== null) {
             foreach ($params as $key => $param) {
                 if (isset($_REQUEST[$param])) {
-                    if (is_int($key))
+                    if (is_int($key)) {
                         $assocParams[$param] = $func($_REQUEST[$param]);
-                    else
+                    }else{
                         $assocParams[$key] = $func($_REQUEST[$param]);
+                    }
+                } else {
+                    if (is_int($key)) {
+                        $assocParams[$param] = null;
+                    }else{
+                        $assocParams[$key] = null;
+                    }
                 }
             }
         } else {
             foreach ($params as $key => $param) {
                 if (isset($_REQUEST[$param])) {
-                    if (is_int($key))
+                    if (is_int($key)){
                         $assocParams[$param] = $_REQUEST[$param];
-                    else
+                    }else{
                         $assocParams[$key] = $_REQUEST[$param];
+                    }
+                } else {
+                    if (is_int($key)) {
+                        $assocParams[$param] = null;
+                    }else{
+                        $assocParams[$key] = null;
+                    }
                 }
             }
         }

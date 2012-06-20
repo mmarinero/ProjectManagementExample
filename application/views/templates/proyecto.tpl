@@ -1,12 +1,12 @@
 {extends file='contentparent.tpl'}
 {block name=content}
-{$crearProyecto['start']}
-{foreach from=$crearProyecto['fields'] item=lineaForm}
-    <label>
-        <span>{$lineaForm.name}: </span>
-    </label>{$lineaForm.input}
+<table class="listado">
+    <th colspan="2">Datos del proyecto</th>
+{foreach from=$proyecto->getFields() item=field}
+        <tr>
+            <td class="listadoLabel">{$field->getOutputName()}: </td>
+            <td class="listadoName">{$field->getHtml()}</td>
+        </tr>
 {/foreach}
-<br>
-<input type="submit" value="Crear proyecto" />
-{$crearProyecto['end']}
+</table>
 {/block}
