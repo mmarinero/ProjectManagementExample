@@ -18,9 +18,6 @@
     </label>
         {$lineaForm.input}
 {/foreach}
-    
-{*if isset($trabajadores)*}
-    
     <label>
     <span>Jefe de proyecto: </span>
     </label>
@@ -28,30 +25,12 @@
     {foreach from=$jefes item=trabajador}
         <option value="{$trabajador->getId()}" >{$trabajador->get('nombre')}</option>
     {/foreach}
+    </select>
      <label>
-      <span>Porcentaje dedicación: </span>
-        </label>
+        <span>Porcentaje dedicación: </span>
+     </label>
     <input type="text" class="int" name="dedicacion" value="100"></input>
-    </select><br>
-{*   <h2>Trabajadores</h2>
-
-{foreach from=$trabajadores item=trabajador}
-    <label>
-        <span>{$trabajador->get('nombre')}: </span>
-    </label>
-<input type="checkbox" class="boolean" id="check{$trabajador->getId()}" name="{$trabajador->getId()}" value="1"></input>
-
- <label>
-      <span>Porcentaje dedicación: </span>
- </label>
-<input type="text" class="int" name="dedicacion{$trabajador->getId()}" value="100"></input>
-<br>
-{/foreach}
-{else}
-    Los trabajadores solo se pueden añadir durante la creación de proyectos.
-{/if}
-<br>
-*}
+    <br>
 <input type="submit" value="{$buttonText}" />
 {$crearProyecto['end']}
 {/block}

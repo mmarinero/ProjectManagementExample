@@ -24,7 +24,7 @@ class PlanFases extends EX_Model {
 	if ($createPlanes) {
 	    foreach($this->fases as $fase) {
                 $nIteraciones = $this->fields["iteraciones".$fase[0]];
-                $nIteraciones = $nIteraciones->getDBValue();
+                $nIteraciones = $nIteraciones->getValue();
                 for($i = 0; $i<$nIteraciones ;$i++) {
                     $planIteracion = new PlanIteracion();	
                     $planIteracion->DBInsert(array(

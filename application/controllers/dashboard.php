@@ -25,12 +25,12 @@ class dashboard extends CI_Controller{
             'Trabajador'=>$trabajador->getId(),
             'jefe'=>1));
         $this->smarty->assign('jefe', $jefeOrNull);
-        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getDBValue() : null;
+        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getValue() : null;
         if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
         $this->trabajador = $trabajador;
         $proyectoLoader = new Proyecto();
         $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        if ($trabajador->get('rol')->getDBValue() == 'admin') {
+        if ($trabajador->get('rol')->getValue() == 'admin') {
             $proyectos = $proyectoLoader->loadArray();
         } else {
             $proyectos = $proyectoLoader->filterTrabajador($trabajador);
@@ -56,8 +56,8 @@ class dashboard extends CI_Controller{
         $this->smarty->view('proyecto');
     }
     
-    function crearProyecto($id=null){
-        if ($this->trabajador->get('rol') != 'admin') {
+    function crearProyecto(){
+        if ($this->trabajador->get('rol')->getValue() != 'admin') {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -74,7 +74,7 @@ class dashboard extends CI_Controller{
     }
     
     function crearProyectoPost(){
-        if ($this->trabajador->get('rol') != 'admin') {
+        if ($this->trabajador->get('rol')->getValue() != 'admin') {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -87,27 +87,6 @@ class dashboard extends CI_Controller{
                 'Trabajador' => $this->input->post('jefeProyecto'),
                 'porcentaje' => $this->input->post('dedicacion'),
                 'jefe'=> 1));
-//        $trabajadoresLoader = new Trabajador();
-//        $trabajadores = $trabajadoresLoader->loadArray();
-//        foreach ($trabajadores as $trabajador) {
-//            $input[] = $trabajador->getId();
-//            $input[] = 'dedicacion'.$trabajador->getId();
-//        }
-//        $input = assocRequest($input);
-//        foreach ($trabajadores as $trabajador) {
-//            if (!is_null($input[$trabajador->getId()])){
-//                $trabajadorProyecto = new TrabajadoresProyecto();
-//                $jefe = 0;
-//                if ($trabajador->getId() == $this->input->post('jefeProyecto')){
-//                    $jefe = 1;
-//                }
-//                $trabajadorProyecto->DBInsert(array(
-//                    'Proyecto'=> $proyecto->getId(),
-//                    'Trabajador' => $trabajador->getId(),
-//                    'porcentaje' => $input['dedicacion'.$trabajador->getId()],
-//                    'jefe'=> $jefe));
-//            }
-//        }
         redirect('dashboard/proyecto/'.$proyecto->getId());
     }
     
@@ -126,7 +105,7 @@ class dashboard extends CI_Controller{
     }
     
     function editarProyectoPost($id){
-        if ($this->trabajador->get('rol') != 'admin' || $id == null) {
+        if ($this->trabajador->get('rol')->getValue() != 'admin' || $id == null) {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -136,7 +115,7 @@ class dashboard extends CI_Controller{
     }
     
     function eliminarProyecto($id=null){
-        if ($this->trabajador->get('rol') != 'admin' || $id == null) {
+        if ($this->trabajador->get('rol')->getValue() != 'admin' || $id == null) {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -145,7 +124,7 @@ class dashboard extends CI_Controller{
     }
     
     function planes($id=null){
-        if ($this->trabajador->get('rol') != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
                 $id == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
@@ -167,8 +146,8 @@ class dashboard extends CI_Controller{
             $iteracionesLoader = new PlanIteracion();
             $iteraciones = $iteracionesLoader->loadArray(array('PlanFases'=> $idPlan['id']));
             foreach ($iteraciones as $iteracion) {
-                $iteracion->get('inicio')->setAttr(array('nameAppend'=>$iteracion->getId()));
-                $iteracion->get('fin')->setAttr(array('nameAppend'=>$iteracion->getId()));
+                $iteracion->get('inicio')->setAttributes(array('nameAppend'=>$iteracion->getId()));
+                $iteracion->get('fin')->setAttributes(array('nameAppend'=>$iteracion->getId()));
             }
             $this->smarty->assign('iteraciones',$iteraciones);
             $this->smarty->assign('idPlan',$idPlan);
@@ -177,7 +156,7 @@ class dashboard extends CI_Controller{
     }
     
     function crearFasesPost($idProyecto) {
-        if ($this->trabajador->get('rol') != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
                 $idProyecto == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
@@ -210,7 +189,7 @@ class dashboard extends CI_Controller{
         redirect('dashboard/planes/'.$idProyecto);
     }
     function modificarEstimacionIteracionPost($idPlan = null){
-        if ($this->trabajador->get('rol') != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
                 $idPlan == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');

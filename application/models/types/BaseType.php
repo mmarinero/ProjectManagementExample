@@ -17,14 +17,6 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     protected $attributes = array();
     
-    function getName() {
-        return $this->name;
-    }
-    
-    public function __toString() {
-        return $this->getDBValue();
-    }
-    
     public function __construct($config) {
         if (gettype($config) === 'string') {
             $this->name = $config;
@@ -37,31 +29,37 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         }
     }
     
-    public function getCreateSql(){
-        throw new Exception('Unimplemented');
+    function getName() {
+        return $this->name;
     }
     
     public function setName($name){
         $this->name = $name;
     }
     
-    public function getRaw(){
+    public function setOutputName($name){
+        $this->outputName = $name;
+    }
+    
+    public function getOutputName(){
+        return $this->outputName ?:$this->name;
+    }
+
+    
+     /**
+     * Detección de un error común al olvidar usar getValue() o getHtml()
+     * Se puede eliminar sin consecuencias o devolver automaticamente el valor.
+     * @throws Exception 
+     */
+    public function __toString() {
+        throw new Exception($this->getName());
+    }
+    
+    public function getValue() {
         return $this->value;
     }
     
     public function setValue($value) {
-        $this->setDBValue($value);
-    }
-    
-    public function getDBDefaultValue() {
-        return null;
-    }
-    
-    public function getDBValue() {
-        return $this->value;
-    }
-    
-    public function setDBValue($value) {
         $this->value = $value;
     }
     
@@ -73,20 +71,11 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         return $this->validator($this);
     }
     
-    public function validateValue() {
-        throw new Exception('unimplemented');
-    }
-    
-    public function sanitizeValue(){
-        throw new Exception('unimplemented');
-    }
-    
     public function getInputHtml($newAttributes = null){
-        if ($newAttributes !== null) $attributes = $newAttributes;
-        else $attributes = $this->attributes;
+        $attributes = $this->selectAttributes($newAttributes);
         $nameAppend= isset($attributes['nameAppend']) ? $attributes['nameAppend'] : '';
-        $class = isset($attributes['class']) ? $attributes['class'] : '';
-        return '<input type="text" class="'.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$this->value.'"></input>';
+        $class = isset($attributes['class']) ? $attributes['class'].' ': '';
+        return '<input type="text" class="'.$class.'"'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$this->value.'"></input>';
     }
     
     public function getHtml($newAttributes = null){
@@ -94,30 +83,19 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         return '<span '.HtmlAttributesFromArray($attributes).">$this->value</span>";
     }
     
+    /**
+     * Función de conveniencia para seleccionar los atributos pasados o los ya presentes
+     * @param type $newAttributes
+     * @return type 
+     */
     protected function selectAttributes($newAttributes){
         if ($newAttributes !== null) return $newAttributes;
         else return $this->attributes;
     }
     
-    public function getAttrDescription(){
-        
-    }
     
-    public function getDefaultAttr(){
-        
-    }
-    
-    public function setAttr($attributes){
+    public function setAttributes($attributes){
         $this->attributes = $attributes;
     }
     
-    public function setOutputName($name){
-        $this->outputName = $name;
-    }
-    
-    public function getOutputName(){
-        return $this->outputName ?:$this->name;
-    }
 }
-
-?>

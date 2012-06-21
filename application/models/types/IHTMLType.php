@@ -33,17 +33,21 @@ interface IHTMLType {
     public function getInputHtml($attributes = null);
     
     /**
-     * Atributos posibles para el tipo de datos Html, esta funcion proporciona
-     * datos orientativos, atributos no incluidos pueden ser establecidos pero el 
-     * resultado final puede no ser el deseado
-     * @return  Atributos del elemento
+     * Establece los atributos de este elemento, los atributos seran procesados y se contemplan
+     * 4 atributos especiales:
+     * class: los elementos de este array se añaden a las clases del html resultante
+     * nameAppend : se concatena con el nombre por defecto del tipo (construcción de listas)
+     * name: Sustituye al name predefinido
+     * children: Requiere soporte del tipo de datos y permite definir los atributos de otros 
+     * elementos HTML
+     * @param $attributes atributos establecidos
      */
-    public function getAttrDescription();
+    public function setAttributes($attributes);
     
-    public function getDefaultAttr();
-    
-    public function setAttr($attributes);
-    
+    /**
+     * Establece un validador asociado que se empleara para comprobar si los datos introducidos
+     * son correctos
+     */
     public function setValidator($validator);
     
     /**

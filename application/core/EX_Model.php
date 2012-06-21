@@ -84,7 +84,7 @@ class EX_Model extends CI_Model{
         foreach($values as $name=>$value) {
             $field = $this->getField($name);
             if(is_object($field)){
-                $field->setDBValue($value);
+                $field->setValue($value);
             } else {
                 $this->tempData[$name] = $value;
             }
@@ -94,7 +94,7 @@ class EX_Model extends CI_Model{
     private function varsToDB(){
         return array_map(
                 function($type){
-                    return $type->getDBValue();
+                    return $type->getValue();
                 },
                 array_merge($this->fields, $this->references));
     }

@@ -19,7 +19,7 @@ interface IType {
     /**
      * @return mixed Representacion nativa del tipo de datos 
      */
-    public function getRaw();
+    public function getValue();
     
      /**
      * @param Valor que se asignara al campo

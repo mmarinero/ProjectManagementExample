@@ -59,11 +59,7 @@ class Reference implements IDBType , IType{
         throw new Exception('Unimplemented');
     }
 
-    public function getDBDefaultValue() {
-        return null;
-    }
-
-    public function getDBValue() {
+    public function getValue() {
         return $this->referencedId;
     }
 
@@ -81,10 +77,6 @@ class Reference implements IDBType , IType{
 
     public function setName($name){
         $this->name = $name;
-    }
-    
-    public function getRaw(){
-        return $this->value;
     }
     
     public function setValue($value) {

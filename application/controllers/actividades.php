@@ -15,7 +15,7 @@ class actividades extends CI_Controller{
         parent::__construct();
         $this->load->library('tank_auth');
         $this->lang->load('tank_auth');
-        if (!$this->tank_auth->is_logged_in()) {									// logged in
+        if (!$this->tank_auth->is_logged_in()) {
             redirect('/auth/login');
 	}
         $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
@@ -23,7 +23,7 @@ class actividades extends CI_Controller{
         $this->trabajador = $trabajador;
         $proyectoLoader = new Proyecto();
         $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        if ($trabajador->get('rol')->getDBValue() == 'admin') {
+        if ($trabajador->get('rol')->getValue() == 'admin') {
             $proyectos = $proyectoLoader->loadArray();
         } else {
             $proyectos = $proyectoLoader->filterTrabajador($trabajador);
@@ -33,14 +33,14 @@ class actividades extends CI_Controller{
             'Proyecto'=>$this->uri->segment(3),
             'Trabajador'=>$trabajador->getId(),
             'jefe'=>1));
-        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getDBValue() : null;
+        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getValue() : null;
         $this->smarty->assign('proyectos',$proyectos);
         $this->smarty->assign('this', $this);
     }
 
     public function planIteracion($idIteracion){
         
-        if ($this->trabajador->get('rol') != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
                 $idIteracion == null) {
             redirect('dashboard');
         }
@@ -66,7 +66,7 @@ class actividades extends CI_Controller{
     }
     
     public function nuevaActividadPost($idIteracion){
-        if ($this->trabajador->get('rol') != 'Jefe de proyecto' || $idIteracion == null) {
+        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' || $idIteracion == null) {
             redirect('dashboard');
         }
         $actividad = new Actividad();

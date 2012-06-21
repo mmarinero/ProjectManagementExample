@@ -9,16 +9,4 @@ interface IDBType {
     
     public function getCIDBcreateData();
     
-    public function getCreateSql();
-    
-    public function getDBDefaultValue();
-    
-    public function getDBValue();
-    
-    public function setDBValue($value);
-    
-    public function validateValue();
-    
-    public function sanitizeValue();
-    
 }

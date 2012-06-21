@@ -25,11 +25,8 @@ class TypeDate extends BaseType {
         return '<span '.HtmlAttributesFromArray($attributes).">".$date."</span>";
     }
     
-    public function setValue($value) {
-        $this->setDBValue($value);
-    }
     
-    public function setDBValue($value) {
+    public function setValue($value) {
         $date = explode('/',$value);
         if (count($date)!=3){
             $date = explode(' ',$value);

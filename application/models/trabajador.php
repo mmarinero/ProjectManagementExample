@@ -48,7 +48,7 @@ class Trabajador extends EX_Model {
     
     public static function filterRoles($trabajadores, $roles, $in = true){
         return array_filter($trabajadores,function($trabajador) use ($roles, $in){
-            $result = in_array($trabajador->get('rol')->getDBValue(), $roles);
+            $result = in_array($trabajador->get('rol')->getValue(), $roles);
             return $in ? $result: !$result;
         });
     }
@@ -56,7 +56,7 @@ class Trabajador extends EX_Model {
     public static function filterLevel($trabajadores, $levels, $in = true){
         $allRoles = static::getRoles();
         return array_filter($trabajadores,function($trabajador) use ($levels, $in, $allRoles){
-            $result = in_array($allRoles[$trabajador->get('rol')->getDBValue()], $levels);
+            $result = in_array($allRoles[$trabajador->get('rol')->getValue()], $levels);
             return $in ? $result: !$result;
         });
     }
