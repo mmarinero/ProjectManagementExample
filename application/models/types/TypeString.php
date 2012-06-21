@@ -8,7 +8,7 @@ class TypeString extends BaseType {
     
     public static function LengthValidator($length) {
         return function($thisObj) use ($length){
-            return strlen($thisObj->getValue()) <= $length ? true : false;
+            return strlen($thisObj->val()) <= $length ? true : false;
         };
     }
     

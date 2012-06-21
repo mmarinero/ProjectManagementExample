@@ -6,9 +6,9 @@ class Trabajador extends EX_Model {
     protected $fields = array();
     
     public static function rolValidator(){
-        $roles = static::getRoles();
+        $roles = static::$roles;
         return function($thisObj) use ($roles){
-            if (isset($roles[$thisObj->getValue()])) return true;
+            if (isset($roles[$thisObj->val()])) return true;
             else return false;
         };
     }
@@ -24,19 +24,7 @@ class Trabajador extends EX_Model {
 	$this->references['users'] = new Reference($this, 'users', 'users',array('delete'=>'cascade','update'=>'cascade'));
     }
     
-    public static function getRoles(){
-        return array(
-        'admin' => 0,
-        'Jefe de proyecto' => 1,
-        'Analista'=>2,
-        'Diseñador'=>3,
-        'Analista-programador'=>3,
-        'Responsable equipo de pruebas'=>3,
-        'Programador'=>4,
-        'Probador'=>4);
-    }
-    
-    public $roles =array(
+    public static $roles =array(
         'admin' => 0,
         'Jefe de proyecto' => 1,
         'Analista'=>2,
@@ -48,15 +36,15 @@ class Trabajador extends EX_Model {
     
     public static function filterRoles($trabajadores, $roles, $in = true){
         return array_filter($trabajadores,function($trabajador) use ($roles, $in){
-            $result = in_array($trabajador->get('rol')->getValue(), $roles);
+            $result = in_array($trabajador->get('rol')->val(), $roles);
             return $in ? $result: !$result;
         });
     }
     
     public static function filterLevel($trabajadores, $levels, $in = true){
-        $allRoles = static::getRoles();
+        $allRoles = static::$roles;
         return array_filter($trabajadores,function($trabajador) use ($levels, $in, $allRoles){
-            $result = in_array($allRoles[$trabajador->get('rol')->getValue()], $levels);
+            $result = in_array($allRoles[$trabajador->get('rol')->val()], $levels);
             return $in ? $result: !$result;
         });
     }
@@ -72,5 +60,17 @@ class Trabajador extends EX_Model {
     
     public function filterProyecto($proyecto){
         return $this->loadSimpleJoin($proyecto, 'TrabajadoresProyecto', array('porcentaje'));
+    }
+    
+    public function auth($rol){
+         return $rol === $this->get('rol')->val() ? true : show_error('No autorizado', 403);
+    }
+    
+    public function authLevel($level){
+        return $level === static::$roles[$this->get('rol')->val()] ? true : show_error('No autorizado', 403);
+    }
+    
+    public function authSuperiorLevel($level){
+        return $level >= static::$roles[$this->get('rol')->val()] ? true : show_error('No autorizado', 403);
     }
 }

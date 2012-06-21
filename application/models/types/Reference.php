@@ -58,8 +58,8 @@ class Reference implements IDBType , IType{
     public function getCreateSql() {
         throw new Exception('Unimplemented');
     }
-
-    public function getValue() {
+    
+    public function val() {
         return $this->referencedId;
     }
 

@@ -106,7 +106,7 @@ class CrearBD extends CI_Controller
             'ResponsablePruebas',
             'Programador',
             'Probador');
-        $roles = array_keys(Trabajador::getRoles());
+        $roles = array_keys(Trabajador::$roles);
         foreach($users as $index => $user) {
             $this->tank_auth->create_user(
             str_replace(' ','',$user),

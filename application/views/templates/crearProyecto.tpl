@@ -23,7 +23,7 @@
     </label>
     <select id="selectJefe" name="jefeProyecto">
     {foreach from=$jefes item=trabajador}
-        <option value="{$trabajador->getId()}" >{$trabajador->get('nombre')}</option>
+        <option value="{$trabajador->getId()}" >{$trabajador->get('nombre')->val()}</option>
     {/foreach}
     </select>
      <label>

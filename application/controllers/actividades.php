@@ -23,7 +23,7 @@ class actividades extends CI_Controller{
         $this->trabajador = $trabajador;
         $proyectoLoader = new Proyecto();
         $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        if ($trabajador->get('rol')->getValue() == 'admin') {
+        if ($trabajador->get('rol')->val() == 'admin') {
             $proyectos = $proyectoLoader->loadArray();
         } else {
             $proyectos = $proyectoLoader->filterTrabajador($trabajador);
@@ -33,14 +33,14 @@ class actividades extends CI_Controller{
             'Proyecto'=>$this->uri->segment(3),
             'Trabajador'=>$trabajador->getId(),
             'jefe'=>1));
-        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getValue() : null;
+        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
         $this->smarty->assign('proyectos',$proyectos);
         $this->smarty->assign('this', $this);
     }
 
     public function planIteracion($idIteracion){
         
-        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
                 $idIteracion == null) {
             redirect('dashboard');
         }
@@ -54,7 +54,7 @@ class actividades extends CI_Controller{
         $crearActividad= $actividadesLoader->getForm(site_url('actividades/nuevaActividadPost/'.$idIteracion),
                 array('id'=>'crearActividad', 'class'=>'estandarForm'));
         $trabajadoresLoader = new Trabajador();
-        $roles = Trabajador::getRoles();
+        $roles = Trabajador::$roles;
         array_shift($roles);
         $trabajadores = $trabajadoresLoader->filterProyecto($proyecto);
         $this->smarty->assign('crearActividad',$crearActividad);
@@ -66,7 +66,7 @@ class actividades extends CI_Controller{
     }
     
     public function nuevaActividadPost($idIteracion){
-        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' || $idIteracion == null) {
+        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' || $idIteracion == null) {
             redirect('dashboard');
         }
         $actividad = new Actividad();

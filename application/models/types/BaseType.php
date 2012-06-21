@@ -47,7 +47,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
 
     
      /**
-     * Detección de un error común al olvidar usar getValue() o getHtml()
+     * Detección de un error común al olvidar usar val() o getHtml()
      * Se puede eliminar sin consecuencias o devolver automaticamente el valor.
      * @throws Exception 
      */
@@ -55,7 +55,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         throw new Exception($this->getName());
     }
     
-    public function getValue() {
+    public function val() {
         return $this->value;
     }
     

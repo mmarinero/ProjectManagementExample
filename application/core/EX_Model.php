@@ -94,7 +94,7 @@ class EX_Model extends CI_Model{
     private function varsToDB(){
         return array_map(
                 function($type){
-                    return $type->getValue();
+                    return $type->val();
                 },
                 array_merge($this->fields, $this->references));
     }

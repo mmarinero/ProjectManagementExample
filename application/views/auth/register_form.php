@@ -70,7 +70,7 @@ $captcha = array(
                 <td>
                     <select id="selectRol" name="rol">
                         <option value=""></option>
-                        <?php foreach (Trabajador::getRoles() as $nombre => $nivel) {?>
+                        <?php foreach (Trabajador::$roles as $nombre => $nivel) {?>
                             <option value="<?php echo $nombre; ?>"><?php echo $nombre; ?></option>
                         <?php } ?>
                     </select>

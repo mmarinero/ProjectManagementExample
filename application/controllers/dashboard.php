@@ -7,6 +7,10 @@
  */
 class dashboard extends CI_Controller{
     
+    
+    /**
+     * @var Trabajador 
+     */
     private $trabajador;
     
     private $jefeId;
@@ -18,23 +22,26 @@ class dashboard extends CI_Controller{
         if (!$this->tank_auth->is_logged_in()) {									// logged in
             redirect('/auth/login');
 	}
-        $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+        $this->trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+        
         $buscadorJefe = new TrabajadoresProyecto();
         $jefeOrNull = $buscadorJefe->loadWhere(array(
             'Proyecto'=>$this->uri->segment(3),
-            'Trabajador'=>$trabajador->getId(),
+            'Trabajador'=>  $this->trabajador->getId(),
             'jefe'=>1));
-        $this->smarty->assign('jefe', $jefeOrNull);
-        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->getValue() : null;
-        if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
-        $this->trabajador = $trabajador;
+        
+        $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
+        
         $proyectoLoader = new Proyecto();
-        $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        if ($trabajador->get('rol')->getValue() == 'admin') {
+        
+        if ($this->trabajador->get('rol')->val() == 'admin') {
             $proyectos = $proyectoLoader->loadArray();
         } else {
-            $proyectos = $proyectoLoader->filterTrabajador($trabajador);
+            $proyectos = $proyectoLoader->filterTrabajador($this->trabajador);
         }
+        $this->smarty->assign('idProyecto', $this->uri->segment(3, null));
+        $this->smarty->assign('jefe', $jefeOrNull);
+        $this->smarty->assign('trabajador',$this->trabajador);
         $this->smarty->assign('proyectos',$proyectos);
         $this->smarty->assign('this', $this);
     }
@@ -45,7 +52,7 @@ class dashboard extends CI_Controller{
     
     function proyecto($id=null){
         if ($id===null) {
-            redirect('dashboard');
+            show_404();
         }
         $proyecto = new Proyecto();
         $proyecto->loadId($id);
@@ -57,9 +64,7 @@ class dashboard extends CI_Controller{
     }
     
     function crearProyecto(){
-        if ($this->trabajador->get('rol')->getValue() != 'admin') {
-            redirect('dashboard');
-        }
+        $this->trabajador->auth('admin');
         $proyecto = new Proyecto();
         $trabajadoresLoader = new Trabajador();
         $trabajadores = $trabajadoresLoader->loadArray();
@@ -74,7 +79,7 @@ class dashboard extends CI_Controller{
     }
     
     function crearProyectoPost(){
-        if ($this->trabajador->get('rol')->getValue() != 'admin') {
+        if ($this->trabajador->get('rol')->val() != 'admin') {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -105,7 +110,7 @@ class dashboard extends CI_Controller{
     }
     
     function editarProyectoPost($id){
-        if ($this->trabajador->get('rol')->getValue() != 'admin' || $id == null) {
+        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -115,7 +120,7 @@ class dashboard extends CI_Controller{
     }
     
     function eliminarProyecto($id=null){
-        if ($this->trabajador->get('rol')->getValue() != 'admin' || $id == null) {
+        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();
@@ -124,7 +129,7 @@ class dashboard extends CI_Controller{
     }
     
     function planes($id=null){
-        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
                 $id == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
@@ -156,7 +161,7 @@ class dashboard extends CI_Controller{
     }
     
     function crearFasesPost($idProyecto) {
-        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
                 $idProyecto == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
@@ -189,7 +194,7 @@ class dashboard extends CI_Controller{
         redirect('dashboard/planes/'.$idProyecto);
     }
     function modificarEstimacionIteracionPost($idPlan = null){
-        if ($this->trabajador->get('rol')->getValue() != 'Jefe de proyecto' ||
+        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
                 $idPlan == null ||
                 $this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');

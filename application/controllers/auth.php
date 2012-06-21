@@ -121,7 +121,7 @@ class Auth extends CI_Controller
 	function register()
 	{
                 $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
-		if ($trabajador->get('rol')->getValue() != 'admin') {									// logged in
+		if ($trabajador->get('rol')->val() != 'admin') {									// logged in
 			redirect('');
 		} else {
 			$use_username = $this->config->item('use_username', 'tank_auth');

@@ -41,7 +41,7 @@
             <td class="listadoName">{$iteracion->get('inicio')->getInputHtml()}</td>
             <td class="listadoName">{$iteracion->get('fin')->getInputHtml()}</td>
             <td class="listadoName">
-                {if !$iteracion->get('cerrada')->getValue() && !isset($cerrada)}
+                {if !$iteracion->get('cerrada')->val() && !isset($cerrada)}
                     {assign value=true var=cerrada}
                 <a href="{'actividades/planIteracion'|site_url}/{$iteracion->getId()}">
                     <img width="32" height="32" src="{"images/icons/plan.png"|base_url}">

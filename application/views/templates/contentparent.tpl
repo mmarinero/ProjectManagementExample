@@ -29,7 +29,7 @@
 {block name=nav}
 <ul>
     {if isset($trabajador)}
-        {if $trabajador->get('rol')->getValue() == 'admin'}
+        {if $trabajador->get('rol')->val() == 'admin'}
             {if !$idProyecto}
             <li>
                 <a class="navButton" href="{"auth/register"|site_url}">Registrar usuario</a>
@@ -47,7 +47,7 @@
             </li>
             {/if}
         {/if}
-        {if $trabajador->get('rol')->getValue() == 'Jefe de proyecto'}
+        {if $trabajador->get('rol')->val() == 'Jefe de proyecto'}
             {if $idProyecto}
             <li><a class="navButton" href="{"dashboard/planes"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Planes</a></li>
             {/if}

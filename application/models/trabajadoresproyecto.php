@@ -16,14 +16,14 @@ class TrabajadoresProyecto extends EX_Model {
     
     public static function filterTrabajadores($proyecto, $trabajadores){
         return array_filter($trabajadores,function($proyecto){
-            $result = in_array($trabajador->get('rol')->getValue(), $roles);
+            $result = in_array($trabajador->get('rol')->val(), $roles);
             return $in ? $result: !$result;
         });
     }
     
     public static function filterProyectos($trabajador, $proyectos){
         return array_filter($proyectos,function($trabajador){
-            $result = in_array($allRoles[$trabajador->get('rol')->getValue()], $levels);
+            $result = in_array($allRoles[$trabajador->get('rol')->val()], $levels);
             return $in ? $result: !$result;
         });
     }
