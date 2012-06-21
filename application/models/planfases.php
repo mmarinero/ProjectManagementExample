@@ -13,6 +13,7 @@ class PlanFases extends EX_Model {
     
     public function __construct() {
         parent::__construct();
+        $this->customFields['cerrado'] = new TypeBoolean(array('name'=>'cerrado','outputName'=>'Plan cerrado'));
         $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
         foreach ($this->fases as $fase){
             $this->fields["iteraciones{$fase[0]}"] = new TypeInt(array('name'=>"iteraciones{$fase[0]}",'outputName'=>"Iteraciones fase de {$fase[1]}"));
@@ -27,7 +28,7 @@ class PlanFases extends EX_Model {
                 for($i = 0; $i<$nIteraciones ;$i++) {
                     $planIteracion = new PlanIteracion();	
                     $planIteracion->DBInsert(array(
-                        'nombre'=>"$fase ".$i + 1,
+                        'nombre'=>"$fase[0] ".($i + 1),
                         'descripcion'=>'Iteración fase '.$fase[1],
                         'PlanFases'=>$this->getId()
                     ));

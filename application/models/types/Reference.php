@@ -29,7 +29,7 @@ class Reference implements IDBType , IType{
 	foreach ($this->options as $action => $result){
 	    $optionsString.= "ON $action $result ";
 	}
-	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedTableName} ".
+	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedTableName}_{$this->name} ".
                "FOREIGN KEY ({$this->name}) REFERENCES ".
                "{$this->referencedTableName}(id) $optionsString";	
     }

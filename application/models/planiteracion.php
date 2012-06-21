@@ -8,8 +8,11 @@ class PlanIteracion extends EX_Model {
     
     public function __construct() {
         parent::__construct();
-        $this->fields['nombre'] = new TypeString('nombre');
-        $this->fields['descripcion'] = new TypeText('descripcion');
+        $this->fields['nombre'] = new TypeString(array('name'=>'nombre', "outputName"=>'Nombre'));
+        $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion', "outputName"=>'Descripción'));
+        $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Estimación de inicio'));
+        $this->fields['fin'] = new TypeDate(array('name'=>'fin','outputName'=>'Estimación de fin'));
+        $this->fields['cerrada'] = new TypeBoolean(array('name'=>'cerrada','outputName'=>'Iteración cerrada'));
         $this->references['PlanFases'] = new Reference($this, 'PlanFases', 'PlanFases',array('delete'=>'cascade','update'=>'cascade'));
     }
 }

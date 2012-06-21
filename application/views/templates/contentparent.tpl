@@ -32,19 +32,25 @@
         {if $trabajador->get('rol') == 'admin'}
             {if !$idProyecto}
             <li>
+                <a class="navButton" href="{"auth/register"|site_url}">Registrar usuario</a>
+            </li>
+            <li>
                 <a class="navButton" href="{"dashboard/crearProyecto"|site_url}">Crear proyecto</a>
             </li>
             {else}
             <li>
                 <a class="navButton" href="{"dashboard/editarProyecto"|site_url}/{$idProyecto}">Editar proyecto</a>
             </li>
+
             <li>
                 <a class="navButton" onclick="return confirm('¿Está seguro que desea eliminar este proyecto');" href="{"dashboard/eliminarProyecto"|site_url}/{$idProyecto}">Eliminar proyecto</a>
             </li>
             {/if}
         {/if}
-        {if $trabajador->get('rol') == 'Jefe de Proyecto'}
-            <li><a class="navButton" href="{"dashboard/getionarProyecto"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Gestionar proyecto</a></li>
+        {if $trabajador->get('rol') == 'Jefe de proyecto'}
+            {if $idProyecto}
+            <li><a class="navButton" href="{"dashboard/planes"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Planes</a></li>
+            {/if}
         {/if}
         <li><a class="navButton" href="{"informes/proyecto"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Informes</a></li>
     {else}

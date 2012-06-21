@@ -84,7 +84,9 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     public function getInputHtml($newAttributes = null){
         if ($newAttributes !== null) $attributes = $newAttributes;
         else $attributes = $this->attributes;
-        return '<input type="text" '.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$this->value.'"></input>';
+        $nameAppend= isset($attributes['nameAppend']) ? $attributes['nameAppend'] : '';
+        $class = isset($attributes['class']) ? $attributes['class'] : '';
+        return '<input type="text" class="'.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$this->value.'"></input>';
     }
     
     public function getHtml($newAttributes = null){

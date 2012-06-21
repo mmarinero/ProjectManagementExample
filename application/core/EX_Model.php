@@ -44,6 +44,10 @@ class EX_Model extends CI_Model{
         return $this->tempData;
     }
     
+    public function getTempItem($name){
+        return $this->tempData[$name];
+    }
+    
     public function getAllFields(){
         return array_merge($this->customFields, $this->references, $this->fields);
     }
@@ -112,6 +116,15 @@ class EX_Model extends CI_Model{
     }
     public function loadId($id) {
         $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
+        if(is_null($result)) return null;
+        $this->id = $result['id'];
+        unset($result['id']);
+        $this->setValues($result);
+        return $this;
+    }
+    
+   public function loadWhere($where) {
+        $result = array_shift($this->db->get_where($this->tableName,$where)->result_array());
         if(is_null($result)) return null;
         $this->id = $result['id'];
         unset($result['id']);

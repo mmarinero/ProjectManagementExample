@@ -21,9 +21,7 @@ class Trabajador extends EX_Model {
         $callable =$this->rolValidator();
         $tempRol->setValidator($callable);
         $this->fields['descripcion'] = new TypeString(array('name'=>'descripcion'));
-	$this->references['users'] = new Reference($this, 'users', 'users');
-	//$usersReference = $this->references['users']; 
-	//$usersReference->setCIcreateColumnArray(array('type' => 'int', 'constraint' => '11', 'null'=>true));
+	$this->references['users'] = new Reference($this, 'users', 'users',array('delete'=>'cascade','update'=>'cascade'));
     }
     
     public static function getRoles(){

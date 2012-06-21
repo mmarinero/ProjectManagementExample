@@ -12,7 +12,7 @@ class CrearBD extends CI_Controller
 	//refs array clase ref
 
     //private $models = array('Trabajador', 'PlanFases', 'PlanIteraccion', 'TareaPersonal', 'Actividad');
-    private $models = array('Proyecto','PlanFases','PlanIteracion','Actividad', 'Trabajador', 'TareaPersonal', 'TrabajadoresProyecto');
+    private $models = array('Proyecto','PlanFases','PlanIteracion','Actividad','ActividadActividad', 'Trabajador', 'TareaPersonal', 'TrabajadoresProyecto');
 
     function __construct() {
         parent::__construct();

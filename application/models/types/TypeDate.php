@@ -13,9 +13,10 @@ class TypeDate extends BaseType {
     public function getInputHtml($newAttributes = null){
         if ($newAttributes !== null) $attributes = $newAttributes;
         else $attributes = $this->attributes;
+        $nameAppend= isset($attributes['nameAppend']) ? $attributes['nameAppend'] : '';
         $class = isset($attributes['class']) ? $attributes['class'] : '';
         $date = implode('/', array_reverse(explode('-',$this->value)));
-        return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'" value="'.$date.'"></input>';
+        return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$date.'"></input>';
     }
     
     public function getHtml($newAttributes = null){

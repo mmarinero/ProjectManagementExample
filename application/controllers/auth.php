@@ -13,6 +13,9 @@ class Auth extends CI_Controller
 		}
 		$this->load->library('tank_auth');
 		$this->lang->load('tank_auth');
+                $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+                $this->smarty->assign('idProyecto', $this->uri->segment(3));
+                if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
 	}
 
 	function index()
@@ -117,15 +120,9 @@ class Auth extends CI_Controller
 	 */
 	function register()
 	{
-		if ($this->tank_auth->is_logged_in()) {									// logged in
+                $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
+		if ($trabajador->get('rol')->getDBValue() != 'admin') {									// logged in
 			redirect('');
-
-		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
-			redirect('/auth/send_again/');
-
-		} elseif (!$this->config->item('allow_registration', 'tank_auth')) {	// registration is off
-			$this->_show_message($this->lang->line('auth_message_registration_disabled'));
-
 		} else {
 			$use_username = $this->config->item('use_username', 'tank_auth');
 			if ($use_username) {
@@ -153,8 +150,11 @@ class Auth extends CI_Controller
 						$use_username ? $this->form_validation->set_value('username') : '',
 						$this->form_validation->set_value('email'),
 						$this->form_validation->set_value('password'),
-						$email_activation))) {									// success
-
+						$email_activation,
+                                                $this->input->post('nombre'), 
+                                                $this->input->post('rol')
+                                        ))) {									// success
+                                        redirect('dashboard');
 					$data['site_name'] = $this->config->item('website_name', 'tank_auth');
 
 					if ($email_activation) {									// send "activate" email
@@ -201,7 +201,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function send_again()
+	private function send_again()
 	{
 		if (!$this->tank_auth->is_logged_in(FALSE)) {							// not logged in or activated
 			redirect('/auth/login/');
@@ -238,7 +238,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function activate()
+	private function activate()
 	{
 		$user_id		= $this->uri->segment(3);
 		$new_email_key	= $this->uri->segment(4);
@@ -258,7 +258,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function forgot_password()
+	private function forgot_password()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
 			redirect('');
@@ -298,7 +298,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function reset_password()
+	private function reset_password()
 	{
 		$user_id		= $this->uri->segment(3);
 		$new_pass_key	= $this->uri->segment(4);
@@ -373,7 +373,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function change_email()
+	private function change_email()
 	{
 		if (!$this->tank_auth->is_logged_in()) {								// not logged in or not activated
 			redirect('/auth/login/');
@@ -412,7 +412,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function reset_email()
+	private function reset_email()
 	{
 		$user_id		= $this->uri->segment(3);
 		$new_email_key	= $this->uri->segment(4);
@@ -432,7 +432,7 @@ class Auth extends CI_Controller
 	 *
 	 * @return void
 	 */
-	function unregister()
+	private function unregister()
 	{
 		if (!$this->tank_auth->is_logged_in()) {								// not logged in or not activated
 			redirect('/auth/login/');
