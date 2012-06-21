@@ -3,6 +3,7 @@ html {
 }
 
 #maincontainer {
+    border-radius: 10px 10px 0 0;
     width:980px;
     margin:0 auto;
     margin-top: 10px;
@@ -29,15 +30,19 @@ body {
     background: linear-gradient(top, #e7e7ec, #3c3c41);
 }
 #header {
+    border-radius: 10px 10px 0 0;
     padding:10px 10px 5px 10px;
     background:#3c3c41;
+}
+#header img {
+    border-radius: 10px 10px 10px 10px;
 }
 #content {
     height: 100%;
     padding:10px;
     font-size: 80%;
     float:right;
-    width:710px;
+    width:740px;
     min-height: 300px;
     background:#9c9;
     background:white;
@@ -45,15 +50,21 @@ body {
 #sidebar {
     float:left;
     padding:10px;
-    width:230px;
+    width:200px;
     background:#658db5;
     background-color:rgba(101,141,181,0) !important;
+}
+#sidebar ul{
+    margin: 0;
 }
 #footer {
     padding:5px 10px;
     color: white;
     clear:both;
     background:#3c3c41;
+}
+#pushToFooter{
+    clear:both;
 }
 
 #nav {
@@ -74,7 +85,7 @@ body {
     background:#58585f;
     text-decoration: none;
     color: white;
-    padding: 5px 12px;
+    padding: 10px 12px;
     margin: 0px 5px;
 }
 #nav a.navButton:hover, #nav a.navButton:active {
@@ -137,58 +148,73 @@ imgLogout {
 .button.large { font-size: 125%; padding: 7px 12px; }
 .button.large:hover { background-position: 0 -35px; }
 .button.large:active { padding: 8px 12px 6px; background-position: 0 top; }
-.button.sidebar {margin-bottom: 5px;padding: 7px 12px; width:200px}
-.button.sidebar:hover { background-position: 0 -35px; width:200px}
-.button.sidebar:active { padding: 8px 12px 6px; background-position: 0 top; width:200px}
+.button.sidebar {margin-bottom: 5px;padding: 7px 9px; width:90%; text-decoration: none}
+.button.sidebar:hover { background-position: 0 -35px}
+.button.sidebar:active { padding: 8px 12px 6px; background-position: 0 top}
 
-form.estandarForm   {
-background: -webkit-gradient(linear, bottom, left 175px, from(#CCCCCC), to(#EEEEEE));
-background: -moz-linear-gradient(bottom, #CCCCCC, #EEEEEE 175px);
-margin:auto;
-position:relative;
-width:650px;
-font-family: Tahoma, Geneva, sans-serif;
-font-size: 14px;
-font-style: italic;
-line-height: 24px;
-font-weight: bold;
-color: #09C;
-text-decoration: none;
--webkit-border-radius: 10px;
--moz-border-radius: 10px;
-border-radius: 10px;
-padding:10px;
-border: 1px solid #999;
-border: inset 1px solid #333;
--webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
--moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+form.estandarForm {
+    background:#EEEEEE;
+    background: -webkit-gradient(linear, bottom, left 175px, from(#CCCCCC), to(#EEEEEE));
+    background: -moz-linear-gradient(bottom, #CCCCCC, #EEEEEE 175px);
+    margin:auto;
+    position:relative;
+    width:97%;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 24px;
+    font-weight: bold;
+    color: #09C;
+    text-decoration: none;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding:10px;
+    border: 1px solid #999;
+    border: inset 1px solid #333;
+    -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
-form.estandarForm input, form.estandarForm select{
-width:375px;
-display:block;
-border: 1px solid #999;
-height: 25px;
--webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
--moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+form.estandarForm input, form.estandarForm textarea{
+    width:60%;
+    display: inline-block;
+    border: 1px solid #999;
+    height: 25px;
+    -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
 form.estandarForm textarea {
-    width:375px;
     height:150px;
 }
 
-form.estandarForm textarea {
-display:block;
+form.estandarForm select{
+    width:60%;
+    display: inline-block;
+}
+form.estandarForm span{
+    display:inline-block;
+    padding: 0 10px;
+    width:35%;
+    text-align: right;
+}
+form.estandarForm .lineaForm{
+    padding:5px;
+    width:100%;
 }
 
-form.estandarForm input.button {
-width:100px;
-position:absolute;
-right:20px;
-bottom:20px;
+form.estandarForm input[type="checkbox"] {
+    width: auto;
+    height: auto;
+}
+
+form.estandarForm input[type="submit"] {
+width:60%;
+margin-top: 20px;
+margin-left: 40%;
 background:#09C;
 color:#fff;
 font-family: Tahoma, Geneva, sans-serif;
@@ -231,7 +257,18 @@ background:#f4f9fe;
 table.listado .listadoLabel {
 background:#f9fcfe;
 }
-
+#proyectosHeader{
+    float: left;
+    color:whitesmoke;
+    width:200px;
+    text-align: center;
+    padding-top: 14px;
+    font-size: 125%;
+    background:#c60505;
+    height:30px;
+    font-weight:bold;
+    border-radius: 10px 10px 0 0;
+}
 
 table.listado th {
     background:#f4f9fe;

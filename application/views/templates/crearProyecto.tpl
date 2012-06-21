@@ -13,10 +13,10 @@
 </script-->
 {$crearProyecto['start']}
 {foreach from=$crearProyecto['fields'] item=lineaForm}
-    <label>
+    <div class="lineaForm">
         <span>{$lineaForm.name}: </span>
-    </label>
-        {$lineaForm.input}
+    {$lineaForm.input}
+    </div>
 {/foreach}
     <label>
     <span>Jefe de proyecto: </span>

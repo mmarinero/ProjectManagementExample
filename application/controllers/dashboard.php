@@ -99,7 +99,7 @@ class dashboard extends CI_Controller{
         $trabajadoresLoader = new Trabajador();
         $trabajadores = $trabajadoresLoader->loadArray();
         $this->smarty->assign('fixedTrabajadores', $trabajadores);
-        if ($this->trabajador->get('rol') != 'admin' || $id == null) {
+        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
             redirect('dashboard');
         }
         $proyecto = new Proyecto();

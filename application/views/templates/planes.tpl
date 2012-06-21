@@ -11,7 +11,7 @@
 <h2>Trabajadores</h2>
 {foreach from=$trabajadores item=trabajador}
     <label>
-        <span>{$trabajador->get('nombre')}: </span>
+        <span>{$trabajador->get('nombre')->val()}: </span>
     </label>
 <input type="checkbox" class="boolean" id="check{$trabajador->getId()}" name="{$trabajador->getId()}" value="1"></input>
 

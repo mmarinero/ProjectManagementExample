@@ -18,8 +18,7 @@ class Trabajador extends EX_Model {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre'));
         $this->fields['rol'] = new TypeString(array('name'=>'rol'));
         $tempRol = $this->fields['rol'];
-        $callable =$this->rolValidator();
-        $tempRol->setValidator($callable);
+        $tempRol->setValidator($this->rolValidator());
         $this->fields['descripcion'] = new TypeString(array('name'=>'descripcion'));
 	$this->references['users'] = new Reference($this, 'users', 'users',array('delete'=>'cascade','update'=>'cascade'));
     }

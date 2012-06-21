@@ -9,11 +9,11 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     protected $name;
     
-    protected $outputName;
+    protected $outputName = null;
     
     protected $value;
     
-    protected $validator;
+    protected $validator = null;
     
     protected $attributes = array();
     
@@ -42,7 +42,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function getOutputName(){
-        return $this->outputName ?:$this->name;
+        return is_null($this->outputName) ? $this->outputName : $this->name;
     }
 
     
@@ -61,6 +61,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
     public function setValue($value) {
         $this->value = $value;
+        return $this->isValid();
     }
     
     public function setValidator($validator){
@@ -68,7 +69,12 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function isValid() {
-        return $this->validator($this);
+        if ($this->validator !== null) {
+            $validator = $this->validator;
+            return $validator($this);
+        }else{
+            return null;
+        }
     }
     
     public function getInputHtml($newAttributes = null){
