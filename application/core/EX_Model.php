@@ -70,8 +70,14 @@ class EX_Model extends CI_Model{
         return $this->properties;
     }
     
-    public function __construct() {
+    public function __construct($idOrWhere) {
+    //check is int not float
         parent::__construct();
+	if(is_numeric($id)){
+	    $this->loadFromDB($idOrWhere)
+	}else{
+	    $this->loadFromDB(null, $idOrWhere)
+	}
     }
     
     public function validate(){
@@ -85,7 +91,9 @@ class EX_Model extends CI_Model{
             $field = $this->getField($name);
             if(is_object($field)){
                 $field->setValue($value);
-            } else {
+            } else if($name === 'id') {
+		$this->id = $value;
+            } else{
                 $this->tempData[$name] = $value;
             }
         }
@@ -111,49 +119,58 @@ class EX_Model extends CI_Model{
     }
     
     public function DBUpdate($values){
+	if (isset($values['id']) unset($values['id'];
         $this->setValues($values);
         $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
     }
+    
+    public static function DBIdUpdate($values, $id){
+        $this->setValues($values);
+        $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
+    }
+
+    protected loadFromDB($id=null, $where=null){
+	$thisInstance = new static();
+	if (!is_null($id){
+	    $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
+	} else {
+	    $result = array_shift($this->db->get_where($this->tableName,$where)->result_array());
+	}
+        if(is_null($result)) return null;
+        $this->id = $result['id'];
+        unset($result['id']);
+        $this->setValues($result);
+        return $this;
+    }
+
     public function loadId($id) {
-        $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
-        if(is_null($result)) return null;
-        $this->id = $result['id'];
-        unset($result['id']);
-        $this->setValues($result);
-        return $this;
+	return loadFromDB($id);
     }
     
-   public function loadWhere($where) {
-        $result = array_shift($this->db->get_where($this->tableName,$where)->result_array());
-        if(is_null($result)) return null;
-        $this->id = $result['id'];
-        unset($result['id']);
-        $this->setValues($result);
-        return $this;
+    public function loadWhere($where) {
+	return loadFromDB(null, $where);
     }
 
-    public function loadArray($where = null, $limit = null, $offset = null) {
-        
-        $models = array();
+    public static function loadWhereArray($where = null, $getDBResult =null, $limit = null, $offset = null) {
+	$thisInstance = new static();
         if (is_null($where)) {
-            $result = $this->db->get($this->tableName, $limit, $offset)->result_array();
+            $result = $thisInstance->db->get($thisInstance->tableName, $limit, $offset)->result_array();
         } else {
-            $result = $this->db->get_where($this->tableName, $where, $limit, $offset)->result_array();
+            $result = $thisInstance->db->get_where($thisInstance->tableName, $where, $limit, $offset)->result_array();
         }
-	foreach($result as $values){
-
-	    $newModel = new static();
-            $newModel->id = $values['id'];
-            unset($values['id']);
-	    $newModel->setValues($values);
-	    $models[$newModel->id] = $newModel;
-	}
-	return $models;
+	if($getDBResult) return $result;
+	else return static::createFromResult();
     }
     
-    public function loadQueryArray($query) {
+    public static function loadQueryArray($query, $getDBResult) {
+	$thisInstance = new static();
+        $result = $thisInstance->db->query($query)->result_array();
+	if($getDBResult) return $result;
+	else return static::createFromResult($result);
+    }
+
+    protected static function createFromArray($result){
         $models = array();
-        $result = $this->db->query($query)->result_array();
 	foreach($result as $values){
 	    $newModel = new static();
             $newModel->id = $values['id'];
@@ -163,6 +180,34 @@ class EX_Model extends CI_Model{
 	}
 	return $models;
     }
+
+		
+    }
+
+    public function genericGetForm($action,$options,$html){
+	single foreach pass field variable instead of input and outputname
+        $form = array();
+	$class = isset($options['class']) ? 'class="'.$options['class'].'" ' : '';
+	$id = isset($options['id']) ? 'id="'.$options['id'].'" ' : '';
+	if (isset($options['custom']) && $options['custom'] === true){
+	    $fields = array_merge($this->fields, $this->customFields);
+	} else {
+	    $fields = $this->fields;
+	}
+	$form['start'] = '<form action="'.$action.'" method="post" '.$class.$id.'>';
+	if ($html) {//finish
+        /* @var $field BaseType*/
+	foreach ($fields as $field){
+	    $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
+            $form['fields'][$field->getName()]['name'] = $field->getOutputName();
+	}
+	foreach ($fields as $field){
+            $form['fields'][$field->getName()] = $field;
+	}
+	$form['end'] = "</form>";
+	return isset($options['implode']) ? $form['start'].$options['implode'].
+	    join($options['implode'],$form['fields']).
+	    $options['implode'].$form['end'] : $form;
 
     public function getForm($action,$options){
         $form = array();
@@ -180,7 +225,9 @@ class EX_Model extends CI_Model{
             $form['fields'][$field->getName()]['name'] = $field->getOutputName();
 	}
 	$form['end'] = "</form>";
-	return isset($options['implode']) ? join($options['implode'],$form) : $form;
+	return isset($options['implode']) ? $form['start'].$options['implode'].
+	    join($options['implode'],$form['fields']).
+	    $options['implode'].$form['end'] : $form;
     }
     
     public function getFieldsAndId(){

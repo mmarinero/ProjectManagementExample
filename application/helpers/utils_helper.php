@@ -85,5 +85,21 @@
         return (bool)count(array_filter(array_keys($array), 'is_string'));
     }
 
+    /**
+     * Identity function, avoid temp variable for method call after class instantiation
+     * php < 5.4
+     */
+    function i($var) {
+	return $var;
+    }
+
+    /**
+     * Dereference function, avoid temp variable to reference array index
+     * php < 5.4
+     */
+    function d($array, $index) {
+	return $array[$index];
+    }
+
 
 ?>
