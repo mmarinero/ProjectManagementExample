@@ -15,23 +15,32 @@ class Reference implements IDBType , IType{
 
     protected $CICreateColumnArray;
 
-    public function __construct($model, $referencedTableName, $name=null, $options = array()){
+    public function __construct($model, $referencedTableName, $name=null, $options = null){
         $this->ci = get_instance();
         $this->CICreateColumnArray = $this->ci->config->item('referenceCISqlDefinition');
 	$this->model = $model;
 	$this->referencedTableName = $referencedTableName;
         $this->name = !is_null($name) ? $name : $referencedTableName;
-	$this->options = $options;
+	$this->options = static::proccessOptions($options);
+    }
+    
+    private static function proccessOptions($options){
+        if (is_null($options)){
+            return '';
+        }else if (is_string($options)) {
+            return "on delete $options on cascade $options";
+        } else if (is_array($options)){
+            $optionsString = '';
+            if (isset($options['delete'])) $optionsString.$options['delete'];
+            if (isset($options['update'])) $optionsString.$options['update'];
+            return $optionsString;
+        }
     }
     
     private function genericGetFKConstraint(){
-        $optionsString = '';
-	foreach ($this->options as $action => $result){
-	    $optionsString.= "ON $action $result ";
-	}
 	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedTableName}_{$this->name} ".
                "FOREIGN KEY ({$this->name}) REFERENCES ".
-               "{$this->referencedTableName}(id) $optionsString";	
+               "{$this->referencedTableName}(id) $this->options";	
     }
     
     public function getFKConstraint(){
@@ -61,18 +70,6 @@ class Reference implements IDBType , IType{
     
     public function val() {
         return $this->referencedId;
-    }
-
-    public function sanitizeValue() {
-        throw new Exception('Unimplemented');
-    }
-
-    public function setDBValue($value) {
-        $this->referencedId = $value;
-    }
-
-    public function validateValue() {
-        throw new Exception('Unimplemented');
     }
 
     public function setName($name){

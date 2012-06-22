@@ -17,7 +17,6 @@ class dashboard extends CI_Controller{
     
     function __construct() {
         parent::__construct();
-        checkSet($var);
         $this->trabajador = Trabajador::loggedTrabajador();
         $buscadorJefe = new TrabajadoresProyecto();
         $jefeOrNull = $buscadorJefe->loadWhere(array(

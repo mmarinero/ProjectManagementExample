@@ -18,7 +18,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     protected $attributes = array();
     
     public function __construct($config) {
-        if (gettype($config) === 'string') {
+        if (is_string($config)) {
             $this->name = $config;
         } else {
             $options = array('name','outputName','value','validator','attributes');
