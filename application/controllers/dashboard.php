@@ -17,25 +17,18 @@ class dashboard extends CI_Controller{
     
     function __construct() {
         parent::__construct();
-        $this->load->library('tank_auth');
-        $this->lang->load('tank_auth');
-        if (!$this->tank_auth->is_logged_in()) {									// logged in
-            redirect('/auth/login');
-	}
-        $this->trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
-        
+        checkSet($var);
+        $this->trabajador = Trabajador::loggedTrabajador();
         $buscadorJefe = new TrabajadoresProyecto();
         $jefeOrNull = $buscadorJefe->loadWhere(array(
             'Proyecto'=>$this->uri->segment(3),
             'Trabajador'=>  $this->trabajador->getId(),
             'jefe'=>1));
-        
         $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
-        
         $proyectoLoader = new Proyecto();
         
         if ($this->trabajador->get('rol')->val() == 'admin') {
-            $proyectos = $proyectoLoader->loadArray();
+            $proyectos = Proyecto::loadArray();
         } else {
             $proyectos = $proyectoLoader->filterTrabajador($this->trabajador);
         }

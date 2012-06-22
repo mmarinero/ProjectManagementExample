@@ -5,7 +5,7 @@
     </head>
     <body>
         <div id="maincontainer">
-            <div id="header"><a  href="{"dashboard"|site_url}"> <img width="960" height="100" src="{"images/header.png"|base_url}"></a></div>
+            <div id="header"><a  href="{""|site_url}"> <img width="960" height="100" src="{"images/header.png"|base_url}"></a></div>
             <div id="nav">
                 {block name=nav}{/block}
             </div>
@@ -16,7 +16,7 @@
                 {block name=sidebar}{/block}
             </div>
             <div id="footer">
-                <span>Planificación y gestión de procesos 2012. Setepros</span><span style="float:right">Grupo 10: Mario Marinero Domingo</span>
+                <span>Planificación y gestión de proyectos 2012. Setepros</span><span style="float:right">Grupo 10: Mario Marinero Domingo</span>
             </div>
         </div>
     </body>

@@ -13,7 +13,7 @@ class Trabajador extends EX_Model {
         };
     }
     
-    protected function init() {
+    protected function initModel() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre'));
         $this->fields['rol'] = new TypeString(array('name'=>'rol'));
         $tempRol = $this->fields['rol'];
@@ -52,8 +52,7 @@ class Trabajador extends EX_Model {
     }
     
     public static function fromTankAuth($id) {
-        $trabajador = new static();
-        return array_shift($trabajador->loadArray(array('users'=>$id)));
+        return new static(array('users'=>$id));
     }
     
     public function filterProyecto($proyecto){
@@ -70,5 +69,13 @@ class Trabajador extends EX_Model {
     
     public function authSuperiorLevel($level){
         return $level >= static::$roles[$this->get('rol')->val()] ? true : show_error('No autorizado', 403);
+    }
+    
+    public static function loggedTrabajador($redirectIfNot = true, $url = 'auth/login') {
+        $thisInstance = new static();
+        if (!$thisInstance->tank_auth->is_logged_in()) {
+            if ($redirectIfNot) redirect($url);
+	}
+        return Trabajador::fromTankAuth($thisInstance->tank_auth->get_user_id());
     }
 }

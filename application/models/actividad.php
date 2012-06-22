@@ -6,7 +6,7 @@ class Actividad extends EX_Model {
     
     protected $fields = array();
     
-    protected function init() {
+    protected function initModel() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre','outputName'=>'Nombre'));
         $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion','outputName'=>'Descripción'));
         $this->fields['horas'] = new TypeInt(array('name'=>"horas",'outputName'=>"Horas/persona"));

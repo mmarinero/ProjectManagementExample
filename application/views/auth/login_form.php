@@ -52,7 +52,7 @@ $captcha = array(
 	</tr>
 	<tr>
             <td></td>
-		<td><br>
+		<td>
 			<?php echo form_submit('submit', 'Entrar'); ?>
                 </td>
 	</tr>

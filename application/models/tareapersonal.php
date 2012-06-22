@@ -6,7 +6,7 @@ class TareaPersonal extends EX_Model {
     
     protected $fields = array();
     
-    protected function init() {
+    protected function initModel() {
         $this->fields['nombre'] = new TypeString('nombre');
         $this->fields['descripcion'] = new TypeText('descripcion');
         $this->references['Actividad'] = new Reference($this, 'Actividad', 'Actividad',array('delete'=>'cascade','update'=>'cascade'));

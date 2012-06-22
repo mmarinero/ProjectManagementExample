@@ -7,7 +7,7 @@ class Proyecto extends EX_Model {
     protected $fields = array();
 
     
-    protected function init() {
+    protected function initModel() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre','outputName'=>'Nombre'));
         $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion','outputName'=>'Descripción'));
         $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Fecha de inicio'));

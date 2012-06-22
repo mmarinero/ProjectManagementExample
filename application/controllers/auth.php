@@ -35,7 +35,7 @@ class Auth extends CI_Controller
 	function login()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect('/dashboard');
+			redirect('');
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
 
@@ -65,7 +65,7 @@ class Auth extends CI_Controller
 			}
 			$data['errors'] = array();
 
-			if ($this->form_validation->run()) {								// validation ok
+			if ($this->form_validation->run()) { // validation ok
 				if ($this->tank_auth->login(
 						$this->form_validation->set_value('login'),
 						$this->form_validation->set_value('password'),

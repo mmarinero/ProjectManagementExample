@@ -70,16 +70,15 @@ class EX_Model extends CI_Model{
     public function __construct($idOrWhere=null, $initParams = array()) {
     //check is int not float
         parent::__construct();
+        $this->initModel($initParams);
 	if(is_numeric($idOrWhere)){
 	    $this->loadFromDB($idOrWhere);
-	}else if (is_null($idOrWhere)){
-            $this->init($initParams);
-        }else{
+        }else if (!is_null ($idOrWhere)){
 	    $this->loadFromDB(null, $idOrWhere);
 	}
     }
     
-    protected function init($initParams) {}
+    protected function initModel($initParams) {}
     
     public function validate(){
         foreach ($this->fields as $field) {
@@ -213,7 +212,6 @@ class EX_Model extends CI_Model{
             foreach ($fields as $field){
                 $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
                 $form['fields'][$field->getName()]['name'] = $field->getOutputName();
-                print_r($field);
             }
         } else {
             foreach ($fields as $field){

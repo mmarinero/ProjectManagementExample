@@ -21,11 +21,17 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         if (gettype($config) === 'string') {
             $this->name = $config;
         } else {
-            if (isset($config['name'])) $this->name = $config['name'];
-            if (isset($config['outputName'])) $this->outputName = $config['outputName'];
-            if (isset($config['value'])) $this->value = $config['value'];
-            if (isset($config['validator'])) $this->validator = $config['validator'];
-            if (isset($config['attributes'])) $this->attributes = $config['attributes'];
+            $options = array('name','outputName','value','validator','attributes');
+            if (isset($config[0])) { //asumir no es asociativo y va por orden
+                foreach ($config as $value) {
+                    $property = $options[$value];
+                    $this->$property = $value;
+                }
+            }else{
+                foreach ($options as $option) {
+                    if (isset($config[$option])) $this->$option = $config[$option];
+                }
+            }
         }
     }
     
@@ -48,7 +54,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     
      /**
      * Detección de un error común al olvidar usar val() o getHtml()
-     * Se puede eliminar sin consecuencias o devolver automaticamente el valor.
+     * la función se puede eliminar sin consecuencias o devolver automaticamente el valor.
      * @throws Exception 
      */
     public function __toString() {

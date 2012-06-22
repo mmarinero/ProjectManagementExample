@@ -6,7 +6,7 @@ class TrabajadoresProyecto extends EX_Model {
     
     protected $fields = array();
     
-    protected function init() { 
+    protected function initModel() { 
         $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
         $this->references['Trabajador'] = new Reference($this, 'Trabajador', 'Trabajador',array('delete'=>'cascade','update'=>'cascade'));
         $this->fields['porcentaje'] = new TypeInt(array('name'=>'porcentaje','outputName'=>'Porcentaje'));

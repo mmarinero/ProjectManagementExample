@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = 'sp_index';
+$route['default_controller'] = 'dashboard';
 $route['404_override'] = '';
 
 
