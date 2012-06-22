@@ -6,12 +6,10 @@ class TareaPersonal extends EX_Model {
     
     protected $fields = array();
     
-    public function __construct() {
-        parent::__construct();
+    protected function init() {
         $this->fields['nombre'] = new TypeString('nombre');
         $this->fields['descripcion'] = new TypeText('descripcion');
         $this->references['Actividad'] = new Reference($this, 'Actividad', 'Actividad',array('delete'=>'cascade','update'=>'cascade'));
         $this->references['Trabajador'] = new Reference($this, 'Trabajador', 'Trabajador',array('delete'=>'cascade','update'=>'cascade'));
-        $this->change();
     }
 }

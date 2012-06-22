@@ -13,8 +13,7 @@ class Trabajador extends EX_Model {
         };
     }
     
-    public function __construct() {
-        parent::__construct();
+    protected function init() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre'));
         $this->fields['rol'] = new TypeString(array('name'=>'rol'));
         $tempRol = $this->fields['rol'];

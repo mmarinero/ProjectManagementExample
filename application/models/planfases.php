@@ -11,8 +11,7 @@ class PlanFases extends EX_Model {
         array('construcion','Construción'),
         array('transicion','Transición'));
     
-    public function __construct() {
-        parent::__construct();
+    protected function init() {
         $this->customFields['cerrado'] = new TypeBoolean(array('name'=>'cerrado','outputName'=>'Plan cerrado'));
         $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
         foreach ($this->fases as $fase){

@@ -7,8 +7,7 @@ class Proyecto extends EX_Model {
     protected $fields = array();
 
     
-    public function __construct() {
-        parent::__construct();
+    protected function init() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre','outputName'=>'Nombre'));
         $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion','outputName'=>'Descripción'));
         $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Fecha de inicio'));
@@ -16,6 +15,7 @@ class Proyecto extends EX_Model {
         $this->fields['comenzado'] = new TypeBoolean(array('name'=>'comenzado','outputName'=>'Comenzado'));
         $this->fields['cerrado'] = new TypeBoolean(array('name'=>'cerrado','outputName'=>'Cerrado'));
     }
+    
     public function DBInsert($values, $crearePlanFases = false){
 	parent::DBInsert($values);
         if ($crearePlanFases) {

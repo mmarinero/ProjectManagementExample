@@ -42,7 +42,7 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
     }
     
     public function getOutputName(){
-        return is_null($this->outputName) ? $this->outputName : $this->name;
+        return !is_null($this->outputName) ? $this->outputName : $this->name;
     }
 
     

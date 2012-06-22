@@ -178,7 +178,7 @@ form.estandarForm {
 }
 
 form.estandarForm input, form.estandarForm textarea{
-    width:60%;
+    width:65%;
     display: inline-block;
     border: 1px solid #999;
     height: 25px;
@@ -192,13 +192,13 @@ form.estandarForm textarea {
 }
 
 form.estandarForm select{
-    width:60%;
+    width:65%;
     display: inline-block;
 }
 form.estandarForm span{
     display:inline-block;
     padding: 0 10px;
-    width:35%;
+    width:30%;
     text-align: right;
 }
 form.estandarForm .lineaForm{
@@ -207,14 +207,15 @@ form.estandarForm .lineaForm{
 }
 
 form.estandarForm input[type="checkbox"] {
+    margin-right: 60%;
     width: auto;
     height: auto;
 }
 
 form.estandarForm input[type="submit"] {
-width:60%;
+width:64%;
 margin-top: 20px;
-margin-left: 40%;
+margin-left: 34%;
 background:#09C;
 color:#fff;
 font-family: Tahoma, Geneva, sans-serif;
@@ -225,9 +226,13 @@ border-radius: 15px;
 border: 1p solid #999;
 }
 
-form.estandarForm input.button:hover {
+form.estandarForm input[type="submit"]:hover {
 background:#fff;
 color:#09C;
+}
+
+form.estandarForm table, form.estandarForm table tr, form.estandarForm td{
+    padding:10px;
 }
 
 form.estandarForm textarea:focus, input:focus {

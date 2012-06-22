@@ -6,8 +6,7 @@ class ActividadActividad extends EX_Model {
     
     protected $fields = array();
     
-    public function __construct() {
-        parent::__construct();
+    protected function init() {
         $this->references['Precedente'] = new Reference($this, 'Actividad', 'Precedente',array('delete'=>'cascade','update'=>'cascade'));
         $this->references['Posterior'] = new Reference($this, 'Actividad', 'Posterior',array('delete'=>'cascade','update'=>'cascade'));
     }

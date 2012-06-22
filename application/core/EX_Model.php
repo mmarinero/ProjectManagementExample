@@ -21,9 +21,6 @@ class EX_Model extends CI_Model{
     
     protected $tableName = null;
     
-    protected function change(){
-    }
-    
     public function getId(){
 	return $this->id;
     }
@@ -70,15 +67,19 @@ class EX_Model extends CI_Model{
         return $this->properties;
     }
     
-    public function __construct($idOrWhere) {
+    public function __construct($idOrWhere=null, $initParams = array()) {
     //check is int not float
         parent::__construct();
-	if(is_numeric($id)){
-	    $this->loadFromDB($idOrWhere)
-	}else{
-	    $this->loadFromDB(null, $idOrWhere)
+	if(is_numeric($idOrWhere)){
+	    $this->loadFromDB($idOrWhere);
+	}else if (is_null($idOrWhere)){
+            $this->init($initParams);
+        }else{
+	    $this->loadFromDB(null, $idOrWhere);
 	}
     }
+    
+    protected function init($initParams) {}
     
     public function validate(){
         foreach ($this->fields as $field) {
@@ -113,25 +114,41 @@ class EX_Model extends CI_Model{
         $this->id = $this->db->insert_id();
     }
     
-    public function DBdelete($id = null){
+    public static function DBIdInsert(array $values=array()){
+        $thisInstance = new static();
+        $thisInstance->setValues($values);
+        $thisInstance->db->insert($thisInstance->tableName, $thisInstance->varsToDB());
+        $thisInstance->id = $thisInstance->db->insert_id();
+        return $thisInstance;
+    }
+    
+    public function DBDelete($id = null){
         if (is_null($id))  $id = $this->id;
         $this->db->delete($this->tableName, array('id' => $id));
     }
     
+    public static function DBIdDelete($id){
+        i(new static())->db->delete($this->tableName, array('id' => $id));
+    }
+    
     public function DBUpdate($values){
-	if (isset($values['id']) unset($values['id'];
+	if (isset($values['id'])) unset($values['id']);
         $this->setValues($values);
         $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
     }
     
-    public static function DBIdUpdate($values, $id){
-        $this->setValues($values);
-        $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
+    public static function DBIdUpdate($values, $id=null){
+        $thisInstance = new static();
+        $thisInstance->setValues($values);
+        if ($id !== null){
+            $thisInstance->id = $id;
+        }
+        $thisInstance->db->update($thisInstance->tableName, $thisInstance->varsToDB(), array('id' => $thisInstance->id));
+        return $thisInstance;
     }
 
-    protected loadFromDB($id=null, $where=null){
-	$thisInstance = new static();
-	if (!is_null($id){
+    protected function loadFromDB($id=null, $where=null){
+	if (!is_null($id)){
 	    $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
 	} else {
 	    $result = array_shift($this->db->get_where($this->tableName,$where)->result_array());
@@ -144,14 +161,14 @@ class EX_Model extends CI_Model{
     }
 
     public function loadId($id) {
-	return loadFromDB($id);
+	return $this->loadFromDB($id);
     }
     
     public function loadWhere($where) {
-	return loadFromDB(null, $where);
+	return $this->loadFromDB(null, $where);
     }
 
-    public static function loadWhereArray($where = null, $getDBResult =null, $limit = null, $offset = null) {
+    public static function loadArray($where = null, $getDBResult = false, $limit = null, $offset = null) {
 	$thisInstance = new static();
         if (is_null($where)) {
             $result = $thisInstance->db->get($thisInstance->tableName, $limit, $offset)->result_array();
@@ -159,17 +176,17 @@ class EX_Model extends CI_Model{
             $result = $thisInstance->db->get_where($thisInstance->tableName, $where, $limit, $offset)->result_array();
         }
 	if($getDBResult) return $result;
-	else return static::createFromResult();
+	else return static::createFromResult($result);
     }
     
-    public static function loadQueryArray($query, $getDBResult) {
+    public static function loadQueryArray($query, $getDBResult = false) {
 	$thisInstance = new static();
         $result = $thisInstance->db->query($query)->result_array();
 	if($getDBResult) return $result;
 	else return static::createFromResult($result);
     }
 
-    protected static function createFromArray($result){
+    protected static function createFromResult($result){
         $models = array();
 	foreach($result as $values){
 	    $newModel = new static();
@@ -181,53 +198,43 @@ class EX_Model extends CI_Model{
 	return $models;
     }
 
-		
+    protected function genericGetForm($action,$options,$html){
+        $form = array();
+	$class = isset($options['class']) ? 'class="'.$options['class'].'" ' : '';
+	$id = isset($options['id']) ? 'id="'.$options['id'].'" ' : '';
+	if (isset($options['custom']) && $options['custom'] === true){
+	    $fields = array_merge($this->fields, $this->customFields);
+	} else {
+	    $fields = $this->fields;
+	}
+	$form['start'] = '<form action="'.$action.'" method="post" '.$class.$id.'>';
+	if ($html) {
+            /* @var $field BaseType*/
+            foreach ($fields as $field){
+                $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
+                $form['fields'][$field->getName()]['name'] = $field->getOutputName();
+                print_r($field);
+            }
+        } else {
+            foreach ($fields as $field){
+                $form['fields'][$field->getName()] = $field;
+            }
+        }
+	$form['end'] = "</form>";
+        if (isset($options['implode'])) {
+            $imp = $options['implode'];
+            return $form['start'].$imp.join($imp,$form['fields']).$imp.$form['end'];
+        } else {
+            return $form;
+        }
     }
 
-    public function genericGetForm($action,$options,$html){
-	single foreach pass field variable instead of input and outputname
-        $form = array();
-	$class = isset($options['class']) ? 'class="'.$options['class'].'" ' : '';
-	$id = isset($options['id']) ? 'id="'.$options['id'].'" ' : '';
-	if (isset($options['custom']) && $options['custom'] === true){
-	    $fields = array_merge($this->fields, $this->customFields);
-	} else {
-	    $fields = $this->fields;
-	}
-	$form['start'] = '<form action="'.$action.'" method="post" '.$class.$id.'>';
-	if ($html) {//finish
-        /* @var $field BaseType*/
-	foreach ($fields as $field){
-	    $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
-            $form['fields'][$field->getName()]['name'] = $field->getOutputName();
-	}
-	foreach ($fields as $field){
-            $form['fields'][$field->getName()] = $field;
-	}
-	$form['end'] = "</form>";
-	return isset($options['implode']) ? $form['start'].$options['implode'].
-	    join($options['implode'],$form['fields']).
-	    $options['implode'].$form['end'] : $form;
-
     public function getForm($action,$options){
-        $form = array();
-	$class = isset($options['class']) ? 'class="'.$options['class'].'" ' : '';
-	$id = isset($options['id']) ? 'id="'.$options['id'].'" ' : '';
-	if (isset($options['custom']) && $options['custom'] === true){
-	    $fields = array_merge($this->fields, $this->customFields);
-	} else {
-	    $fields = $this->fields;
-	}
-	$form['start'] = '<form action="'.$action.'" method="post" '.$class.$id.'>';
-        /* @var $field BaseType*/
-	foreach ($fields as $field){
-	    $form['fields'][$field->getName()]['input'] = $field->getInputHtml();
-            $form['fields'][$field->getName()]['name'] = $field->getOutputName();
-	}
-	$form['end'] = "</form>";
-	return isset($options['implode']) ? $form['start'].$options['implode'].
-	    join($options['implode'],$form['fields']).
-	    $options['implode'].$form['end'] : $form;
+        return $this->genericGetForm($action, $options, true);
+    }
+    
+    public function getFieldsForm($action,$options){
+        return $this->genericGetForm($action, $options, false);
     }
     
     public function getFieldsAndId(){

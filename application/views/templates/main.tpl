@@ -5,7 +5,7 @@
     </head>
     <body>
         <div id="maincontainer">
-            <div id="header"><a  href="{"dashboard"|site_url}"> <img src="{"images/header.png"|base_url}"></a></div>
+            <div id="header"><a  href="{"dashboard"|site_url}"> <img width="960" height="100" src="{"images/header.png"|base_url}"></a></div>
             <div id="nav">
                 {block name=nav}{/block}
             </div>
