@@ -1,25 +1,25 @@
 <?php
 
 class Reference implements IDBType , IType{
-    protected $modelClass;
+    private $modelClass;
     
-    protected $modelTableName;
+    private $modelTableName;
     
-    protected $referencedModelClass;
+    private $referencedModelClass;
     
-    protected $referencedTableName;
+    private $referencedTableName;
 
-    protected $referencedId;
+    private $referencedId;
 
-    protected $options;
+    private $options;
     
-    protected $external = false;
+    private $external = false;
     
-    protected $cyclic = null;
+    private $cyclic = null;
     
-    protected $ci;
+    private $ci;
 
-    protected $CICreateColumnArray;
+    private $CICreateColumnArray;
 
     public function __construct($modelClass, $referencedModelClass, $options = null){
         $this->proccessOptions($options);
@@ -91,11 +91,24 @@ class Reference implements IDBType , IType{
     }
 
     public function getName() {
-        return $this->referencedTableName;;
+        return $this->referencedTableName;
     }
     
-    public function loadReferredArray($ReferedId){
-        
+    public function loadReferredArray($referedId, $loadModels){
+        $result =$this->ci->db->get_where($this->modelTableName,
+                array($this->referencedTableName=>$referedId))->result_array();
+        if (!$loadModels) return result;
+        else return $this->createFromResult($result, $this->modelClass);
+    }
+    
+    private static function createFromResult($result, $modelClass){
+        $models = array();
+	foreach($result as $values){
+	    $newModel = new $modelClass();
+	    $newModel->setValues($values);
+	    $models[$newModel->id] = $newModel;
+	}
+	return $models;
     }
     
 }

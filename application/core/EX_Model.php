@@ -84,6 +84,15 @@ class EX_Model extends CI_Model{
         }
         return true;
     }
+    
+    /**
+     * Establece los campos del modelo $fields, $references y $customFields 
+     * de acuerdo a los valores del array. Si existe el id se establece como id 
+     * del modelo, cualquier parametro adiccional a los definidos se establece 
+     * como datos temporales
+     * @param array $values valores a establecer en el modelo indexados por 
+     * nombre de campo
+     */
     public function setValues(array $values){
         foreach($values as $name=>$value) {
             $field = $this->getField($name);
@@ -187,8 +196,6 @@ class EX_Model extends CI_Model{
         $models = array();
 	foreach($result as $values){
 	    $newModel = new static();
-            $newModel->id = $values['id'];
-            unset($values['id']);
 	    $newModel->setValues($values);
 	    $models[$newModel->id] = $newModel;
 	}
