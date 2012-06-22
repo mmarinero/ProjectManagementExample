@@ -39,10 +39,6 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         return $this->name;
     }
     
-    public function setName($name){
-        $this->name = $name;
-    }
-    
     public function setOutputName($name){
         $this->outputName = $name;
     }

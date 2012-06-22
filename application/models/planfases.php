@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class PlanFases extends EX_Model {
-
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
 
@@ -13,7 +11,7 @@ class PlanFases extends EX_Model {
     
     protected function initModel() {
         $this->customFields['cerrado'] = new TypeBoolean(array('name'=>'cerrado','outputName'=>'Plan cerrado'));
-        $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
+        $this->references['Proyecto'] = new Reference(__CLASS__, 'Proyecto', 'cascade');
         foreach ($this->fases as $fase){
             $this->fields["iteraciones{$fase[0]}"] = new TypeInt(array('name'=>"iteraciones{$fase[0]}",'outputName'=>"Iteraciones fase de {$fase[1]}"));
         }

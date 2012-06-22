@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Proyecto extends EX_Model {
-
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
 

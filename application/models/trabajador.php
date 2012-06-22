@@ -1,7 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Trabajador extends EX_Model {
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
     
@@ -19,7 +18,8 @@ class Trabajador extends EX_Model {
         $tempRol = $this->fields['rol'];
         $tempRol->setValidator($this->rolValidator());
         $this->fields['descripcion'] = new TypeString(array('name'=>'descripcion'));
-	$this->references['users'] = new Reference($this, 'users', 'users',array('delete'=>'cascade','update'=>'cascade'));
+	$this->references['users'] = new Reference(__CLASS__, 'users', 
+                array('update'=>'cascade','delete'=>'cascade', 'external' => true));
     }
     
     public static $roles =array(

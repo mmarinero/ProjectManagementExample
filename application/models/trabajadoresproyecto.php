@@ -1,14 +1,12 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class TrabajadoresProyecto extends EX_Model {
-
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
     
     protected function initModel() { 
-        $this->references['Proyecto'] = new Reference($this, 'Proyecto', 'Proyecto',array('delete'=>'cascade','update'=>'cascade'));
-        $this->references['Trabajador'] = new Reference($this, 'Trabajador', 'Trabajador',array('delete'=>'cascade','update'=>'cascade'));
+        $this->references['Proyecto'] = new Reference(__CLASS__, 'Proyecto', 'cascade');
+        $this->references['Trabajador'] = new Reference(__CLASS__, 'Trabajador', 'cascade');
         $this->fields['porcentaje'] = new TypeInt(array('name'=>'porcentaje','outputName'=>'Porcentaje'));
         $this->fields['jefe'] = new TypeBoolean(array('name'=>'jefe','outputName'=>'Jefe de proyecto'));
     }

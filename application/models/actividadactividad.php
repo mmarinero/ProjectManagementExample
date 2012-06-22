@@ -1,13 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class ActividadActividad extends EX_Model {
-
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
     
     protected function initModel() {
-        $this->references['Precedente'] = new Reference($this, 'Actividad', 'Precedente',array('delete'=>'cascade','update'=>'cascade'));
-        $this->references['Posterior'] = new Reference($this, 'Actividad', 'Posterior',array('delete'=>'cascade','update'=>'cascade'));
+        $this->references['Precedente'] = new Reference(__CLASS__, 'Actividad',
+                array('update'=>'cascade','delete'=>'cascade', 'cyclic' => 'Precedente'));
+        $this->references['Posterior'] = new Reference(__CLASS__, 'Actividad',
+                array('update'=>'cascade','delete'=>'cascade', 'cyclic' => 'Posterior'));
     }
 }

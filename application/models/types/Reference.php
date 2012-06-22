@@ -1,9 +1,11 @@
 <?php
 
 class Reference implements IDBType , IType{
-    protected $model;
-
-    protected $name;
+    protected $modelClass;
+    
+    protected $modelTableName;
+    
+    protected $referencedModelClass;
     
     protected $referencedTableName;
 
@@ -11,36 +13,52 @@ class Reference implements IDBType , IType{
 
     protected $options;
     
+    protected $external = false;
+    
+    protected $cyclic = null;
+    
     protected $ci;
 
     protected $CICreateColumnArray;
 
-    public function __construct($model, $referencedTableName, $name=null, $options = null){
+    public function __construct($modelClass, $referencedModelClass, $options = null){
+        $this->proccessOptions($options);
         $this->ci = get_instance();
         $this->CICreateColumnArray = $this->ci->config->item('referenceCISqlDefinition');
-	$this->model = $model;
-	$this->referencedTableName = $referencedTableName;
-        $this->name = !is_null($name) ? $name : $referencedTableName;
+	$this->modelClass = $modelClass;
+        $this->modelTableName = $modelClass::getTableName();
+	$this->referencedModelClass = $referencedModelClass;
+        if(!$this->external) {
+            $this->referencedTableName = $referencedModelClass::getTableName();
+        }else{
+            $this->referencedTableName = $referencedModelClass;
+        }
 	$this->options = static::proccessOptions($options);
     }
     
-    private static function proccessOptions($options){
+    private function proccessOptions($options){
         if (is_null($options)){
-            return '';
+            $result= '';
         }else if (is_string($options)) {
-            return "on delete $options on cascade $options";
+            $result= "on delete $options on update $options";
         } else if (is_array($options)){
             $optionsString = '';
             if (isset($options['delete'])) $optionsString.$options['delete'];
             if (isset($options['update'])) $optionsString.$options['update'];
-            return $optionsString;
+            if (isset($options['external'])) $this->external = $options['external'];
+            if (isset($options['cyclic'])) $this->cyclic = $options['cyclic'];
+            $result = $optionsString;
         }
+        $this->options = $result;
     }
     
     private function genericGetFKConstraint(){
-	return "CONSTRAINT FK_{$this->model->getTableName()}_{$this->referencedTableName}_{$this->name} ".
-               "FOREIGN KEY ({$this->name}) REFERENCES ".
-               "{$this->referencedTableName}(id) $this->options";	
+        $origin = $this->modelTableName;
+        $referenced = $this->referencedTableName;
+        $cyclic = !is_null($this->cyclic) ? "_{$this->cyclic}" : '';
+	return "CONSTRAINT FK_{$origin}_{$referenced}{$cyclic} ".
+               "FOREIGN KEY ({$referenced}) REFERENCES ".
+               "{$referenced}(id) $this->options";	
     }
     
     public function getFKConstraint(){
@@ -48,32 +66,24 @@ class Reference implements IDBType , IType{
     }
 
     public function getAlterTableFKConstraint() {
-	return "ALTER TABLE {$this->model->getTableName()} ADD ".$this->genericGetFKConstraint();	
+	return "ALTER TABLE $this->modelTableName ADD ".$this->genericGetFKConstraint();	
     }
 
     public function getReferencedModel(){
-        $referencedModelClassName = get_class($referencedModel);
-	return new $referencedModelClassName($this->id);
+	return new ${$this->referencedModelClass}($this->id);
     }
 
     public function getCIDBcreateData() {
-        return array($this->name => $this->ci->config->item('referenceCISqlDefinition'));
+        return array($this->referencedTableName => 
+                $this->ci->config->item('referenceCISqlDefinition'));
     }
     
     public function setExternalReferenceCIDB($CICreateColumnArray){
 	$this->CICreateColumnArray = $CICreateColumnArray;
     }
-
-    public function getCreateSql() {
-        throw new Exception('Unimplemented');
-    }
     
     public function val() {
         return $this->referencedId;
-    }
-
-    public function setName($name){
-        $this->name = $name;
     }
     
     public function setValue($value) {
@@ -81,7 +91,11 @@ class Reference implements IDBType , IType{
     }
 
     public function getName() {
-        return $this->name;
+        return $this->referencedTableName;;
+    }
+    
+    public function loadReferredArray($ReferedId){
+        
     }
     
 }

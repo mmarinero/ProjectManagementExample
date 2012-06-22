@@ -19,14 +19,12 @@ class EX_Model extends CI_Model{
     
     protected $id = null;
     
-    protected $tableName = null;
-    
     public function getId(){
 	return $this->id;
     }
 
-    public function getTableName(){
-        return $this->tableName;
+    public static function getTableName(){
+        return get_called_class();
     }
     
     public function getCustomFields(){
@@ -109,31 +107,31 @@ class EX_Model extends CI_Model{
     
     public function DBInsert(array $values=array()){
         $this->setValues($values);
-        $this->db->insert($this->tableName, $this->varsToDB());
+        $this->db->insert(static::getTableName(), $this->varsToDB());
         $this->id = $this->db->insert_id();
     }
     
     public static function DBIdInsert(array $values=array()){
         $thisInstance = new static();
         $thisInstance->setValues($values);
-        $thisInstance->db->insert($thisInstance->tableName, $thisInstance->varsToDB());
+        $thisInstance->db->insert(static::getTableName(), $thisInstance->varsToDB());
         $thisInstance->id = $thisInstance->db->insert_id();
         return $thisInstance;
     }
     
     public function DBDelete($id = null){
         if (is_null($id))  $id = $this->id;
-        $this->db->delete($this->tableName, array('id' => $id));
+        $this->db->delete(static::getTableName(), array('id' => $id));
     }
     
     public static function DBIdDelete($id){
-        i(new static())->db->delete($this->tableName, array('id' => $id));
+        i(new static())->db->delete(static::getTableName(), array('id' => $id));
     }
     
     public function DBUpdate($values){
 	if (isset($values['id'])) unset($values['id']);
         $this->setValues($values);
-        $this->db->update($this->tableName, $this->varsToDB(), array('id' => $this->id));
+        $this->db->update(static::getTableName(), $this->varsToDB(), array('id' => $this->id));
     }
     
     public static function DBIdUpdate($values, $id=null){
@@ -142,15 +140,15 @@ class EX_Model extends CI_Model{
         if ($id !== null){
             $thisInstance->id = $id;
         }
-        $thisInstance->db->update($thisInstance->tableName, $thisInstance->varsToDB(), array('id' => $thisInstance->id));
+        $thisInstance->db->update(static::getTableName(), $thisInstance->varsToDB(), array('id' => $thisInstance->id));
         return $thisInstance;
     }
 
     protected function loadFromDB($id=null, $where=null){
 	if (!is_null($id)){
-	    $result = array_shift($this->db->get_where($this->tableName,array('id' => $id))->result_array());
+	    $result = array_shift($this->db->get_where(static::getTableName(),array('id' => $id))->result_array());
 	} else {
-	    $result = array_shift($this->db->get_where($this->tableName,$where)->result_array());
+	    $result = array_shift($this->db->get_where(static::getTableName(),$where)->result_array());
 	}
         if(is_null($result)) return null;
         $this->id = $result['id'];
@@ -170,9 +168,9 @@ class EX_Model extends CI_Model{
     public static function loadArray($where = null, $getDBResult = false, $limit = null, $offset = null) {
 	$thisInstance = new static();
         if (is_null($where)) {
-            $result = $thisInstance->db->get($thisInstance->tableName, $limit, $offset)->result_array();
+            $result = $thisInstance->db->get(static::getTableName(), $limit, $offset)->result_array();
         } else {
-            $result = $thisInstance->db->get_where($thisInstance->tableName, $where, $limit, $offset)->result_array();
+            $result = $thisInstance->db->get_where(static::getTableName(), $where, $limit, $offset)->result_array();
         }
 	if($getDBResult) return $result;
 	else return static::createFromResult($result);
@@ -244,12 +242,12 @@ class EX_Model extends CI_Model{
     protected function loadSimpleJoin($model, $joinedTablename, $extraFields=array()){
                 $fields = array_keys($this->getFieldsAndId());
                 foreach ($fields as &$field) {
-                    $field = $this->tableName.'.'.$field;  
+                    $field = static::getTableName().'.'.$field;  
                 }
                 $fields = array_merge($fields,$extraFields);
         return $this->loadQueryArray('select '.implode(', ', $fields).
-                ' from '.$this->tableName.' join '.$joinedTablename.' on '.
-                $this->tableName.".id = ".$this->tableName." where ".
+                ' from '.static::getTableName().' join '.$joinedTablename.' on '.
+                static::getTableName().".id = ".static::getTableName()." where ".
                 $joinedTablename.".".$model->getTableName()." = '".$model->getId()."'");
     }
 }

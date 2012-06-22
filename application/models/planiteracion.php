@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class PlanIteracion extends EX_Model {
-
-    protected $tableName = __CLASS__;
     
     protected $fields = array();
     
@@ -12,6 +10,6 @@ class PlanIteracion extends EX_Model {
         $this->fields['inicio'] = new TypeDate(array('name'=>'inicio','outputName'=>'Estimación de inicio'));
         $this->fields['fin'] = new TypeDate(array('name'=>'fin','outputName'=>'Estimación de fin'));
         $this->fields['cerrada'] = new TypeBoolean(array('name'=>'cerrada','outputName'=>'Iteración cerrada'));
-        $this->references['PlanFases'] = new Reference($this, 'PlanFases', 'PlanFases',array('delete'=>'cascade','update'=>'cascade'));
+        $this->references['PlanFases'] = new Reference(__CLASS__, 'PlanFases', 'cascade');
     }
 }

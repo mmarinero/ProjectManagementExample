@@ -12,11 +12,6 @@ interface IType {
     public function getName();
     
     /**
-     * @param string Establece el nombre del campo 
-     */
-    public function setName($name);
-    
-    /**
      * @return mixed Representacion nativa del tipo de datos 
      */
     public function val();

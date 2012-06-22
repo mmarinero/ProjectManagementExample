@@ -25,7 +25,6 @@ class dashboard extends CI_Controller{
             'jefe'=>1));
         $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
         $proyectoLoader = new Proyecto();
-        
         if ($this->trabajador->get('rol')->val() == 'admin') {
             $proyectos = Proyecto::loadArray();
         } else {
@@ -53,6 +52,15 @@ class dashboard extends CI_Controller{
         $this->smarty->assign('trabajadores', $trabajadores);
         $this->smarty->assign('proyecto', $proyecto);
         $this->smarty->view('proyecto');
+    }
+    
+    private function requiereProyecto(){
+        $id = $this->uri->segment(3, null);
+        if (!is_null($this->uri->segment(3, null))){
+            $proyecto = new Proyecto((int)$id);
+            if (is_null($proyecto)) redirect('');
+            else return $proyecto;
+        }
     }
     
     function crearProyecto(){
