@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Description of EX_Model
+ * EX_Model es un sustito para CI_Model que integra el sistema de tipos
+ * En el futuro podría pasar a no sustituir a CI_Model dentro de codeigniter
+ * y sus propiedaes protegidas pasar a ser estáticas pero hay que evaluar el
+ * impacto y resolver la inicialización de los modelos de forma estática.
  *
  * @author Mario Marinero <mario.marinero@alumnos.uva.es>
  */
@@ -43,20 +46,32 @@ class EX_Model extends CI_Model{
         return $this->tempData[$name];
     }
     
-    public function getAllFields(){
-        return array_merge($this->customFields, $this->references, $this->fields);
+    public function getAllFields($includeId = false){
+        $id = $includeId ? array('id'=>  $this->getId()):array();
+        return array_merge($this->customFields, $this->references, $this->fields, $id);
     }
     
     public function getField($name){
         return $this->get($name);
     }
     
+    /**
+     *
+     * @param string $name Nombre del campo
+     * @return BaseType Tipo devuelto
+     */
     public function get($name){
         if (isset($this->fields[$name])) return $this->fields[$name];
         if (isset($this->references[$name])) return $this->references[$name];
         if (isset($this->customFields[$name])) return $this->customFields[$name];
+        if (isset($this->tempData[$name])) return $this->tempData[$name];
+        return null;
     }
     
+    /**
+     *
+     * @return Reference[]
+     */
     public function getReferences(){
         return $this->references;
     }
@@ -76,7 +91,15 @@ class EX_Model extends CI_Model{
 	}
     }
     
-    protected function initModel($initParams) {}
+    /**
+     * Implementar en todos los modelos que descienden de esta clase
+     * Los parametros de inicialización no deben modificar los campos u otras
+     * propiedades en principio estaticas. 
+     * @param type $initParams 
+     */
+    protected function initModel($initParams) {
+        log_message('debug', 'Alguien o algo ha inicializado directamente EX_Model, si lo hace codeigniter una vez es normal si no...');
+    }
     
     public function validate(){
         foreach ($this->fields as $field) {
@@ -256,5 +279,55 @@ class EX_Model extends CI_Model{
                 ' from '.static::getTableName().' join '.$joinedTablename.' on '.
                 static::getTableName().".id = ".static::getTableName()." where ".
                 $joinedTablename.".".$model->getTableName()." = '".$model->getId()."'");
+    }
+    
+    /**
+     *
+     * @param EX_Model $referrer 
+     */
+    public function getReferredArray($referrer, $whereArray = array(), $loadModels=true){
+        $referrer = is_string($var)? new $referrer():$referrer;
+        return $referrer->get(get_called_class())->loadReferredArray($this->id, $loadModels,$whereArray);
+    }
+    
+    /**
+     * Carga un array de modelos a traves de un modelo con doble referencia una para el modelo
+     * actual y otra para el que será cargado. Los datos del modelo de doble referencia se asignan
+     * como datos temporales de modelo devuelto o directamente como resultado de la consulta
+     * @param EX_Model $referrer
+     * @param mixed $throughModel Si es un array (para referencias ciclicas) tiene estructura 
+     * ['model'=>$throughModel,'thisReference'=>$referenciaOrigen, 'referredReference' => $referenciaDestino]
+     * @param boolean $loadModels 
+     */
+    public function getJoinedArray($referrer, $throughModel, $whereArray = array(), $loadModels=true){
+        $db =$this->db;
+        $referrer = is_string($referrer)? new $referrer():$referrer;
+        $throughColumnName = $referrer::getTableName();
+        $thisColumnName = static::getTableName();
+        if (is_array($throughModel)){
+            $thisColumnName = $throughModel["thisColumnName"];
+            $throughColumnName = $throughModel["referredColumnName"];
+            $throughModel = $throughModel["throughModel"];
+        }
+        $throughModel = is_string($throughModel)? new $throughModel():$throughModel;
+        $selected = array_merge(
+                array_map(function($field) use ($throughModel){
+                    return $throughModel::getTableName().'.'.$field->getName().' as joined_'.$field->getName();
+                },
+                $throughModel->getAllFields()),
+                array_map(function($field) use ($referrer){
+                    return $referrer::getTableName().'.'.$field->getName();
+                },
+                $referrer->getAllFields()));
+        $selected[] = $throughModel::getTableName().'.id as joined_id';
+        $selected[] = $referrer::getTableName().'.id';
+        $result = $db->select(implode(', ',$selected).' ')->
+                from($throughModel::getTableName())->
+                join($referrer::getTableName(),
+                        "{$referrer::getTableName()}.id = {$throughModel::getTableName()}.$throughColumnName")->
+                where(array_merge($whereArray, array("{$throughModel::getTableName()}.$thisColumnName" => $this->getId())))->
+                get()->result_array();
+        if (!$loadModels) return result;
+        else return static::createFromResult($result);
     }
 }

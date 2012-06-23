@@ -17,12 +17,10 @@
         <td class="listadoLabel">Disponibilidad</td>
     </tr>
 {foreach from=$trabajadores item=trabajador}
-
         <tr>
-            
             <td class="listadoName">{$trabajador->get('nombre')->getHtml()}</td>
             {assign var=tempData value=$trabajador->getTempData()}
-            <td class="listadoName">{$tempData.porcentaje}</td>
+            <td class="listadoName">{$trabajador->get('joined_porcentaje')}</td>
         </tr>
 {/foreach}
 </table>

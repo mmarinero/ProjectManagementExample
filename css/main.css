@@ -222,17 +222,17 @@ form.estandarForm input[type="checkbox"] {
 }
 
 form.estandarForm input[type="submit"] {
-width:64%;
-margin-top: 20px;
-margin-left: 34%;
-background:#09C;
-color:#fff;
-font-family: Tahoma, Geneva, sans-serif;
-height:30px;
--webkit-border-radius: 15px;
--moz-border-radius: 15px;
-border-radius: 15px;
-border: 1p solid #999;
+    width:64%;
+    margin-top: 20px;
+    margin-left: 34%;
+    background:#09C;
+    color:#fff;
+    font-family: Tahoma, Geneva, sans-serif;
+    height:30px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border: 1px solid #999;
 }
 form.estandarForm table input[type="submit"]{
     margin:auto;
@@ -244,7 +244,7 @@ color:#09C;
 }
 
 form.estandarForm table, form.estandarForm table tr, form.estandarForm td{
-    padding:5px;
+    padding:8px;
 }
 
 form.estandarForm textarea:focus, input:focus {
@@ -291,4 +291,10 @@ table.listado th {
     background:#f4f9fe;
     font:bold 1.2em/2em "Century Gothic","Trebuchet MS",Arial,Helvetica,sans-serif;
     color:#66a3d3;
+ }
+
+ #loginForm{
+     display: inline-block;
+     width: auto;
+     margin: 30px 10%;
  }

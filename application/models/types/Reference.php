@@ -33,7 +33,7 @@ class Reference implements IDBType , IType{
         }else{
             $this->referencedTableName = $referencedModelClass;
         }
-	$this->options = static::proccessOptions($options);
+	$this->options = $this->proccessOptions($options);
     }
     
     private function proccessOptions($options){
@@ -55,9 +55,14 @@ class Reference implements IDBType , IType{
     private function genericGetFKConstraint(){
         $origin = $this->modelTableName;
         $referenced = $this->referencedTableName;
-        $cyclic = !is_null($this->cyclic) ? "_{$this->cyclic}" : '';
+        $referencedColumn = $this->referencedTableName;
+        $cyclic = '';
+        if (!is_null($this->cyclic)) {
+            $cyclic = "_{$this->cyclic}";
+            $referencedColumn = $this->cyclic;
+        }
 	return "CONSTRAINT FK_{$origin}_{$referenced}{$cyclic} ".
-               "FOREIGN KEY ({$referenced}) REFERENCES ".
+               "FOREIGN KEY ({$referencedColumn}) REFERENCES ".
                "{$referenced}(id) $this->options";	
     }
     
@@ -72,10 +77,14 @@ class Reference implements IDBType , IType{
     public function getReferencedModel(){
 	return new ${$this->referencedModelClass}($this->id);
     }
-
+    
+    /**
+     *  Devuelve array creación de referencia en formato CodeIgniter
+     * @return array
+     */
     public function getCIDBcreateData() {
-        return array($this->referencedTableName => 
-                $this->ci->config->item('referenceCISqlDefinition'));
+        $columnName= is_null($this->cyclic) ? $this->referencedTableName : $this->cyclic;
+        return array($columnName => $this->ci->config->item('referenceCISqlDefinition'));
     }
     
     public function setExternalReferenceCIDB($CICreateColumnArray){
@@ -94,9 +103,9 @@ class Reference implements IDBType , IType{
         return $this->referencedTableName;
     }
     
-    public function loadReferredArray($referedId, $loadModels){
+    public function loadReferredArray($referedId, $whereArray = array(), $loadModels=true){
         $result =$this->ci->db->get_where($this->modelTableName,
-                array($this->referencedTableName=>$referedId))->result_array();
+                array_merge($whereArray, array($this->referencedTableName=>$referedId)))->result_array();
         if (!$loadModels) return result;
         else return $this->createFromResult($result, $this->modelClass);
     }

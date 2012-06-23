@@ -24,11 +24,10 @@ class dashboard extends CI_Controller{
             'Trabajador'=>  $this->trabajador->getId(),
             'jefe'=>1));
         $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
-        $proyectoLoader = new Proyecto();
         if ($this->trabajador->get('rol')->val() == 'admin') {
             $proyectos = Proyecto::loadArray();
         } else {
-            $proyectos = $proyectoLoader->filterTrabajador($this->trabajador);
+            $proyectos = $this->trabajador->getJoinedArray('Proyecto', 'TrabajadoresProyecto');
         }
         $this->smarty->assign('idProyecto', $this->uri->segment(3, null));
         $this->smarty->assign('jefe', $jefeOrNull);
@@ -41,26 +40,32 @@ class dashboard extends CI_Controller{
         $this->smarty->view('dashboard');
     }
     
-    function proyecto($id=null){
-        if ($id===null) {
-            show_404();
-        }
-        $proyecto = new Proyecto();
-        $proyecto->loadId($id);
-        $trabajadoresLoader = new Trabajador();
-        $trabajadores = $trabajadoresLoader->filterProyecto($proyecto);
+    function proyecto(){
+        $proyecto = $this->requireSegment(3, "Proyecto");
+        $trabajadores = $proyecto->getJoinedArray('Trabajador', 'TrabajadoresProyecto');
         $this->smarty->assign('trabajadores', $trabajadores);
         $this->smarty->assign('proyecto', $proyecto);
         $this->smarty->view('proyecto');
     }
     
-    private function requiereProyecto(){
-        $id = $this->uri->segment(3, null);
-        if (!is_null($this->uri->segment(3, null))){
-            $proyecto = new Proyecto((int)$id);
-            if (is_null($proyecto)) redirect('');
-            else return $proyecto;
+    /**
+     *
+     * @param type $segment
+     * @param type $model
+     * @param type $redirect
+     * @return EX_Model 
+     */
+    private function requireSegment($segment, $model = null, $redirect = ''){
+        $id = $this->uri->segment($segment, null);
+        if (!is_null($this->uri->segment($segment, null))){
+            if (!is_null($model)){
+                $newModel = new $model((int)$id);
+                if (!is_null($newModel)) return $newModel;
+            } else {
+                return $id;
+            }
         }
+        redirect($redirect);
     }
     
     function crearProyecto(){
@@ -79,12 +84,8 @@ class dashboard extends CI_Controller{
     }
     
     function crearProyectoPost(){
-        if ($this->trabajador->get('rol')->val() != 'admin') {
-            redirect('dashboard');
-        }
+        $this->trabajador->auth('admin');
         $proyecto = new Proyecto();
-        
-
         $proyecto->DBInsert(assocRequest(array_keys($proyecto->getFields())));
         $trabajadorProyecto = new TrabajadoresProyecto();
               $trabajadorProyecto->DBInsert(array(
@@ -95,36 +96,27 @@ class dashboard extends CI_Controller{
         redirect('dashboard/proyecto/'.$proyecto->getId());
     }
     
-    function editarProyecto($id=null){
+    function editarProyecto($id){
+        $this->trabajador->auth('admin');
         $trabajadoresLoader = new Trabajador();
         $trabajadores = $trabajadoresLoader->loadArray();
         $this->smarty->assign('fixedTrabajadores', $trabajadores);
-        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
-            redirect('dashboard');
-        }
-        $proyecto = new Proyecto();
-        $crearProyecto = $proyecto->loadId($id)->getForm(site_url('dashboard/editarProyectoPost/'.$id), array('id'=>'crearProyecto', 'class'=>'estandarForm'));
+        $crearProyecto = $this->requireSegment(3, "Proyecto")->loadId($id)->getForm(site_url('dashboard/editarProyectoPost/'.$id), array('id'=>'crearProyecto', 'class'=>'estandarForm'));
         $this->smarty->assign('crearProyecto', $crearProyecto);
         $this->smarty->assign('buttonText', 'Editar proyecto');
         $this->smarty->view('crearProyecto');
     }
     
-    function editarProyectoPost($id){
-        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
-            redirect('dashboard');
-        }
-        $proyecto = new Proyecto();
-        $proyecto->loadId($id);
+    function editarProyectoPost(){
+        $this->trabajador->auth('admin');
+        $proyecto = $this->requireSegment(3, "Proyecto");
         $proyecto->DBUpdate(assocRequest(array_keys($proyecto->getFields())));
         redirect('dashboard/proyecto/'.$proyecto->getId());
     }
     
-    function eliminarProyecto($id=null){
-        if ($this->trabajador->get('rol')->val() != 'admin' || $id == null) {
-            redirect('dashboard');
-        }
-        $proyecto = new Proyecto();
-        $proyecto->DBdelete($id);
+    function eliminarProyecto(){
+        $this->trabajador->auth('admin');
+        i(new Proyecto())->DBdelete($this->requireSegment(3));
         redirect('dashboard');
     }
     
@@ -137,7 +129,7 @@ class dashboard extends CI_Controller{
         $planFases = new PlanFases();
         $noEncontrado = $planFases->loadWhere(array('Proyecto'=>$id));
         if (is_null($noEncontrado)){
-            $crearFases= $planFases->getForm(site_url('dashboard/crearFasesPost/'.$id),
+            $crearFases= $planFases->getForm(site_url("dashboard/crearFasesPost/$id/{$planFases->getId()}"),
                     array('id'=>'crearPlanFases', 'class'=>'estandarForm'));
             $this->smarty->assign('crearFases', $crearFases);
             $trabajadoresLoader = new Trabajador();

@@ -18,6 +18,7 @@
     {$lineaForm.input}
     </div>
 {/foreach}
+{if isset($trabajadores)}
     <label>
     <span>Jefe de proyecto: </span>
     </label>
@@ -32,5 +33,9 @@
     <input type="text" class="int" name="dedicacion" value="100"></input>
     <br>
 <input type="submit" value="{$buttonText}" />
+{else}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    El jefe de proyecto no puede ser modificado una vez se ha creado el proyecto.
+{/if}
 {$crearProyecto['end']}
 {/block}

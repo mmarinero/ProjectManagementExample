@@ -47,21 +47,22 @@ class CrearBD extends CI_Controller
         
         if ($drop){
             foreach (array_reverse($this->models) as $model){
-                $this->load->model($model);
-                $this->db->query("drop table if exists {$this->$model->getTableName()}");
+                $modelObj = new $model();
+                $this->db->query("drop table if exists {$modelObj->getTableName()}");
                 log_message('debug', 'table dropped: '.$model);
                 $scriptOut .= 'table dropped: '.$model."<br />\n";;
             }
         }
 
         foreach ($this->models as $model) {
+            $modelObj = new $model();
             $this->dbforge->add_field($this->config->item('idCISqlDefinition'));
-            $this->addFields($this->$model->getFields());
-            $this->addFields($this->$model->getReferences());
+            $this->addFields($modelObj->getFields());
+            $this->addFields($modelObj->getReferences());
+            $model_props = $modelObj->getProperties();
             if (isset($model_props['DBCustomFields']) && $model_props['DBCustomFields']) {
-                $this->addFields($this->$model->getCustomFields());
+                $this->addFields($modelObj->getCustomFields());
             }
-            $model_props = $this->$model->getProperties();
             //TODO implementar
             if (isset($model_props['hashed']) && $model_props['hashed']) {
                 $this->dbforge->add_field(array('hashId' => array('type' => 'varbinary', 'constraint' => '16')));
@@ -78,15 +79,15 @@ class CrearBD extends CI_Controller
             $this->dbforge->add_key('id', true);
             
             //crear tabla 
-            $this->dbforge->create_table($this->$model->getTableName(), true);
+            $this->dbforge->create_table($modelObj->getTableName(), true);
             //anadir constraints foreign keys
-            foreach ($this->$model->getReferences() as $reference){
+            foreach ($modelObj->getReferences() as $reference){
                 $this->db->query($reference->getAlterTableFKConstraint());
             }
             //Crear trigger (no soportado en jair)
             if ($model_props['created']) {
             $this->db->query('CREATE TRIGGER insertCreatedTimestampTrigger before INSERT ON '.
-                    $this->$model->getTableName().
+                    $modelObj->getTableName().
                     ' FOR EACH ROW SET NEW.created = CURRENT_TIMESTAMP');
             }
             log_message('debug', 'model table created: '.$model);

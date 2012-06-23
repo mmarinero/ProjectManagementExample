@@ -71,6 +71,12 @@ class Trabajador extends EX_Model {
         return $level >= static::$roles[$this->get('rol')->val()] ? true : show_error('No autorizado', 403);
     }
     
+    /**
+     *
+     * @param boolean $redirectIfNot
+     * @param string $url
+     * @return Trabajador 
+     */
     public static function loggedTrabajador($redirectIfNot = true, $url = 'auth/login') {
         $thisInstance = new static();
         if (!$thisInstance->tank_auth->is_logged_in()) {
