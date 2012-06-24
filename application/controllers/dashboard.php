@@ -18,8 +18,7 @@ class dashboard extends CI_Controller{
     function __construct() {
         parent::__construct();
         $this->trabajador = Trabajador::loggedTrabajador();
-        $buscadorJefe = new TrabajadoresProyecto();
-        $jefeOrNull = $buscadorJefe->loadWhere(array(
+        $jefeOrNull = new TrabajadoresProyecto(array(
             'Proyecto'=>$this->uri->segment(3),
             'Trabajador'=>  $this->trabajador->getId(),
             'jefe'=>1));
@@ -71,8 +70,7 @@ class dashboard extends CI_Controller{
     function crearProyecto(){
         $this->trabajador->auth('admin');
         $proyecto = new Proyecto();
-        $trabajadoresLoader = new Trabajador();
-        $trabajadores = $trabajadoresLoader->loadArray();
+        $trabajadores = Trabajador::loadArray();
         $trabajadores = Trabajador::filterLevel($trabajadores, array(1,2,3,4));
         $this->smarty->assign('trabajadores', $trabajadores);
         $this->smarty->assign('jefes', Trabajador::filterLevel($trabajadores, array(1)));
@@ -120,20 +118,17 @@ class dashboard extends CI_Controller{
         redirect('dashboard');
     }
     
-    function planes($id=null){
-        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
-                $id == null ||
-                $this->trabajador->getId() != $this->jefeId) {
+    function planes(){
+        $id = $this->requireSegment(3);
+        if ($this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
         }
-        $planFases = new PlanFases();
-        $noEncontrado = $planFases->loadWhere(array('Proyecto'=>$id));
-        if (is_null($noEncontrado)){
-            $crearFases= $planFases->getForm(site_url("dashboard/crearFasesPost/$id/{$planFases->getId()}"),
+        $planFases =new PlanFases(array('Proyecto'=>$id));
+        if (is_null($planFases->getId())){
+            $crearFases= $planFases->getForm(site_url("dashboard/crearFasesPost/$id"),
                     array('id'=>'crearPlanFases', 'class'=>'estandarForm'));
             $this->smarty->assign('crearFases', $crearFases);
-            $trabajadoresLoader = new Trabajador();
-            $trabajadores = $trabajadoresLoader->loadArray();
+            $trabajadores = Trabajador::loadArray();
             $trabajadores = Trabajador::filterLevel($trabajadores, array(1,2,3,4));
             $this->smarty->assign('trabajadores', $trabajadores);
             $this->smarty->view('planes');
@@ -142,6 +137,9 @@ class dashboard extends CI_Controller{
                     "join Proyecto on Proyecto.id = Proyecto where Proyecto = '$id'")->result_array());
             $iteracionesLoader = new PlanIteracion();
             $iteraciones = $iteracionesLoader->loadArray(array('PlanFases'=> $idPlan['id']));
+            echo "before error";
+            $iteraciones= $planFases->getReferredArray('PlanIteracion');
+            echo "before error";
             foreach ($iteraciones as $iteracion) {
                 $iteracion->get('inicio')->setAttributes(array('nameAppend'=>$iteracion->getId()));
                 $iteracion->get('fin')->setAttributes(array('nameAppend'=>$iteracion->getId()));

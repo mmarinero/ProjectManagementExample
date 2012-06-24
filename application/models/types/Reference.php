@@ -106,8 +106,8 @@ class Reference implements IDBType , IType{
     public function loadReferredArray($referedId, $whereArray = array(), $loadModels=true){
         $result =$this->ci->db->get_where($this->modelTableName,
                 array_merge($whereArray, array($this->referencedTableName=>$referedId)))->result_array();
-        if (!$loadModels) return result;
-        else return $this->createFromResult($result, $this->modelClass);
+        if (!$loadModels) return $result;
+        else return static::createFromResult($result, $this->modelClass);
     }
     
     private static function createFromResult($result, $modelClass){
@@ -115,7 +115,7 @@ class Reference implements IDBType , IType{
 	foreach($result as $values){
 	    $newModel = new $modelClass();
 	    $newModel->setValues($values);
-	    $models[$newModel->id] = $newModel;
+	    $models[$newModel->getId()] = $newModel;
 	}
 	return $models;
     }

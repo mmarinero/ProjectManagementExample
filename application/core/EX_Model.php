@@ -220,7 +220,7 @@ class EX_Model extends CI_Model{
 	foreach($result as $values){
 	    $newModel = new static();
 	    $newModel->setValues($values);
-	    $models[$newModel->id] = $newModel;
+	    $models[$newModel->getId()] = $newModel;
 	}
 	return $models;
     }
@@ -286,8 +286,8 @@ class EX_Model extends CI_Model{
      * @param EX_Model $referrer 
      */
     public function getReferredArray($referrer, $whereArray = array(), $loadModels=true){
-        $referrer = is_string($var)? new $referrer():$referrer;
-        return $referrer->get(get_called_class())->loadReferredArray($this->id, $loadModels,$whereArray);
+        $referrer = is_string($referrer)? new $referrer():$referrer;
+        return $referrer->get(get_called_class())->loadReferredArray($this->getId(), $whereArray, $loadModels);
     }
     
     /**
