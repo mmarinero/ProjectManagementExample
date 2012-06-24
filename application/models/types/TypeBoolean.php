@@ -10,22 +10,19 @@ class TypeBoolean extends BaseType {
         return array($this->getName()=>array('type'=>'boolean', 'null'=>true));
     }
     
-    public function getInputHtml($newAttributes = null){
-        if ($newAttributes !== null) $attributes = $newAttributes;
-        else $attributes = $this->attributes;
-        $checked = '';
-        if ($this->value) $checked = 'checked="checked" ';
-        $class = isset($attributes['class']) ? $attributes['class'] : '';
-        return '<input type="checkbox" class="boolean '.$class.' "'.
-                HtmlAttributesFromArray($attributes).' name="'.
-                $this->getName().'" '.$checked.'value="1"></input>';
+    public function getInputHtml($attributes = array()){
+        $attributes['class'][] = 'boolean';
+        if ($this->val()) $attributes['checked'] = 'checked';
+        $attributes['type'] = 'checkbox';
+        $attributes['value'] = '1';
+        return parent::getInputHtml($attributes);
     }
     
-    public function getHtml($newAttributes = null){
+    public function getHtml($attributes = array()){
         if ($this->value) $output='Si';
         else $output='No';
-        $attributes = $this->selectAttributes($newAttributes);
-        return '<span '.HtmlAttributesFromArray($attributes).">$output</span>";
+        $attributes = $this->processAttributes($attributes);
+        return '<span '.static::htmlAttributesFromArray($attributes).">$output</span>";
     }
     
 }

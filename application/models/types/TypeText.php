@@ -16,15 +16,14 @@ class TypeText extends BaseType {
         return array($this->getName()=>array('type'=>'text', 'null'=>true));
     }
     
-    public function getInputHtml($newAttributes = null){
-        if ($newAttributes !== null) $attributes = $newAttributes;
-        else $attributes = $this->attributes;
-        $class = isset($attributes['class']) ? $attributes['class'] : '';
-        return '<textarea type="text" class="text '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().'">'.$this->value.'</textarea>';
+    public function getInputHtml($attributes = array()){
+        $attributes['class'][] = 'text';
+        $attributes = $this->processAttributes($attributes, true);
+        return '<textarea '.static::htmlAttributesFromArray($attributes).'>'.$this->val().'</textarea>';
     }
     
-    public function getHtml($newAttributes = null){
-        $attributes = $this->selectAttributes($newAttributes);
-        return '<span '.HtmlAttributesFromArray($attributes).">".nl2br($this->value)."</span>";
+    public function getHtml($attributes = array()){
+        $attributes = $this->processAttributes($attributes);
+        return '<span '.HtmlAttributesFromArray($attributes).">".nl2br($this->val())."</span>";
     }
 }

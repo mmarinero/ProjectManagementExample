@@ -10,19 +10,21 @@ class TypeDate extends BaseType {
         return array($this->getName()=>array('type'=>'datetime','null'=>true));
     }
     
-    public function getInputHtml($newAttributes = null){
-        if ($newAttributes !== null) $attributes = $newAttributes;
-        else $attributes = $this->attributes;
-        $nameAppend= isset($attributes['nameAppend']) ? $attributes['nameAppend'] : '';
-        $class = isset($attributes['class']) ? $attributes['class'] : '';
-        $date = implode('/', array_reverse(explode('-',$this->value)));
-        return '<input type="text" class="date '.$class.' "'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$date.'"></input>';
+        //$attributes['class'][] = 'text';
+        //$attributes = $this->processAttributes($attributes, true);
+        //return '<textarea '.static::htmlAttributesFromArray($attributes).'>'.$this->val().'</textarea>';
+    public function getInputHtml($attributes = array()){
+        $attributes['class'][] = 'date';
+        $attributes['type'] = 'text';
+        $attributes['value'] = implode('/', array_reverse(explode('-',$this->value)));
+        return parent::getInputHtml($attributes);
     }
     
-    public function getHtml($newAttributes = null){
-        $attributes = $this->selectAttributes($newAttributes);
+    public function getHtml($attributes = array()){
+        $attributes['class'][] = 'date';
+        $attributes = $this->processAttributes($attributes);
         $date = implode('/', array_reverse(explode('-',$this->value)));
-        return '<span '.HtmlAttributesFromArray($attributes).">".$date."</span>";
+        return '<span '.static::htmlAttributesFromArray($attributes).">".$date."</span>";
     }
     
     

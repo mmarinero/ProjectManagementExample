@@ -32,9 +32,8 @@ function propIndexedArray(array $objectsArray, $method){
     return $resultArray;
 }
 
-function HtmlAttributesFromArray($attributesArray) {
+function htmlAttributesFromArray($attributesArray) {
     $attributesString = '';
-    unset($attributesArray['class']);
     foreach($attributesArray as $name => $value){
         $attributesString.= "$name=\"$value\" ";
     }

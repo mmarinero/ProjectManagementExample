@@ -251,6 +251,11 @@ form.estandarForm textarea:focus, input:focus {
 border: 1px solid #09C;
 }
 
+form.estandarForm label.error{
+    color:red;
+    margin-left: 35%;
+}
+
 table.listado {
 width:90%;
 border-top:1px solid #e5eff8;

@@ -8,7 +8,7 @@ interface IHTMLType {
     
     /**
      * Html para el tipo de acuerdo a los atributos pasados o previamente establecidos
-     * @param $attributes atributos especificos para esta llamada
+     * @param $attributes atributos especificos para esta llamada @see setAttributes()
      * @return Html del tipo de datos 
      */
     public function getHtml($attributes = null);
@@ -27,19 +27,21 @@ interface IHTMLType {
     /**
      * Html para que un tipo de datos pueda ser editado, alguna forma de input
      * destinado a formularios Html.
-     * @param $attributes atributos especificos para esta llamada
+     * @param $attributes atributos especificos para esta llamada @see setAttributes()
      * @return Html del tipo de datos para ser editado
      */
     public function getInputHtml($attributes = null);
     
     /**
-     * Establece los atributos de este elemento, los atributos seran procesados y se contemplan
+     * Establece los atributos de este elemento, los atributos seran procesados 
+     * tras mezclarse con los pasados en las llamadas a los metodos de obtención de html (los 
+     * pasados en las llamadas tienen prioridad
      * 4 atributos especiales:
-     * class: los elementos de este array se añaden a las clases del html resultante
+     * class: los elementos de este array formaran las clases del html resultante
      * nameAppend : se concatena con el nombre por defecto del tipo (construcción de listas)
      * name: Sustituye al name predefinido
-     * children: Requiere soporte del tipo de datos y permite definir los atributos de otros 
-     * elementos HTML
+     * children: No implementado aún, permite añadir atributos a elementos hijos
+     * value: Sustituye al value predefinido
      * @param $attributes atributos establecidos
      */
     public function setAttributes($attributes);

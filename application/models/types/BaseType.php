@@ -79,16 +79,42 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         }
     }
     
-    public function getInputHtml($newAttributes = null){
-        $attributes = $this->selectAttributes($newAttributes);
-        $nameAppend= isset($attributes['nameAppend']) ? $attributes['nameAppend'] : '';
-        $class = isset($attributes['class']) ? $attributes['class'].' ': '';
-        return '<input type="text" class="'.$class.'"'.  HtmlAttributesFromArray($attributes).' name="'.$this->getName().$nameAppend.'" value="'.$this->value.'"></input>';
+    public function getInputHtml($attributes = array()){
+        $attributes = $this->processAttributes($attributes, true, true);
+        return '<input '. static::htmlAttributesFromArray($attributes).'></input>';
     }
     
-    public function getHtml($newAttributes = null){
-        $attributes = $this->selectAttributes($newAttributes);
-        return '<span '.HtmlAttributesFromArray($attributes).">$this->value</span>";
+    public function getHtml($attributes = array()){
+        $attributes = $this->processAttributes($attributes);
+        return '<span '. static::htmlAttributesFromArray($attributes).">{$this->val()}</span>";
+    }
+    
+    protected function processAttributes($attributes, $name=false, $value=false){
+        $class = array_merge(isset($this->attributes['class']) ? 
+                $this->attributes['class'] : array(), 
+                isset($attributes['class']) ? $attributes['class'] : array());
+        $processedAttributes = array_merge($this->attributes, $attributes);
+        if (!empty($class)) $processedAttributes['class'] = implode (' ', $class);
+        if ($name){
+            $processedAttributes['name'] = isset($processedAttributes['name']) ?
+                $processedAttributes['name']:$this->getName();
+        }
+        if ($value){
+            $processedAttributes['value'] = isset($processedAttributes['value']) ?
+                $processedAttributes['value']:$this->val();
+        }
+        if (isset($processedAttributes['appendName'])) {
+            $processedAttributes['name'] = $processedAttributes['name'].$processedAttributes['appendName'];
+        }
+        return $processedAttributes;
+    }
+    
+    public static function htmlAttributesFromArray($attributesArray) {
+        $attributesString = '';
+        foreach($attributesArray as $name => $value){
+            $attributesString.= "$name=\"$value\" ";
+        }
+        return $attributesString;
     }
     
     /**
@@ -101,7 +127,18 @@ abstract class BaseType implements IType, IDBType, IHTMLType{
         else return $this->attributes;
     }
     
-    
+    /**
+     * Establece los atributos de este elemento, los atributos seran procesados 
+     * tras mezclarse con los pasados en las llamadas a los metodos de obtención de html (los 
+     * pasados en las llamadas tienen prioridad
+     * 4 atributos especiales:
+     * class: los elementos de este array formaran las clases del html resultante
+     * nameAppend : se concatena con el nombre por defecto del tipo (construcción de listas)
+     * name: Sustituye al name predefinido
+     * children: No implementado aún, permite añadir atributos a elementos hijos
+     * value: Sustituye al value predefinido
+     * @param $attributes atributos establecidos
+     */
     public function setAttributes($attributes){
         $this->attributes = $attributes;
     }
