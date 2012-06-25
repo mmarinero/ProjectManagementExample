@@ -519,7 +519,7 @@ class Tank_auth
 		return FALSE;
 	}
 
-	directDeleteUser($id){
+	function directDeleteUser($id){
 	    $this->ci->users->delete_user($user_id);
 	}
 
