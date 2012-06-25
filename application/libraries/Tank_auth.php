@@ -519,6 +519,10 @@ class Tank_auth
 		return FALSE;
 	}
 
+	directDeleteUser($id){
+	    $this->ci->users->delete_user($user_id);
+	}
+
 	/**
 	 * Delete user from the site (only when user is logged in)
 	 *
