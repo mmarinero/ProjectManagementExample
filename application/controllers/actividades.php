@@ -94,5 +94,28 @@ class actividades extends CI_Controller{
         redirect("actividades/planIteracion/$idProyecto/$idPlanFases/$idIteracion");
     }
 
+    public function proyecto(){
+	$proyecto = requireSegment(3, 'Proyecto');
+	$planFases = new PlanFases(array('Proyecto'=>$proyecto->getId()));
+	$iteraciones = $planFases->getReferredArray('PlanIteraciones')
+	$actividades array();
+	foreach($iterraciones as $iteracion){
+	   $actividades = array_merge($iteracion->getReferredArray('Actividad',array('iniciada'=>1), $actividades); 
+	}
+	$tareas = array();
+	foreach($actividades as $actividad){
+	   $tareas = array_merge($actividad->getReferredArray('TareaPersonal',array('Trabajador'=>$this->trabajador->getId()), $actividades); 
+	}
+	$this->smarty->assign('tareas', $tareas);
+	foreach($tareas as $tarea){
+	    $formsTareas[] = $tarea->getInputForm(array('appendName'=>$tarea->getId()));
+	}
+	$this->smarty->assign('formsTareas', $formsTareas);
+    }
+
+    public function TareaPost(){
+	$tarea = new TareaPersonal();
+        $input = assocRequest(array_keys($tarea->getFields()));
+    }
 }
 
