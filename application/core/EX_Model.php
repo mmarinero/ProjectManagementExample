@@ -215,10 +215,10 @@ class EX_Model extends CI_Model{
 	else return static::createFromResult($result);
     }
 
-    protected static function createFromResult($result){
+    protected static function createFromResult($result, $model = null){
         $models = array();
 	foreach($result as $values){
-	    $newModel = new static();
+	    $newModel = is_null($model) ? new static(): new $model();
 	    $newModel->setValues($values);
 	    $models[$newModel->getId()] = $newModel;
 	}
@@ -328,6 +328,6 @@ class EX_Model extends CI_Model{
                 where(array_merge($whereArray, array("{$throughModel::getTableName()}.$thisColumnName" => $this->getId())))->
                 get()->result_array();
         if (!$loadModels) return result;
-        else return static::createFromResult($result);
+        else return static::createFromResult($result, get_class($referrer));
     }
 }

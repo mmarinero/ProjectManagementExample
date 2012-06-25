@@ -33,7 +33,6 @@ class Reference implements IDBType , IType{
         }else{
             $this->referencedTableName = $referencedModelClass;
         }
-	$this->options = $this->proccessOptions($options);
     }
     
     private function proccessOptions($options){
@@ -100,6 +99,7 @@ class Reference implements IDBType , IType{
     }
 
     public function getName() {
+        if (!is_null($this->cyclic)) return $this->cyclic;
         return $this->referencedTableName;
     }
     

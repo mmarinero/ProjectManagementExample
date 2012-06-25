@@ -28,6 +28,9 @@
             <li><a class="navButton" href="{"dashboard/planes"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Planes</a></li>
             {/if}
         {/if}
+        {if $trabajador->get('rol')->val() != 'admin' && isset($idProyecto)}
+            <li><a class="navButton" href="{"actividades/proyecto"|site_url}/{$idProyecto}">Actividades</a></li>
+        {/if}
         <li><a class="navButton" href="{"informes/lista"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Informes</a></li>
     {else}
         <li><a class="navButton" href="{"auth/login"|site_url}">login</a></li>
