@@ -23,7 +23,7 @@ class Proyecto extends EX_Model {
         }
     }
     
-    public function filterTrabajador($trabajador){
-        return $this->loadSimpleJoin($trabajador, 'TrabajadoresProyecto');
-    }
+//    public function filterTrabajador($trabajador){
+//        return $this->loadSimpleJoin($trabajador, 'TrabajadoresProyecto');
+//    }
 }

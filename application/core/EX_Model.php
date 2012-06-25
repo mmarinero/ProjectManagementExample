@@ -269,17 +269,17 @@ class EX_Model extends CI_Model{
         return $fields;
     }
     
-    protected function loadSimpleJoin($model, $joinedTablename, $extraFields=array()){
-                $fields = array_keys($this->getFieldsAndId());
-                foreach ($fields as &$field) {
-                    $field = static::getTableName().'.'.$field;  
-                }
-                $fields = array_merge($fields,$extraFields);
-        return $this->loadQueryArray('select '.implode(', ', $fields).
-                ' from '.static::getTableName().' join '.$joinedTablename.' on '.
-                static::getTableName().".id = ".static::getTableName()." where ".
-                $joinedTablename.".".$model->getTableName()." = '".$model->getId()."'");
-    }
+//    private function loadSimpleJoin($model, $joinedTablename, $extraFields=array()){
+//                $fields = array_keys($this->getFieldsAndId());
+//                foreach ($fields as &$field) {
+//                    $field = static::getTableName().'.'.$field;  
+//                }
+//                $fields = array_merge($fields,$extraFields);
+//        return $this->loadQueryArray('select '.implode(', ', $fields).
+//                ' from '.static::getTableName().' join '.$joinedTablename.' on '.
+//                static::getTableName().".id = ".static::getTableName()." where ".
+//                $joinedTablename.".".$model->getTableName()." = '".$model->getId()."'");
+//    }
     
     /**
      *

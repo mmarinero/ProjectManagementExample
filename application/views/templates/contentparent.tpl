@@ -28,7 +28,7 @@
             <li><a class="navButton" href="{"dashboard/planes"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Planes</a></li>
             {/if}
         {/if}
-        <li><a class="navButton" href="{"informes/proyecto"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Informes</a></li>
+        <li><a class="navButton" href="{"informes/lista"|site_url}{if isset($idProyecto)}/{$idProyecto}{/if}">Informes</a></li>
     {else}
         <li><a class="navButton" href="{"auth/login"|site_url}">login</a></li>
     {/if}

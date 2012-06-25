@@ -1,5 +1,33 @@
 {extends file='contentparent.tpl'}
 {block name=content}
+<table class="listado">
+    <tr><th colspan="5">Iteraciones</th></tr>
+    <tr>
+        <td class="listadoLabel">Nombre</td>
+        <td class="listadoLabel">Descripción</td>
+        <td class="listadoLabel">Estimación inicio</td>
+        <td class="listadoLabel">Estimación fin</td>
+        <td class="listadoLabel">Planificar</td>
+    </tr>
+    {foreach from=$actividades item=iteracion}
+        <tr>
+            <td class="listadoName">{$iteracion->get('nombre')->getHtml()} </td>
+            <td class="listadoName">{$iteracion->get('descripcion')->getHtml()}</td>
+            <td class="listadoName">{$iteracion->get('inicio')->getInputHtml()}</td>
+            <td class="listadoName">{$iteracion->get('fin')->getInputHtml()}</td>
+            <td class="listadoName">
+                {if !$iteracion->get('cerrada')->val() && !isset($cerrada)}
+                    {assign value=true var=cerrada}
+                <a href="{'actividades/planIteracion'|site_url}/{$idProyecto}/{$idPlan}/{$iteracion->getId()}">
+                    <img width="32" height="32" src="{"images/icons/plan.png"|base_url}">
+                </a>
+                {/if}
+            </td>
+        </tr>
+    {foreachelse}
+        <h2 style="text-align: center"> No hay actividades en este proyecto hasta ahora.</h2>
+    {/foreach}
+</table>
 {$crearActividad['start']}
 
     <label>

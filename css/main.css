@@ -42,8 +42,8 @@ body {
 }
 
 #header:hover img{
-filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
-opacity: 0.8;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+    opacity: 0.8;
 }
 
 #content {
@@ -239,8 +239,8 @@ form.estandarForm table input[type="submit"]{
 }
 
 form.estandarForm input[type="submit"]:hover {
-background:#fff;
-color:#09C;
+    background:#fff;
+    color:#09C;
 }
 
 form.estandarForm table, form.estandarForm table tr, form.estandarForm td{
@@ -248,7 +248,7 @@ form.estandarForm table, form.estandarForm table tr, form.estandarForm td{
 }
 
 form.estandarForm textarea:focus, input:focus {
-border: 1px solid #09C;
+    border: 1px solid #09C;
 }
 
 form.estandarForm label.error{
@@ -257,27 +257,31 @@ form.estandarForm label.error{
 }
 
 table.listado {
-width:90%;
-border-top:1px solid #e5eff8;
-border-right:1px solid #e5eff8;
-margin:1em auto;
-border-collapse:collapse;
+    table-layout: fixed;
+    width :97%;
+    border-top:1px solid #e5eff8;
+    border-right:1px solid #e5eff8;
+    margin:1em auto;
+    border-collapse:collapse;
 }
 table.listado td {
-color:#678197;
-border-bottom:1px solid #e5eff8;
-border-left:1px solid #e5eff8;
-padding:.3em 1em;
+    color:#678197;
+    border-bottom:1px solid #e5eff8;
+    border-left:1px solid #e5eff8;
+    padding: .5em 1em;
+}
+table.listado td input{
+    width: 80%;
 }
 
 table.listado tr.odd td {
-background:#f7fbff
+    background:#f7fbff
 }
 table.listado tr.odd .listadoLabel {
-background:#f4f9fe;
+    background:#f4f9fe;
 }
 table.listado .listadoLabel {
-background:#f9fcfe;
+    background:#f9fcfe;
 }
 #proyectosHeader{
     float: left;

@@ -32,6 +32,12 @@ function propIndexedArray(array $objectsArray, $method){
     return $resultArray;
 }
 
+function map_func($func, $array){
+    return array_map(function($object) use ($func){
+        return $object->$func();
+    }, $array);
+}
+
 function htmlAttributesFromArray($attributesArray) {
     $attributesString = '';
     foreach($attributesArray as $name => $value){

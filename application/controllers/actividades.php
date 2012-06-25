@@ -13,50 +13,59 @@ class actividades extends CI_Controller{
 
     function __construct() {
         parent::__construct();
-        $this->load->library('tank_auth');
-        $this->lang->load('tank_auth');
-        if (!$this->tank_auth->is_logged_in()) {
-            redirect('/auth/login');
-	}
-        $trabajador = Trabajador::fromTankAuth($this->tank_auth->get_user_id());
-        if (!is_null($trabajador)) $this->smarty->assign('trabajador',$trabajador);
-        $this->trabajador = $trabajador;
-        $proyectoLoader = new Proyecto();
+        $this->trabajador = Trabajador::loggedTrabajador();
+        if (!is_null($this->trabajador)) $this->smarty->assign('trabajador',  $this->trabajador);
         $this->smarty->assign('idProyecto', $this->uri->segment(3));
-        if ($trabajador->get('rol')->val() == 'admin') {
-            $proyectos = $proyectoLoader->loadArray();
+        if ($this->trabajador->get('rol')->val() == 'admin') {
+            $proyectos = Proyecto::loadArray();
         } else {
-            $proyectos = $proyectoLoader->filterTrabajador($trabajador);
+            $proyectos = $this->trabajador->getJoinedArray('Proyecto', 'TrabajadoresProyecto');
         }
         $buscadorJefe = new TrabajadoresProyecto();
         $jefeOrNull = $buscadorJefe->loadWhere(array(
             'Proyecto'=>$this->uri->segment(3),
-            'Trabajador'=>$trabajador->getId(),
+            'Trabajador'=>$this->trabajador->getId(),
             'jefe'=>1));
         $this->jefeId= is_object($jefeOrNull) ? $jefeOrNull->get('Trabajador')->val() : null;
         $this->smarty->assign('proyectos',$proyectos);
         $this->smarty->assign('this', $this);
     }
+    
+     /**
+     *
+     * @param type $segment
+     * @param type $model
+     * @param type $redirect
+     * @return EX_Model 
+     */
+    private function requireSegment($segment, $model = null, $redirect = ''){
+        $id = $this->uri->segment($segment, null);
+        if (!is_null($this->uri->segment($segment, null))){
+            if (!is_null($model)){
+                $newModel = new $model((int)$id);
+                if (!is_null($newModel)) return $newModel;
+            } else {
+                return $id;
+            }
+        }
+        redirect($redirect);
+    }
 
-    public function planIteracion($idIteracion){
-        
-        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
-                $idIteracion == null) {
+    public function planIteracion(){
+        $idProyecto = $this->requireSegment(3);
+        $idPlanFases = $this->requireSegment(4);
+        $idIteracion = $this->requireSegment(5);
+        if ($this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
         }
-        $idProyecto = array_shift($this->db->query(
-                "select Proyecto from PlanFases join PlanIteracion on PlanFases = PlanFases.id where PlanIteracion.id = '".
-                $idIteracion."'")->result_array());
-        $proyecto = new Proyecto();
-        $proyecto->loadId($idProyecto['Proyecto']);
+        $proyecto = new Proyecto($idProyecto);
         $actividadesLoader = new Actividad();
         $actividades = $actividadesLoader->loadArray(array('PlanIteracion'=>$idIteracion));
-        $crearActividad= $actividadesLoader->getForm(site_url('actividades/nuevaActividadPost/'.$idIteracion),
+        $crearActividad= $actividadesLoader->getForm(site_url("actividades/nuevaActividadPost/$idProyecto/$idPlanFases/$idIteracion"),
                 array('id'=>'crearActividad', 'class'=>'estandarForm'));
-        $trabajadoresLoader = new Trabajador();
         $roles = Trabajador::$roles;
         array_shift($roles);
-        $trabajadores = $trabajadoresLoader->filterProyecto($proyecto);
+        $trabajadores = $proyecto->getJoinedArray('Trabajador', 'TrabajadoresProyecto');
         $this->smarty->assign('crearActividad',$crearActividad);
         $this->smarty->assign('actividades',$actividades);
         $this->smarty->assign('trabajadoresProyecto',$trabajadores);
@@ -65,8 +74,11 @@ class actividades extends CI_Controller{
         $this->smarty->view('planIteracion');
     }
     
-    public function nuevaActividadPost($idIteracion){
-        if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' || $idIteracion == null) {
+    public function nuevaActividadPost(){
+        $idProyecto = $this->requireSegment(3);
+        $idPlanFases = $this->requireSegment(4);
+        $idIteracion = $this->requireSegment(5);
+        if ($this->trabajador->getId() != $this->jefeId) {
             redirect('dashboard');
         }
         $actividad = new Actividad();
@@ -79,7 +91,7 @@ class actividades extends CI_Controller{
                 $predecesora->DBInsert(array('Precedente'=>$value, 'Posterior'=>$actividad->getId()));
             }
         }
-        redirect('actividades/planIteracion/'.$idIteracion);
+        redirect("actividades/planIteracion/$idProyecto/$idPlanFases/$idIteracion");
     }
 
 }

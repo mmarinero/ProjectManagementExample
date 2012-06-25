@@ -24,7 +24,7 @@
 <input type="submit" value="Crear plan de fases" />
 {$crearFases['end']}
 {else}
-<form action="{'dashboard/modificarEstimacionIteracionPost'|site_url}/{$idPlan}" method="post">
+<form action="{'dashboard/modificarEstimacionIteracionPost'|site_url}/{$idPlan}" class="tableInside" method="post">
 <table class="listado">
     <tr><th colspan="5">Iteraciones</th></tr>
     <tr>
@@ -43,7 +43,7 @@
             <td class="listadoName">
                 {if !$iteracion->get('cerrada')->val() && !isset($cerrada)}
                     {assign value=true var=cerrada}
-                <a href="{'actividades/planIteracion'|site_url}/{$iteracion->getId()}">
+                <a href="{'actividades/planIteracion'|site_url}/{$idProyecto}/{$idPlan}/{$iteracion->getId()}">
                     <img width="32" height="32" src="{"images/icons/plan.png"|base_url}">
                 </a>
                 {/if}

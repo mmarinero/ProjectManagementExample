@@ -55,9 +55,9 @@ class Trabajador extends EX_Model {
         return new static(array('users'=>$id));
     }
     
-    public function filterProyecto($proyecto){
-        return $this->loadSimpleJoin($proyecto, 'TrabajadoresProyecto', array('porcentaje'));
-    }
+//    public function filterProyecto($proyecto){
+//        return $this->loadSimpleJoin($proyecto, 'TrabajadoresProyecto', array('porcentaje'));
+//    }
     
     public function auth($rol){
          return $rol === $this->get('rol')->val() ? true : show_error('No autorizado', 403);
