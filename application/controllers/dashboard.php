@@ -137,8 +137,8 @@ class dashboard extends CI_Controller{
         } else {
             $iteraciones= $planFases->getReferredArray('PlanIteracion');
             foreach ($iteraciones as $iteracion) {
-                $iteracion->get('inicio')->setAttributes(array('nameAppend'=>$iteracion->getId()));
-                $iteracion->get('fin')->setAttributes(array('nameAppend'=>$iteracion->getId()));
+                $iteracion->get('inicio')->setAttributes(array('appendName'=>$iteracion->getId()));
+                $iteracion->get('fin')->setAttributes(array('appendName'=>$iteracion->getId()));
             }
             $this->smarty->assign('iteraciones',$iteraciones);
             $this->smarty->assign('idPlan',$planFases->getId());
@@ -178,7 +178,7 @@ class dashboard extends CI_Controller{
         }
         redirect("dashboard/planes/$idProyecto/{$planFases->getId()}");
     }
-    function modificarEstimacionIteracionPost($idPlan = null){
+    function modificarEstimacionIteracionPost($idp=null, $idPlan = null){
         if ($this->trabajador->get('rol')->val() != 'Jefe de proyecto' ||
                 $idPlan == null ||
                 $this->trabajador->getId() != $this->jefeId) {
@@ -191,6 +191,7 @@ class dashboard extends CI_Controller{
                 'inicio'=>$this->input->post('inicio'.$iteracion->getId()),
                 'fin'=>$this->input->post('fin'.$iteracion->getId())));
         }
+        redirect("dashboard/planes/$idp/$idPlan");
     }
 }
 

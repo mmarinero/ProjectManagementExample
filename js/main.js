@@ -14,6 +14,7 @@ $(function(){
             nombre:"required"
         }
     });
+    dates.rules('remove', 'date');
     $('.estandarForm .int').each(function(){
             $(this).rules('add', {
             digits:true

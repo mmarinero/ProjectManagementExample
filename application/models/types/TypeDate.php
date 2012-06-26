@@ -10,9 +10,6 @@ class TypeDate extends BaseType {
         return array($this->getName()=>array('type'=>'datetime','null'=>true));
     }
     
-        //$attributes['class'][] = 'text';
-        //$attributes = $this->processAttributes($attributes, true);
-        //return '<textarea '.static::htmlAttributesFromArray($attributes).'>'.$this->val().'</textarea>';
     public function getInputHtml($attributes = array()){
         $attributes['class'][] = 'date';
         $attributes['type'] = 'text';

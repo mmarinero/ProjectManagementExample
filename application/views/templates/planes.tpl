@@ -24,7 +24,7 @@
 <input type="submit" value="Crear plan de fases" />
 {$crearFases['end']}
 {else}
-<form action="{'dashboard/modificarEstimacionIteracionPost'|site_url}/{$idPlan}" class="tableInside" method="post">
+<form action="{'dashboard/modificarEstimacionIteracionPost'|site_url}/{$idProyecto}/{$idPlan}" class="tableInside" method="post">
 <table class="listado">
     <tr><th colspan="5">Iteraciones</th></tr>
     <tr>
