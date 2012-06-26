@@ -49,7 +49,7 @@ function htmlAttributesFromArray($attributesArray) {
 function assocRequest($params, $func = null) {
     $assocParams = array();
     if (!is_array($params))
-        throw new NdSiteException(var_export($params, true) . ' no es un array');
+        throw new Exception(var_export($params, true) . ' no es un array');
     if ($func !== null) {
         foreach ($params as $key => $param) {
             if (isset($_REQUEST[$param])) {

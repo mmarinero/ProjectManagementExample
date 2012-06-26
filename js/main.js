@@ -4,6 +4,9 @@
  */
 
 $(function(){
+    $('.estadosForm select').change(function(){
+        $(this).parent().submit();
+    });
     dates = $('input.date');
     dates.datepicker( $.datepicker.regional[ "es" ] );
     $('.estandarForm').validate({

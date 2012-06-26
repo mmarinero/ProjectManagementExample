@@ -41,6 +41,11 @@
             <td class="listadoName">{$iteracion->get('inicio')->getInputHtml()}</td>
             <td class="listadoName">{$iteracion->get('fin')->getInputHtml()}</td>
             <td class="listadoName">
+                {if $iteracion->get('iniciada')->val()}
+                <a class="button" href="{'actividades/planIteracion'|site_url}/{$idProyecto}/{$idPlan}/{$iteracion->getId()}">
+                    Ver plan
+                </a>
+                {/if}
                 {if !$iteracion->get('iniciada')->val() && !isset($iniciada)}
                     {assign value=true var=iniciada}
                 <a href="{'actividades/planIteracion'|site_url}/{$idProyecto}/{$idPlan}/{$iteracion->getId()}">

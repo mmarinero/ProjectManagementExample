@@ -4,13 +4,14 @@
     <h2 style="text-align: center"> No hay actividades en este proyecto hasta ahora.</h2>
 {else}
 <table class="listado">
-    <tr><th colspan="{if $iteracion->get('iniciada')->val()}6{else}5{/if}">Iteraciones</th></tr>
+    <tr><th colspan="{if $iteracion->get('iniciada')->val()}7{else}6{/if}">Actividades</th></tr>
     <tr>
         <td class="listadoLabel">Nombre</td>
         <td class="listadoLabel">Descripción</td>
         <td class="listadoLabel">Horas</td>
         <td class="listadoLabel">rol</td>
         <td class="listadoLabel">Predecesoras</td>
+        <td class="listadoLabel">Cerrada</td>
         {if $iteracion->get('iniciada')->val()}
         <td class="listadoLabel">Asignar</td>
         {/if}
@@ -27,8 +28,13 @@
             {$predecesora->get('nombre')->getHtml()}, 
             {/foreach}
             </td>
+             <td class="listadoName">{$actividad->get('cerrada')->getHtml()}</td>
             {if $iteracion->get('iniciada')->val()}
-                <td class="listadoName"><a href="{$asignarURL}/{$actividad->getId()}" class="button">Asignar</a></td>
+                <td class="listadoName">
+                    <a href="{$asignarURL}/{$actividad->getId()}" class="button">Asignar</a>
+                    <br><br>
+                    <a href="{$cerrarURL}/{$actividad->getId()}" class="button">cerrar</a>
+                </td>
             {/if}
         </tr>      
     {/foreach}

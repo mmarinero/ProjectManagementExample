@@ -118,50 +118,50 @@ class CrearBD extends CI_Controller
                     $roles[$index]);
         }
         
-//        $proyecto = new Proyecto();
-//        $proyecto->DBInsert(array(
-//            'nombre'=>'Proyecto prueba',
-//            'descripcion'=>'Proyecto de pruebas creado automaticamente',
-//            'inicio'=>'1/6/1988'));
-//        $trabajadoresProyecto = new TrabajadoresProyecto();
-//        $trabajadoresProyecto->DBInsert(array(
-//            'Proyecto'=>$proyecto->getId(),
-//            'Trabajador' => 2,
-//            'jefe'=>1,
-//            'disponibilidad'=>50));
-//        $trabajadoresProyecto->DBInsert(array(
-//            'Proyecto'=>$proyecto->getId(),
-//            'Trabajador' => 4,
-//            'jefe'=>0,
-//            'disponibilidad'=>50));
-//        $planFases = new PlanFases();
-//        $planFases->DBInsert(array(
-//            'Proyecto'=>$proyecto->getId(),
-//            'iteracionesinicio'=>1,
-//            'iteracioneselaboracion'=>2,
-//            'iteracionesconstrucion'=>2,
-//            'iteracionestransicion'=>1),true);
-//        $planIteracion = new PlanIteracion(1);
-//        $planIteracion->get('iniciada')->setValue(1);
-//        $planIteracion->DBUpdate(array());
-//        $actividad = new Actividad();
-//        $actividad->DBInsert(array(
-//            'nombre'=>'Actividad prueba 1',
-//            'descripcion'=>'Actividad de pruebas creado automaticamente',
-//            'horas'=>10,
-//            'rol'=>'Jefe de proyecto',
-//            'PlanIteracion'=>$planIteracion->getId()
-//            ));
-//         $actividad->DBInsert(array(
-//            'nombre'=>'Actividad prueba 2',
-//            'descripcion'=>'Actividad de pruebas creado automaticamente',
-//            'horas'=>12,
-//            'PlanIteracion'=>$planIteracion->getId()
-//            ));
-//         $actividadActividad = new ActividadActividad();
-//         $actividadActividad->DBInsert(array(
-//            'Precedente'=>1,
-//            'Posterior'=>2));
+        $proyecto = new Proyecto();
+        $proyecto->DBInsert(array(
+            'nombre'=>'Proyecto prueba',
+            'descripcion'=>'Proyecto de pruebas creado automaticamente',
+            'inicio'=>'1/6/1988'));
+        $trabajadoresProyecto = new TrabajadoresProyecto();
+        $trabajadoresProyecto->DBInsert(array(
+            'Proyecto'=>$proyecto->getId(),
+            'Trabajador' => 2,
+            'jefe'=>1,
+            'disponibilidad'=>50));
+        $trabajadoresProyecto->DBInsert(array(
+            'Proyecto'=>$proyecto->getId(),
+            'Trabajador' => 4,
+            'jefe'=>0,
+            'disponibilidad'=>50));
+        $planFases = new PlanFases();
+        $planFases->DBInsert(array(
+            'Proyecto'=>$proyecto->getId(),
+            'iteracionesinicio'=>1,
+            'iteracioneselaboracion'=>2,
+            'iteracionesconstrucion'=>2,
+            'iteracionestransicion'=>1),true);
+        $planIteracion = new PlanIteracion(1);
+        $planIteracion->get('iniciada')->setValue(1);
+        $planIteracion->DBUpdate(array());
+        $actividad = new Actividad();
+        $actividad->DBInsert(array(
+            'nombre'=>'Actividad prueba 1',
+            'descripcion'=>'Actividad de pruebas creado automaticamente',
+            'horas'=>10,
+            'rol'=>'Jefe de proyecto',
+            'PlanIteracion'=>$planIteracion->getId()
+            ));
+         $actividad->DBInsert(array(
+            'nombre'=>'Actividad prueba 2',
+            'descripcion'=>'Actividad de pruebas creado automaticamente',
+            'horas'=>12,
+            'PlanIteracion'=>$planIteracion->getId()
+            ));
+         $actividadActividad = new ActividadActividad();
+         $actividadActividad->DBInsert(array(
+            'Precedente'=>1,
+            'Posterior'=>2));
          
     }
 }

@@ -82,6 +82,7 @@ class actividades extends CI_Controller{
         $this->smarty->assign('roles', $roles );
         $this->smarty->assign('iniciarURL', site_url("actividades/iniciarIteracion/$idProyecto/$idPlanFases/$idIteracion"));
         $this->smarty->assign('asignarURL', site_url("actividades/asignarTareas/$idProyecto/$idPlanFases/$idIteracion"));
+        $this->smarty->assign('cerrarURL', site_url("actividades/cerrarActividad/$idProyecto/$idPlanFases/$idIteracion"));
         $this->smarty->assign('idIteracion',$idIteracion);
         $this->smarty->assign('iteracion',$iteracion);
         $this->smarty->view('planIteracion');
@@ -129,15 +130,31 @@ class actividades extends CI_Controller{
 	for($i = 1;$i<=$level; $i++) {
 	    $levels[] = $i;
 	}
+        $tareas = TareaPersonal::loadArray(array('Actividad'=>$actividad->getId()));
+        foreach ($tareas as $tarea){
+            $tarea->setValues(array('Trab'=> new Trabajador($tarea->get('Trabajador')->val())));
+        }
+        $this->smarty->assign('tareas', $tareas);
 	$trabajadores = Trabajador::filterLevel($trabajadores,$levels);
 	$this->smarty->assign('crearTarea', i(new TareaPersonal())->getForm(
-                site_url("actividades/nuevaActividadPost/{$proyecto->getId()}/$idPlanFases/$idIteracion"),
+                site_url("actividades/AsignarTareasPost/{$proyecto->getId()}/$idPlanFases/$idIteracion/{$actividad->getId()}"),
                 array('id'=>'asignaActividades', 'class'=>'estandarForm')));
+        $this->smarty->assign('url', "{$proyecto->getId()}/$idPlanFases/$idIteracion/{$actividad->getId()}/");
 	$this->smarty->assign('trabajadores', $trabajadores);
+        $this->smarty->assign('actividad', $actividad);
 	$this->smarty->view('asignarTareas');
     }
 
-    function AsignarTareasPost(){
+    function AsignarTareasPost($idP,$idPl,$idI,$idA){
+        $actividad = $this->requireSegment(6, 'Actividad');
+        $actividad->DBUpdate(array('iniciada'=>1));
+        $tarea = new TareaPersonal();
+        $input = assocRequest(array_keys($tarea->getFields()));
+        $input['Actividad']= $actividad->getId();
+        $input['estado']= 'Pendiente';
+        $input['Trabajador']= $_POST['trabajador'];
+        $tarea->DBInsert($input);
+        redirect("actividades/AsignarTareas/$idP/$idPl/$idI/$idA");
     }
 
     public function proyecto(){
@@ -146,28 +163,43 @@ class actividades extends CI_Controller{
 	$iteraciones = $planFases->getReferredArray('PlanIteracion');
 	$actividades = array();
 	foreach($iteraciones as $iteracion){
-	   $actividades = array_merge($iteracion->getReferredArray('Actividad',array('iniciada'=>1), $actividades)); 
+	   $actividades = array_merge($iteracion->getReferredArray('Actividad',array('iniciada'=>1)), $actividades); 
 	}
 	$tareas = array();
 	foreach($actividades as $actividad){
-	   $tareas = array_merge($actividad->getReferredArray('TareaPersonal',array('Trabajador'=>$this->trabajador->getId()), $actividades)); 
+	   $tareas = array_merge($actividad->getReferredArray('TareaPersonal',array(
+               'Trabajador'=>$this->trabajador->getId(),
+               'estado'=>'Pendiente')), $tareas); 
 	}
 	$this->smarty->assign('tareas', $tareas);
         $formsTareas = array();
 	foreach($tareas as $tarea){
-	    $formsTareas[] = $tarea->getForm(
-                site_url("actividades/tareaPost/{$proyecto->getId()}/$idPlanFases/$idIteracion"),
+	    $formsTareas[] = $tarea->getFieldsForm(
+                site_url("actividades/tareaPost/{$proyecto->getId()}/{$tarea->getId()}"),
                 array('id'=>'crearTarea', 'class'=>'estandarForm'));
 	}
 	$this->smarty->assign('formsTareas', $formsTareas);
+        $this->smarty->view('actividades');
     }
 
     public function TareaPost(){
-	$idProyecto = $this->requireSegment(3);
-	$tarea = new TareaPersonal($_POST['id']);
-        $input = assocRequest(array_keys($tarea->getFields()));
+	$tarea = $this->requireSegment(4, 'TareaPersonal');
+        $input = assocRequest(array('seguimiento', 'estado'));
 	$tarea->DBUpdate($input);
-	redirect('actividades/proyecto/'.$idProyecto);
+	redirect('actividades/proyecto/'.$this->requireSegment(3));
+    }
+    
+    public function ModificarEstado($idp,$idpl,$idi,$ida,$idt){
+        $tarea = $this->requireSegment(7, 'TareaPersonal');
+        $input = assocRequest(array('estado'));
+        $tarea->DBUpdate($input);
+        redirect("actividades/asignarTareas/$idp/$idpl/$idi/$ida/$idt");
+    }
+    
+    public function cerrarActividad($idp,$idpl,$idi,$ida){
+        $actividad = new Actividad($ida);
+        $actividad->DBUpdate(array('cerrada'=>1));
+        redirect("actividades/planIteracion/$idp/$idpl/$idi");
     }
 }
 

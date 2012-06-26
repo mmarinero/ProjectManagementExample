@@ -7,6 +7,7 @@ class TareaPersonal extends EX_Model {
     protected function initModel() {
         $this->fields['nombre'] = new TypeString(array('name'=>'nombre', "outputName"=>'Nombre'));
         $this->fields['descripcion'] = new TypeText(array('name'=>'descripcion', "outputName"=>'Descripción'));
+        $this->fields['seguimiento'] = new TypeText(array('name'=>'seguimiento', "outputName"=>'Seguimiento'));
         $this->fields['tipo'] = new TypeString('tipo');
         $this->fields['estado'] = new TypeString('estado');
         $this->fields['horas'] = new TypeString('horas');
