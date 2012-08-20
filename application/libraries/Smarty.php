@@ -9,9 +9,9 @@
  * @author		Kepler Gelotte
  * @link		http://www.coolphptools.com/codeigniter-smarty
  */
-require_once( BASEPATH.'libraries/Smarty/libs/Smarty.class.php' );
+require_once( APPPATH.'third_party/Smarty/libs/Smarty.class.php' );
 
-class CI_Smarty extends Smarty {
+class EX_Smarty extends Smarty {
     
         private $extension = '.tpl';
 

@@ -33,7 +33,8 @@ class EX_Input extends CI_Input{
         }
         return $assocParams;
     }
-    //put your code here
+    
+    public function _clean_input_keys($str) {
+        return $str;
+    }
 }
-
-?>
