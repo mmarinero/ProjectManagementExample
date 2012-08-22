@@ -13,7 +13,12 @@ final class PDOFactory {
             return $pdo;
         }
         list($database, $user,$password) = self::getAccessData();
-        $pdo = new PDO($database, $user, $password, self::$attrs);
+        try {
+            $pdo = new PDO($database, $user, $password, self::$attrs);
+        } catch (PDOException $e){
+            echo $e->getMessage();
+            exit();
+        }
         return $pdo;
     }
     
@@ -23,7 +28,12 @@ final class PDOFactory {
             return $pdo;
         }
         list($database, $user,$password) = self::getAccessData();
-        $pdo = new ExtendedPDO($database, $user, $password, self::$attrs);
+        try {
+            $pdo = new ExtendedPDO($database, $user, $password, self::$attrs);
+        } catch (PDOException $e){
+            echo $e->getMessage();
+            exit();
+        }
         return $pdo;
     }
     
