@@ -4,9 +4,49 @@
  * PHP query builder 
  */
 Abstract class AbstractQueryBuilder {
+
+    private $idField = 'id';
+
+    private $sqlString = null;
     
-    function get($table, $where = array()){
-        
+    function get($table, $where = array(), $fields = array(), $limit = null, $offset = null){
+	$selectClause = is_empty($fields) ? '*' : $this->parseIdList($fields);
+	$this->sqlString = "select $selectClause from $this->quoteIdentifier($table) ". 
+	"where $this->parseIdValList($where)". 
+	return $this;
+    }
+
+    function getId($table, $id, $fields) { 
+    }
+	
+
+    private function parseIdValList($list, $defaultOperator = '='){
+	if (is_array($where)){
+	    $clauses = array();
+	    foreach($where as $id -> $value){
+		if (is_string($id)){
+		    $clauses[$id] = "$this->quoteIdentifier($id) $defaultOperator $this->quote($value)";
+		} elseif (is_int) {
+		    $clauses[$id] = $value; 
+		} elseif (is_array($value)) {
+		    $clauses[$id] = "$this->quoteIdentifier($id) $value['operator'] $this->quote($value['value'])";
+		} else {
+		    //TODO output list
+		    throw new Exception("The list has an invalid element")
+		}
+	    }
+	    return implode(', ',$clauses);
+	} else {
+	    return $where;
+	}
+    }
+
+    private function parseIdList($list) {
+	if (is_array($where)){
+	    return implode(', ',array_map(array($this,'quoteIdentifier'),$list));
+	} else {
+	    return $list;
+	}
     }
     
     function insert($table, $fields){
