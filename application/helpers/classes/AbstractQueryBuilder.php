@@ -10,13 +10,14 @@ Abstract class AbstractQueryBuilder {
     private $sqlString = null;
     
     function get($table, $where = array(), $fields = array(), $limit = null, $offset = null){
-	$selectClause = is_empty($fields) ? '*' : $this->parseIdList($fields);
+	$selectClause = is_empty($fields) ? '*' : $this->parseList($fields,'quoteIdentifier');
 	$this->sqlString = "select $selectClause from $this->quoteIdentifier($table) ". 
-	"where $this->parseIdValList($where)". 
+	"where $this->parseIdValList($where)"; 
 	return $this;
     }
 
     function getId($table, $id, $fields) { 
+	
     }
 	
 
@@ -36,29 +37,36 @@ Abstract class AbstractQueryBuilder {
 		}
 	    }
 	    return implode(', ',$clauses);
+	} else (is_int($where)) {
+	    return "$this->quote($this->idField) = $this->quote($where)";
 	} else {
 	    return $where;
 	}
     }
-
-    private function parseIdList($list) {
-	if (is_array($where)){
-	    return implode(', ',array_map(array($this,'quoteIdentifier'),$list));
+    
+    private function parseList($list, $quoteFunction) {
+	if (is_array($list)){
+	    return implode(', ',array_map(array($this,$quoteFunction),$list));
 	} else {
 	    return $list;
 	}
     }
     
     function insert($table, $fields){
-        
+	$clause = '('.$this->parseList(array_keys($fields), 'quoteIdentifier').') '.$this->parseList('quote');
+	$this->sqlString = "insert into $this->quoteIdentifier($table) $clause";  
+	return $this;
     }
-    
+
     function update($table, $fields, $where){
-        
+        $this->sqlString = "update $this->quoteIdentifier($table) set $this->parseIdValList($fields) where ".
+	    "$this->parseIdVallist($where)";
+	return $this;
     }
     
     function delete($table, $where){
-        
+        $this->sqlString = "delete from $this->quoteIdentifier($table) where $this->parseIdValList($where)"; 
+	return $this;
     }
     
     function select($fields){
