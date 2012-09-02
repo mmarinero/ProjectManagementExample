@@ -23,6 +23,7 @@ final class PDOFactory {
     }
     
     static function getExtendedPDO(){
+        throw new Exception('Not yet implemented'.  var_export($params, true));
         static $pdo = null;
         if (!is_null($pdo)) {
             return $pdo;

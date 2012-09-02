@@ -1,5 +1,4 @@
 <?php
-
 /**
  * QueryBuilder implementation for MySql capable of executing queries directly
  * Result for fetch/fetchAll is the same as executing the same functions on PDO
@@ -11,8 +10,8 @@ class MyQB extends AbstractQueryBuilder{
     
     private $link;
     
-    function parse($params){
-        
+    function __construct($link) {
+        $this->link = $link;
     }
     
     function fetchAll(){

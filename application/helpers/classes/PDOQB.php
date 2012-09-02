@@ -12,16 +12,16 @@ class PDOQB extends AbstractQueryBuilder{
     
     private $pdo;
     
-    function parse($params){
-        
+    function __construct($pdo) {
+        $this->pdo = $pdo;
     }
     
     function fetchAll(){
-        
+        return $this->pdo->query($this->sqlString)->fetchAll();
     }
     
     function fetch(){
-        
+        return $this->pdo->query($this->sqlString)->fetch();
     }
 
     public function quote($param) {
@@ -33,5 +33,4 @@ class PDOQB extends AbstractQueryBuilder{
         return $sc.str_replace($sc, $sc.$sc, $param).$sc;
     }
 
-    
 }

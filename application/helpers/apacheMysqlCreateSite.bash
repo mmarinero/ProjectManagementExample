@@ -3,13 +3,13 @@
 EXPECTED_ARGS=2
 E_BADARGS=65
 MYSQL=`which mysql`
-name = $1
-pass = $2
-document_root = "public_html"
-root_dir = "$HOME/vhosts/"
-server_user = "www-data"
-domain = "$1.local"
-email = "mariomarinero@gmail.com"
+name=$1
+pass=$2
+document_root="public_html"
+root_dir="$HOME/vhosts/"
+server_user="www-data"
+domain="$1.local"
+email="mariomarinero@gmail.com"
 
 Q1="CREATE DATABASE $1;"
 Q2="GRANT ALL ON $name.* TO '$name.'@'localhost' IDENTIFIED BY '$pass';"
@@ -28,13 +28,13 @@ $MYSQL -uroot -p -e "$SQL"
 # This script is used to create virtual hosts.
 
 # Create the web directory and a index.php test file
-dir = "$root_dir/$name/"
+dir="$root_dir/$name/"
 mkdir -p "$dir/$document_root"
 cd "$dir/$document_root"
 
 # Set the owner and change permissions
 chown -R $server_user $dir/
-chmod -R '750' $dir
+chmod -R '777' $dir
 
 # Create a directory for your apache errors log
 mkdir /var/log/apache2/$name/
