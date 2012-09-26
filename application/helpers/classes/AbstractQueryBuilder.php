@@ -9,58 +9,34 @@ Abstract class AbstractQueryBuilder {
 
     protected $sqlString = null;
     
-    function get($table, $where = array(), $fields = array(), $limit = null, $offset = null){
-	$selectClause = is_empty($fields) ? '*' : $this->parseList($fields,'quoteIdentifier');
-        
-	$this->sqlString = "select $selectClause from $this->quoteIdentifier($table) ". 
-	"where {$this->parseIdValList($where)}"; 
-	return $this;
-    }
+    protected $state = 'empty';
 
-    private function parseIdValList($list, $defaultOperator = '='){
-	if (is_array($list)){
-	    $clauses = array();
-	    foreach($list as $id -> $value){
-		if (is_string($id)){
-		    $clauses[$id] = "{$this->quoteIdentifier($id)} $defaultOperator {$this->quote($value)}";
-		} elseif (is_int) {
-		    $clauses[$id] = $value; 
-		} elseif (is_array($value)) {
-		    $clauses[$id] = $this->quoteIdentifier($id).' '.$value['operator'].' '.$this->quote($value['value']);
-		} else {
-		    throw new Exception('The list has an invalid element: '.var_export($params, true));
-		}
-	    }
-	    return implode(', ',$clauses);
-	} elseif (is_int($list)) {
-	    return "{$this->quote($this->idField)} = {$this->quote($list)}";
-	} else {
-	    return $list;
-	}
-    }
-    
-    private function parseList($list, $quoteFunction) {
-	if (is_array($list)){
-	    return implode(', ',array_map(array($this,$quoteFunction),$list));
-	} else {
-	    return $list;
-	}
+    function get($table, $where = array(), $order = array(), $fields = array()){
+	$this->sqlString = $this->selectClause($fields)." from {$this->quoteIdentifier($table)} ". 
+	$this->whereClause($where).' '.$this->orderByClause($order); 
+        $this->state = 'completed';
+	return $this;
     }
     
     function insert($table, $fields){
-	$clause = '('.$this->parseList(array_keys($fields), 'quoteIdentifier').') '.$this->parseList('quote');
-	$this->sqlString = "insert into $this->quoteIdentifier($table) $clause";  
+	$clause = '('.$this->parseList(array_keys($fields), 'quoteIdentifier').') values ('.$this->parseList($fields,'quote').')';
+	$this->sqlString = "insert into {$this->quoteIdentifier($table)} $clause";
+        $this->state = 'completed';
 	return $this;
     }
 
     function update($table, $fields, $where){
-        $this->sqlString = "update {$this->quoteIdentifier($table)} set {$this->parseIdValList($fields)} where ".
-	    $this->parseIdVallist($where);
+        print_r($fields);
+        print_r($this->parseIdValList($fields));
+        $this->sqlString = "update {$this->quoteIdentifier($table)} set ".
+                "{$this->parseIdValList($fields)} ".$this->whereClause($where);
+        $this->state = 'completed';
 	return $this;
     }
     
     function delete($table, $where){
-        $this->sqlString = "delete from {$this->quoteIdentifier($table)} where {$this->parseIdValList($where)}"; 
+        $this->sqlString = "delete from {$this->quoteIdentifier($table)} ".$this->whereClause($where); 
+        $this->state = 'completed';
 	return $this;
     }
     
@@ -102,6 +78,49 @@ Abstract class AbstractQueryBuilder {
     
     function parse($params){
         throw new Exception('Not yet implemented'.  var_export($params, true));
+    }
+    
+    private function parseIdValList($list, $defaultOperator = '='){
+	if (is_array($list)){
+	    $clauses = array();
+	    foreach($list as $id -> $value){
+		if (is_string($id)){
+		    $clauses[$id] = "{$this->quoteIdentifier($id)} $defaultOperator {$this->quote($value)}";
+		} elseif (is_int) {
+		    $clauses[$id] = $value; 
+		} elseif (is_array($value)) {
+		    $clauses[$id] = $this->quoteIdentifier($id).' '.$value['operator'].' '.$this->quote($value['value']);
+		} else {
+		    throw new Exception('The list has an invalid element: '.var_export($params, true));
+		}
+	    }
+	    return implode(', ',$clauses);
+	} elseif (is_int($list)) {
+	    return "{$this->quote($this->idField)} $defaultOperator {$this->quote($list)}";
+	} else {
+	    return $list;
+	}
+    }
+    
+    private function parseList($list, $quoteFunction) {
+	if (is_array($list)){
+	    return implode(', ',array_map(array($this,$quoteFunction),$list));
+	} else {
+	    return $list;
+	}
+    }
+    
+    private function whereClause($where){
+        return empty($where) ? '' : 'where '.$this->parseIdValList($where);
+        
+    }
+    
+    private function selectClause($fields){
+        return empty($fields) ? 'select *' : 'select '. $this->parseList($fields,'quoteIdentifier');
+    }
+    
+    private function orderByClause($order){
+        return empty($order) ? '' : 'order by '.$this->parseOrderList($order);
     }
     
     abstract function quote($param);

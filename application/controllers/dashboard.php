@@ -15,8 +15,12 @@ class dashboard extends CI_Controller{
     
     private $jefeId;
     
+    private $qb;
+    
     function __construct() {
         parent::__construct();
+        $pdo = PDOFactory::getCustomPDO();
+        $this->qb = new PDOQB($pdo);
         $this->trabajador = Trabajador::loggedTrabajador();
         $jefeOrNull = new TrabajadoresProyecto(array(
             'Proyecto'=>$this->uri->segment(3),
@@ -85,7 +89,8 @@ class dashboard extends CI_Controller{
     function crearProyectoPost(){
         $this->trabajador->auth('admin');
         $proyecto = new Proyecto();
-        $proyecto->DBInsert(assocRequest(array_keys($proyecto->getFields())));
+        //$proyecto->DBInsert(assocRequest(array_keys($proyecto->getFields())));
+        $this->qb->insert('Proyecto', assocRequest(array_keys($proyecto->getFields())))->exec();
         $trabajadorProyecto = new TrabajadoresProyecto();
               $trabajadorProyecto->DBInsert(array(
                 'Proyecto'=> $proyecto->getId(),
@@ -109,7 +114,8 @@ class dashboard extends CI_Controller{
     function editarProyectoPost(){
         $this->trabajador->auth('admin');
         $proyecto = $this->requireSegment(3, "Proyecto");
-        $proyecto->DBUpdate(assocRequest(array_keys($proyecto->getFields())));
+        //$proyecto->DBUpdate(assocRequest(array_keys($proyecto->getFields())));
+        $this->qb->update('Proyecto', assocRequest(array_keys($proyecto->getFields())),$this->requireSegment(3, "Proyecto"))->exec();
         redirect('dashboard/proyecto/'.$proyecto->getId());
     }
     

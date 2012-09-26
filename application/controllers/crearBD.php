@@ -38,7 +38,7 @@ class CrearBD extends CI_Controller
     public function crear($drop = true) {
         //$this->db->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1')");
         $scriptOut =  "creating database <br />\n";
-        $command = "mysql grupo10 --user=" . $this->db->username . " --password=" . 
+        $command = "mysql {$this->db->database} --user=" . $this->db->username . " --password=" . 
                 $this->db->password . " < " . APPPATH . "helpers/schema.sql 2>&1";
         exec($command, $mysqlOutput, $mysqlRet);
         $scriptOut .= join("<br />\n", $mysqlOutput)."<br />\n".$mysqlRet."<br />\n";

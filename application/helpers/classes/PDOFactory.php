@@ -7,38 +7,33 @@ final class PDOFactory {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC);
     
-    static function getCustomPDO(){
+        
+    static function getCustomPDO($new = false){
+        return self::getGenericPDO('PDO', $new);
+    }
+    
+    static function getExtendedPDO($new = false){
+        return self::getGenericPDO('ExtendedPDO', $new);
+    }
+    
+    private static function getGenericPDO($pdoClass, $new = false){
         static $pdo = null;
-        if (!is_null($pdo)) {
+        if (!is_null($pdo) && !$new) {
             return $pdo;
         }
-        list($database, $user,$password) = self::getAccessData();
+        list($database, $user, $password) = self::getAccessData();
         try {
-            $pdo = new PDO($database, $user, $password, self::$attrs);
+            $newPdo = new $pdoClass($database, $user, $password, self::$attrs);
         } catch (PDOException $e){
             echo $e->getMessage();
             exit();
         }
-        return $pdo;
-    }
-    
-    static function getExtendedPDO(){
-        throw new Exception('Not yet implemented'.  var_export($params, true));
-        static $pdo = null;
-        if (!is_null($pdo)) {
-            return $pdo;
+        if ($pdo === null){
+            $pdo = $newPdo;
         }
-        list($database, $user,$password) = self::getAccessData();
-        try {
-            $pdo = new ExtendedPDO($database, $user, $password, self::$attrs);
-        } catch (PDOException $e){
-            echo $e->getMessage();
-            exit();
-        }
-        return $pdo;
+        return $newPdo;
     }
-    
-    
+
     private static function getAccessData(){
         $ci=& get_instance();
         $ci->config->load('database');
@@ -46,6 +41,5 @@ final class PDOFactory {
                 $ci->config->item('username'),
                 $ci->config->item('password'));
     }
-    
-}
 
+}

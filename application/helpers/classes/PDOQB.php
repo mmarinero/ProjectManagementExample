@@ -16,12 +16,26 @@ class PDOQB extends AbstractQueryBuilder{
         $this->pdo = $pdo;
     }
     
-    function fetchAll(){
-        return $this->pdo->query($this->sqlString)->fetchAll();
+    function fetchAll($fetch_style = null){
+        if (is_null($fetch_style)){
+            $fetch = $this->pdo->query($this->sql())->fetchAll();
+        } else {
+            $fetch = $this->pdo->query($this->sql())->fetchAll($fetch_style);
+        }
+        return $fetch;
     }
     
-    function fetch(){
-        return $this->pdo->query($this->sqlString)->fetch();
+    function fetch($fetch_style = null){
+        if (is_null($fetch_style)){
+            $fetch = $this->pdo->query($this->sql())->fetch();
+        } else {
+            $fetch = $this->pdo->query($this->sql())->fetch($fetch_style);
+        }
+        return $fetch;
+    }
+    
+    function exec(){
+        return $this->pdo->exec($this->sql());
     }
 
     public function quote($param) {

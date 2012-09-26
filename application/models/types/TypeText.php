@@ -24,6 +24,6 @@ class TypeText extends BaseType {
     
     public function getHtml($attributes = array()){
         $attributes = $this->processAttributes($attributes);
-        return '<span '.HtmlAttributesFromArray($attributes).">".nl2br($this->val())."</span>";
+        return '<span '.static::htmlAttributesFromArray($attributes).">".nl2br($this->val())."</span>";
     }
 }
