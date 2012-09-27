@@ -12,6 +12,8 @@ class PDOQB extends AbstractQueryBuilder{
     
     private $pdo;
     
+    private $result = null;
+    
     function __construct($pdo) {
         $this->pdo = $pdo;
     }
@@ -26,6 +28,9 @@ class PDOQB extends AbstractQueryBuilder{
     }
     
     function fetch($fetch_style = null){
+        if ($this->result === null){
+            $this->result = $this->pdo->query($this->sql());
+        }
         if (is_null($fetch_style)){
             $fetch = $this->pdo->query($this->sql())->fetch();
         } else {

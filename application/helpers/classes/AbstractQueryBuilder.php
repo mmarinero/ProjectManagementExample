@@ -8,20 +8,26 @@ Abstract class AbstractQueryBuilder {
     protected $idField = 'id';
 
     protected $sqlString = null;
-    
-    protected $state = 'empty';
 
+    /**
+     * Simple select query to simplify the most common database operation.d
+     * @param string $table
+     * @param mixed $where @see AbstractQueryBuilder
+     * @param mixed $order @see AbstractQueryBuilder
+     * @param mixed $fields @see AbstractQueryBuilder
+     * @return \AbstractQueryBuilder 
+     */
     function get($table, $where = array(), $order = array(), $fields = array()){
 	$this->sqlString = $this->selectClause($fields)." from {$this->quoteIdentifier($table)} ". 
-	$this->whereClause($where).' '.$this->orderByClause($order); 
-        $this->state = 'completed';
+	$this->whereClause($where).' '.$this->orderByClause($order);
+        $this->state = 'ready';
 	return $this;
     }
     
     function insert($table, $fields){
 	$clause = '('.$this->parseList(array_keys($fields), 'quoteIdentifier').') values ('.$this->parseList($fields,'quote').')';
 	$this->sqlString = "insert into {$this->quoteIdentifier($table)} $clause";
-        $this->state = 'completed';
+        $this->state = 'ready';
 	return $this;
     }
 
@@ -30,13 +36,13 @@ Abstract class AbstractQueryBuilder {
         print_r($this->parseIdValList($fields));
         $this->sqlString = "update {$this->quoteIdentifier($table)} set ".
                 "{$this->parseIdValList($fields)} ".$this->whereClause($where);
-        $this->state = 'completed';
+        $this->state = 'ready';
 	return $this;
     }
     
     function delete($table, $where){
         $this->sqlString = "delete from {$this->quoteIdentifier($table)} ".$this->whereClause($where); 
-        $this->state = 'completed';
+        $this->state = 'ready';
 	return $this;
     }
     
@@ -78,6 +84,14 @@ Abstract class AbstractQueryBuilder {
     
     function parse($params){
         throw new Exception('Not yet implemented'.  var_export($params, true));
+    }
+    
+    function prependSQL($sql){
+        
+    }
+    
+    function appendSQL($sql){
+        
     }
     
     private function parseIdValList($list, $defaultOperator = '='){

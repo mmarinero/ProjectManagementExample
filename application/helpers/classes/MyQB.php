@@ -10,16 +10,30 @@ class MyQB extends AbstractQueryBuilder{
     
     private $link;
     
-    function __construct($link) {
-        $this->link = $link;
+    private $result = null;
+    
+    function __construct() {
+        $this->link = SYS::_db()->connect();
     }
     
     function fetchAll(){
-        
+        if (!$rs = mysqli_query($this->_link,$this->sql())){
+            throw new DataBaseException('Query Failed: ' . mysqli_error($this->_link) . '(' . mysqli_errno($this->_link) . ')');
+        }
+        return mysqli_fetch_all($rs, MYSQLI_ASSOC);
     }
     
     function fetch(){
-        
+        if ($this->result === null){
+            if (!$this->result = mysqli_query($this->_link,$this->sql())){
+                throw new DataBaseException('Query Failed: ' . mysqli_error($this->_link) . '(' . mysqli_errno($this->_link) . ')');
+            }
+        }
+        return mysqli_fetch_assoc($this->result);
+    }
+    
+    function exec(){
+        return mysqli_num_rows(mysqli_query($this->_link,$this->sql()));
     }
 
     public function quote($param) {
