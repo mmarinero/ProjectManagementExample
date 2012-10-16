@@ -139,31 +139,31 @@ class EX_Model extends CI_Model{
     
     public function DBInsert(array $values=array()){
         $this->setValues($values);
-        $this->db->insert(static::getTableName(), $this->varsToDB());
+        DB::qb()->insert(static::getTableName(), $this->varsToDB())->exec();
         $this->id = $this->db->insert_id();
     }
     
     public static function DBIdInsert(array $values=array()){
         $thisInstance = new static();
         $thisInstance->setValues($values);
-        $thisInstance->db->insert(static::getTableName(), $thisInstance->varsToDB());
-        $thisInstance->id = $thisInstance->db->insert_id();
+        DB::qb()->insert(static::getTableName(), $thisInstance->varsToDB())->exec();
+        $thisInstance->id = DB::qb()->lastInsertId();
         return $thisInstance;
     }
     
     public function DBDelete($id = null){
         if (is_null($id))  $id = $this->id;
-        $this->db->delete(static::getTableName(), array('id' => $id));
+        DB::qb()->delete(static::getTableName(), $id)->exec();
     }
     
     public static function DBIdDelete($id){
-        i(new static())->db->delete(static::getTableName(), array('id' => $id));
+        DB::qb()->delete(static::getTableName(), $id)->exec();
     }
     
     public function DBUpdate($values){
 	if (isset($values['id'])) unset($values['id']);
         $this->setValues($values);
-        $this->db->update(static::getTableName(), $this->varsToDB(), array('id' => $this->id));
+        DB::qb()->update(static::getTableName(), $this->varsToDB(), $this->id)->exec();
     }
     
     public static function DBIdUpdate($values, $id=null){

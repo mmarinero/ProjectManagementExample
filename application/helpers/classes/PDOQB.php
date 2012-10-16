@@ -6,7 +6,7 @@
  * This class implements the parts of AbstractQueryBuilder that depends in the 
  * DataBase access library.
  */
-class PDOQB extends AbstractQueryBuilder{
+class PDOQB extends AbstractQueryBuilder {
     
     private $identifierEscapeCharacter = '`';
     
@@ -14,6 +14,10 @@ class PDOQB extends AbstractQueryBuilder{
     
     private $result = null;
     
+    /**
+     * PDO based query builder.
+     * @param PDO $pdo PDO instance to use in the QueryBuilder
+     */
     function __construct($pdo) {
         $this->pdo = $pdo;
     }
@@ -41,6 +45,10 @@ class PDOQB extends AbstractQueryBuilder{
     
     function exec(){
         return $this->pdo->exec($this->sql());
+    }
+    
+    function lastInsertId(){
+        return $this->pdo->lastInsertId();
     }
 
     public function quote($param) {

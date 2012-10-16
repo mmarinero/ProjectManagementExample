@@ -1,29 +1,39 @@
 #!/bin/bash
- 
+
+#This script
+
 EXPECTED_ARGS=2
 E_BADARGS=65
-MYSQL=`which mysql`
+mysql=`which mysql`
 name=$1
 pass=$2
 document_root="public_html"
 root_dir="$HOME/vhosts/"
 server_user="www-data"
 domain="$1.local"
-email="mariomarinero@gmail.com"
+email="email@example.com"
 
-Q1="CREATE DATABASE $1;"
-Q2="GRANT ALL ON $name.* TO '$name.'@'localhost' IDENTIFIED BY '$pass';"
-Q3="FLUSH PRIVILEGES;"
-SQL="${Q1}${Q2}${Q3}"
- 
 if [ $# -ne $EXPECTED_ARGS ]
 then
   echo "Usage: $0 siteName dbpass"
+  echo "This script performs tasks to initialize a development environment"
+  echo "for a webapp with a mysql database, an Apache virtual host"
+  echo "and a domain alias."
+  echo "1. The mysql database has name siteName and password dbpass"
+  echo "2. The apache virtualhost points to $HOME/vhosts/siteName"
+  echo "3. The domain alias is $1.local"
+  echo "This script is intended to be personalized to fit the needs of the"
+  echo "developer. The first variables in the script can help with that."
+  echo "It is based in a popular mysql database creation script"
   exit $E_BADARGS
 fi
- 
-$MYSQL -uroot -p -e "$SQL"
 
+q1="CREATE DATABASE $name;"
+q2="GRANT ALL ON $name.* TO '$name.'@'localhost' IDENTIFIED BY '$pass';"
+q3="FLUSH PRIVILEGES;"
+sql="${q1}${q2}${q3}"
+ 
+$mysql -uroot -p -e "$sql"
 
 # This script is used to create virtual hosts.
 

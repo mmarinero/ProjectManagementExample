@@ -97,7 +97,7 @@ Abstract class AbstractQueryBuilder {
     private function parseIdValList($list, $defaultOperator = '='){
 	if (is_array($list)){
 	    $clauses = array();
-	    foreach($list as $id -> $value){
+	    foreach($list as $id => $value){
 		if (is_string($id)){
 		    $clauses[$id] = "{$this->quoteIdentifier($id)} $defaultOperator {$this->quote($value)}";
 		} elseif (is_int) {
@@ -125,8 +125,7 @@ Abstract class AbstractQueryBuilder {
     }
     
     private function whereClause($where){
-        return empty($where) ? '' : 'where '.$this->parseIdValList($where);
-        
+        return empty($where) ? '' : 'where '.$this->parseIdValList($where);   
     }
     
     private function selectClause($fields){
@@ -140,4 +139,12 @@ Abstract class AbstractQueryBuilder {
     abstract function quote($param);
     
     abstract function quoteIdentifier($param);
+    
+    abstract function fetchAll($fetch_style = null);
+    
+    abstract function fetch($fetch_style = null);
+    
+    abstract function exec();
+    
+    abstract function lastInsertId();
 }
